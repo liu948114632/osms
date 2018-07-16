@@ -40,6 +40,10 @@ public class ListInboundShipmentsResultVO {
     protected List<InboundShipmentInfoVO> inboundShipmentInfoVOList;
     protected String nextToken;
 
+    public void setInboundShipmentInfoVOList(List<InboundShipmentInfoVO> inboundShipmentInfoVOList) {
+        this.inboundShipmentInfoVOList = inboundShipmentInfoVOList;
+    }
+
     /**
      * Gets the value of the inboundShipmentInfoVOList property.
      * 

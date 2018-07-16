@@ -165,8 +165,7 @@
 	<bean id="packageProblemHistoryDao" class="com.itecheasy.core.order.dao.PackageProblemHistoryDaoImpl" />
 	<bean id="packageProblemAttachmentDao" class="com.itecheasy.core.order.dao.PackageProblemAttachmentDaoImpl" />
 	<bean id="vPackageProblemDao" class="com.itecheasy.core.order.dao.VPackageProblemDaoImpl" />
-	
-	
+
 	
 	<bean id="utils" class="com.itecheasy.webservice.client.DMSUtils"
 		init-method="init">

@@ -15,7 +15,15 @@
       <change beforePath="$PROJECT_DIR$/test/com/itecheasy/test/ProductTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/com/itecheasy/test/ProductTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java" afterDir="false" />
     </list>
-    <list default="true" readonly="true" id="3d8a2851-4738-4512-a3be-e3c4f5ea5577" name="Default" comment="" />
+    <list default="true" readonly="true" id="3d8a2851-4738-4512-a3be-e3c4f5ea5577" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/test/com/itecheasy/headfirst" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/test/com/itecheasy/headfirst/state" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/test/com/itecheasy/headfirst/state/gumballstatewinner" afterDir="true" />
+      <change afterPath="$PROJECT_DIR$/test/com/itecheasy/headfirst/state/gumballstatewinner/GumballMachine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cfg/jdbc_sqlserver.properties" beforeDir="false" afterPath="$PROJECT_DIR$/cfg/jdbc_sqlserver.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/ListInboundShipmentsResultVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/ListInboundShipmentsResultVO.java" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <manually-removed-from-ignored>
       <directory path="test/" />
@@ -52,31 +60,6 @@
       </path>
       <path>
         <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="osms_" type="feb32156:DbDataSourceImpl" />
-        <item name="Develop_OSMS: database" type="bdf80c8a:MssqlImplModel$Database" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="osms_" type="feb32156:DbDataSourceImpl" />
-        <item name="Develop_OSMS: database" type="bdf80c8a:MssqlImplModel$Database" />
-        <item name="dbo: schema" type="3adcb6a6:MssqlImplModel$Schema" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="osms_" type="feb32156:DbDataSourceImpl" />
-        <item name="Develop_OSMS: database" type="bdf80c8a:MssqlImplModel$Database" />
-        <item name="dbo: schema" type="3adcb6a6:MssqlImplModel$Schema" />
-        <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="osms_" type="feb32156:DbDataSourceImpl" />
-        <item name="Develop_OSMS: database" type="bdf80c8a:MssqlImplModel$Database" />
-        <item name="dbo: schema" type="3adcb6a6:MssqlImplModel$Schema" />
-        <item name="routines" type="d4e8921:DatabaseStructure$FamilyGroup" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
         <item name="osms_dev_180710" type="feb32156:DbDataSourceImpl" />
       </path>
       <path>
@@ -101,96 +84,21 @@
     <select />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="rebel.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cfg/rebel.xml">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file leaf-file-name="autotask.properties" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cfg/autotask.properties">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="AmazonReportServiceImpl.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="24" column="10" lean-forward="true" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
+            <state relative-caret-position="290">
+              <caret line="175" column="64" lean-forward="true" selection-start-line="175" selection-start-column="64" selection-end-line="175" selection-end-column="64" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="service_job.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core_impl/service_job.xml">
+      <file leaf-file-name="RemoteLoader.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/undo/RemoteLoader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="27" column="25" lean-forward="true" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
-              <folding>
-                <element signature="e#859#892#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AsynEmailServiceImpl.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/common/asynemail/AsynEmailServiceImpl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="385">
-              <caret line="105" column="33" lean-forward="true" selection-start-line="105" selection-start-column="33" selection-end-line="105" selection-end-column="33" />
-              <folding>
-                <element signature="e#1050#1051#0" expanded="true" />
-                <element signature="e#1091#1092#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AmozonUpdateReplenishmentShipmentImpl.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/task/AmozonUpdateReplenishmentShipmentImpl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="208">
-              <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SprintTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="670">
-              <caret line="122" lean-forward="true" selection-start-line="122" selection-end-line="122" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AmozonUpdateReplenishmentShipmentImplTest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/AmozonUpdateReplenishmentShipmentImplTest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="189">
-              <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="service_core.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/core_impl/service_core.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="291">
-              <caret line="186" column="4" selection-start-line="186" selection-start-column="4" selection-end-line="186" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="replenishment_order" pinned="false" current-in-tab="false">
-        <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/replenishment_order">
-          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-            <state>
-              <filtering enabled="true" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FbaInboundServiceImpl.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="487">
-              <caret line="950" column="32" selection-start-line="950" selection-start-column="32" selection-end-line="950" selection-end-column="32" />
+            <state relative-caret-position="510">
+              <caret line="40" column="29" lean-forward="true" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -208,15 +116,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>start</find>
-      <find>邮件</find>
-      <find>removeObserver</find>
-      <find>save_sent_email</find>
       <find>start()</find>
       <find>mail.smtp.host</find>
       <find>smtpUsername</find>
       <find>observer</find>
-      <find>addemail</find>
       <find>emails.put</find>
       <find>补货订单更新失败</find>
       <find>tos</find>
@@ -234,10 +137,15 @@
       <find>fbaSeaTransit</find>
       <find>getAmazonStockReportFromAmazon</find>
       <find>logger</find>
-      <find>补货订单更新失败,订单编号</find>
       <find>asynEmailCron</find>
       <find>application</find>
       <find>orderAmazonStatus</find>
+      <find>afn_listing</find>
+      <find>addemail</find>
+      <find>email</find>
+      <find>StaticUtils.addEmail</find>
+      <find>补货订单更新失败,订单编号</find>
+      <find>Macro</find>
     </findStrings>
     <replaceStrings>
       <replace>AmazonStockReportSearchForm</replace>
@@ -245,21 +153,12 @@
     <dirStrings>
       <dir>E:\osms</dir>
       <dir>E:\osms\osms_api\com\itecheasy\osms\order</dir>
+      <dir>E:\osms\osms_impl</dir>
     </dirStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/dao/AmazonStockReportHistoryDao.java" />
-        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/dao/AmazonStockReportHistoryDaoImpl.java" />
-        <option value="$PROJECT_DIR$/core_impl/service_core.xml" />
-        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/strategy/MallardDuck.java" />
-        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/order/BaseOrder.java" />
-        <option value="$PROJECT_DIR$/cfg/applicationContext.xml" />
-        <option value="$PROJECT_DIR$/cfg/jdbc_sqlserver.properties" />
-        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/console_5.sql" />
-        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/OrderAmazon.java" />
-        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/TransportContentVO.java" />
         <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/AmazonShipmentStatusListVO.java" />
         <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/po/AmazonStockReportHistoryPO.java" />
         <option value="$PROJECT_DIR$/core_impl/com/itecheasy/common/util/HqlUtils.java" />
@@ -296,11 +195,21 @@
         <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java" />
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/console_1.sql" />
         <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/NYPizzaStore.java" />
-        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java" />
         <option value="$PROJECT_DIR$/cfg/deploy_config.properties" />
         <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/task/AmozonUpdateReplenishmentShipmentImpl.java" />
-        <option value="$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java" />
         <option value="$PROJECT_DIR$/core_api/com/itecheasy/core/order/OrderService.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/ListInboundShipmentsResultVO.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java" />
+        <option value="$PROJECT_DIR$/cfg/applicationContext.xml" />
+        <option value="$PROJECT_DIR$/cfg/jdbc_sqlserver.properties" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/e092c393-f804-4b26-8de6-541578693656/console_2.sql" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/state/gumballstate/GumballMachine.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/state/gumballstatewinner/GumballMachineTestDrive.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/RemoteControlTest.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/NoCommand.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/RemoteControl.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/RemoteLoader.java" />
       </list>
     </option>
   </component>
@@ -333,8 +242,8 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="221" />
-    <option name="y" value="79" />
+    <option name="x" value="28" />
+    <option name="y" value="44" />
     <option name="width" value="1760" />
     <option name="height" value="966" />
   </component>
@@ -343,9 +252,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -356,66 +262,7 @@
             <path>
               <item name="osms" type="b2602c69:ProjectViewProjectNode" />
               <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="cfg" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="core_api" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="core_api" type="462c0819:PsiDirectoryNode" />
-              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="core_api" type="462c0819:PsiDirectoryNode" />
-              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="core_api" type="462c0819:PsiDirectoryNode" />
-              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
               <item name="core_impl" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
-              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
-              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
-              <item name="common" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
-              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
-              <item name="osms" type="462c0819:PsiDirectoryNode" />
-              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
-              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
-              <item name="core" type="462c0819:PsiDirectoryNode" />
-              <item name="fba" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="osms" type="b2602c69:ProjectViewProjectNode" />
@@ -441,7 +288,16 @@
               <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
               <item name="headfirst" type="462c0819:PsiDirectoryNode" />
-              <item name="factory" type="462c0819:PsiDirectoryNode" />
+              <item name="command" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="headfirst" type="462c0819:PsiDirectoryNode" />
+              <item name="command" type="462c0819:PsiDirectoryNode" />
+              <item name="undo" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="osms" type="b2602c69:ProjectViewProjectNode" />
@@ -472,6 +328,9 @@
           <select />
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -486,10 +345,10 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/test/com/itecheasy/headfirst" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.excludes" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
   <component name="RecentsManager">
     <key name="ImportMappingsDialog.RecentPackages">
@@ -530,32 +389,20 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.get_amazon_REPORT">
-    <configuration default="true" type="Application" factoryName="Application">
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-    </configuration>
-    <configuration name="FbaInboundWebServiceTest.putTransportContent" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.插入stock数据">
+    <configuration name="EI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.itecheasy.headfirst.adapter.iterenum.EI" />
       <module name="osms" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.itecheasy.test.*" />
+          <option name="PATTERN" value="com.itecheasy.headfirst.adapter.iterenum.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" value="com.itecheasy.test" />
-      <option name="MAIN_CLASS_NAME" value="com.itecheasy.test.FbaInboundWebServiceTest" />
-      <option name="METHOD_NAME" value="putTransportContent" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <patterns />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
     </configuration>
     <configuration name="SprintTest.test007" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="osms" />
@@ -580,23 +427,7 @@
       </option>
       <patterns />
     </configuration>
-    <configuration default="true" type="JUnit" factoryName="JUnit">
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="TEST_OBJECT" value="class" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="singleModule" />
-      </option>
-      <patterns />
-    </configuration>
-    <configuration name="autoSyncInboundShipments2" type="JUnit" factoryName="JUnit" temporary="true">
+    <configuration name="SprintTest.test008" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="osms" />
       <extension name="coverage">
         <pattern>
@@ -607,12 +438,28 @@
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
       <option name="PACKAGE_NAME" value="com.itecheasy.test" />
-      <option name="MAIN_CLASS_NAME" value="com.itecheasy.test.AmozonUpdateReplenishmentShipmentImplTest" />
-      <option name="METHOD_NAME" value="autoSyncInboundShipments" />
+      <option name="MAIN_CLASS_NAME" value="com.itecheasy.test.SprintTest" />
+      <option name="METHOD_NAME" value="test008" />
       <option name="TEST_OBJECT" value="method" />
       <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="file://%MODULE_WORKING_DIR%" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
       <option name="PASS_PARENT_ENVS" value="true" />
       <option name="TEST_SEARCH_SCOPE">
         <value defaultName="singleModule" />
@@ -793,19 +640,19 @@
     </configuration>
     <list>
       <item itemvalue="Tomcat Server.osms" />
-      <item itemvalue="JUnit.FbaInboundWebServiceTest.putTransportContent" />
-      <item itemvalue="JUnit.autoSyncInboundShipments2" />
       <item itemvalue="JUnit.get_amazon_REPORT" />
       <item itemvalue="JUnit.插入stock数据" />
       <item itemvalue="JUnit.SprintTest.test007" />
+      <item itemvalue="JUnit.SprintTest.test008" />
+      <item itemvalue="Application.EI" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.插入stock数据" />
+        <item itemvalue="Application.EI" />
+        <item itemvalue="JUnit.SprintTest.test008" />
         <item itemvalue="JUnit.get_amazon_REPORT" />
         <item itemvalue="JUnit.SprintTest.test007" />
-        <item itemvalue="JUnit.插入stock数据" />
-        <item itemvalue="JUnit.FbaInboundWebServiceTest.putTransportContent" />
-        <item itemvalue="JUnit.autoSyncInboundShipments2" />
       </list>
     </recent_temporary>
   </component>
@@ -881,7 +728,8 @@
       <workItem from="1531440977614" duration="30651000" />
       <workItem from="1531526971683" duration="28405000" />
       <workItem from="1531563109194" duration="229000" />
-      <workItem from="1531699619258" duration="5130000" />
+      <workItem from="1531699619258" duration="15688000" />
+      <workItem from="1531722926890" duration="3374000" />
     </task>
     <task id="LOCAL-00018" summary="ccc">
       <created>1529056592964</created>
@@ -1230,18 +1078,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 08m 29s.xml">
-      <configuration name="SprintTest.test007" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 30m 00s.xml">
-      <configuration name="SprintTest.test007" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 32m 03s.xml">
-      <configuration name="SprintTest.test007" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 34m 21s.xml">
-      <configuration name="SprintTest.test007" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 35m 31s.xml">
       <configuration name="SprintTest.test007" configurationId="JUnit" />
     </history-entry>
@@ -1260,9 +1096,21 @@
     <history-entry file="get_amazon_REPORT - 2018.07.14 at 17h 35m 17s.xml">
       <configuration name="get_amazon_REPORT" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="SprintTest_test008 - 2018.07.16 at 09h 59m 28s.xml">
+      <configuration name="SprintTest.test008" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SprintTest_test008 - 2018.07.16 at 10h 00m 56s.xml">
+      <configuration name="SprintTest.test008" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SprintTest_test008 - 2018.07.16 at 10h 05m 55s.xml">
+      <configuration name="SprintTest.test008" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="插入stock数据 - 2018.07.16 at 11h 18m 55s.xml">
+      <configuration name="插入stock数据" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="709493000" />
+    <option name="totallyTimeSpent" value="723425000" />
   </component>
   <component name="TodoView" selected-index="1">
     <todo-panel id="selected-file">
@@ -1274,11 +1122,10 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="221" y="79" width="1760" height="966" extended-state="0" />
-    <editor active="true" />
+    <frame x="28" y="44" width="1760" height="966" extended-state="0" />
     <layout>
       <window_info anchor="right" id="Palette" order="2" />
-      <window_info anchor="bottom" id="Event Log" order="17" sideWeight="0.47961494" side_tool="true" weight="0.30530974" />
+      <window_info anchor="bottom" id="Event Log" order="17" sideWeight="0.48" side_tool="true" weight="0.30382776" />
       <window_info anchor="bottom" id="Application Servers" order="10" sideWeight="0.49882352" weight="0.32535884" />
       <window_info anchor="bottom" id="JRebel Console" order="0" sideWeight="0.47961494" side_tool="true" weight="0.30530974" />
       <window_info anchor="right" id="Maven Projects" order="8" weight="0.32951808" />
@@ -1286,26 +1133,24 @@
       <window_info anchor="bottom" id="JRebel Executor" order="1" />
       <window_info id="Capture Tool" order="7" />
       <window_info id="Designer" order="3" />
-      <window_info anchor="right" id="Database" order="5" weight="0.26385927" />
+      <window_info anchor="right" id="Database" order="5" weight="0.26352942" />
       <window_info id="Structure" order="2" sideWeight="0.5051546" side_tool="true" weight="0.20117646" />
       <window_info anchor="right" id="Ant Build" order="4" weight="0.25" />
       <window_info id="UI Designer" order="5" />
-      <window_info anchor="bottom" id="Debug" order="6" sideWeight="0.51698756" weight="0.3901869" />
+      <window_info anchor="bottom" id="Debug" order="6" sideWeight="0.51698756" weight="0.38995215" />
       <window_info anchor="bottom" id="TODO" order="9" sideWeight="0.49941176" weight="0.3492823" />
-      <window_info anchor="bottom" id="Messages" order="13" weight="0.36682242" />
       <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info id="Image Layers" order="4" />
       <window_info anchor="bottom" id="Java Enterprise" order="14" sideWeight="0.49941176" weight="0.326555" />
       <window_info anchor="right" id="Capture Analysis" order="3" />
-      <window_info anchor="bottom" id="Version Control" order="16" sideWeight="0.520385" visible="true" weight="0.30382776" />
-      <window_info anchor="bottom" id="Run" order="5" weight="0.26769912" />
+      <window_info anchor="bottom" id="Version Control" order="16" sideWeight="0.52" weight="0.30382776" />
+      <window_info anchor="bottom" id="Run" order="5" weight="0.26555023" />
       <window_info anchor="bottom" id="Spring" order="11" sideWeight="0.4982353" weight="0.37799042" />
       <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.49941176" weight="0.3277512" />
       <window_info id="Persistence" order="0" sideWeight="0.50584114" side_tool="true" weight="0.25882354" />
-      <window_info anchor="bottom" id="Database Console" order="18" weight="0.34935522" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49484536" visible="true" weight="0.20117646" />
       <window_info anchor="bottom" id="Problems" order="18" weight="0.3277512" />
-      <window_info anchor="bottom" id="Web" order="20" side_tool="true" weight="0.32972974" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49484536" visible="true" weight="0.20352942" />
+      <window_info anchor="bottom" id="Web" order="20" side_tool="true" weight="0.32894737" />
       <window_info anchor="bottom" id="JRebel" order="21" sideWeight="0.49354005" side_tool="true" weight="0.31425485" />
       <window_info anchor="bottom" id="Find" order="4" weight="0.3276644" />
       <window_info anchor="right" id="Theme Preview" order="7" />
@@ -1313,7 +1158,9 @@
       <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
       <window_info anchor="bottom" id="SQL Generator" order="19" weight="0.33294392" />
+      <window_info anchor="bottom" id="Database Console" order="18" weight="0.29066986" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.3660287" />
       <window_info anchor="bottom" id="SVN Properties" order="2" weight="0.3293979" />
       <window_info anchor="bottom" id="Message" order="3" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -1330,6 +1177,7 @@
       <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="4" weight="0.25" />
       <window_info id="UI Designer" order="5" />
+      <window_info anchor="bottom" id="Web" order="21" side_tool="true" weight="0.32972974" />
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.49941176" weight="0.32881355" />
       <window_info id="Capture Tool" order="7" />
@@ -1337,9 +1185,8 @@
       <window_info anchor="bottom" id="SVN Properties" order="2" weight="0.3293979" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="bottom" id="Event Log" order="17" sideWeight="0.5018072" side_tool="true" weight="0.3446712" />
-      <window_info anchor="bottom" id="Messages" order="13" weight="0.36723164" />
-      <window_info anchor="bottom" id="TODO" order="9" sideWeight="0.49941176" weight="0.3502825" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="1" weight="0.25" />
+      <window_info anchor="right" id="Database" order="5" weight="0.2644394" />
       <window_info anchor="bottom" id="Problems" order="19" weight="0.32937366" />
       <window_info id="Image Layers" order="4" />
       <window_info anchor="bottom" id="Java Enterprise" order="14" sideWeight="0.49941176" weight="0.32768363" />
@@ -1349,9 +1196,9 @@
       <window_info anchor="bottom" id="JRebel Executor" order="1" />
       <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49726775" visible="true" weight="0.24631937" />
       <window_info anchor="bottom" id="JRebel Console" order="0" sideWeight="0.47882354" side_tool="true" weight="0.3062147" />
-      <window_info anchor="right" id="Database" order="5" weight="0.2644394" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.36723164" />
       <window_info anchor="bottom" id="Message" order="3" />
-      <window_info anchor="bottom" id="Web" order="21" side_tool="true" weight="0.32972974" />
+      <window_info anchor="bottom" id="TODO" order="9" sideWeight="0.49941176" weight="0.3502825" />
       <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info anchor="right" id="Theme Preview" order="7" />
       <window_info id="Structure" order="2" sideWeight="0.5027322" side_tool="true" weight="0.24705882" />
@@ -1636,11 +1483,23 @@
           <properties />
           <option name="timeStamp" value="312" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java</url>
+          <line>121</line>
+          <properties />
+          <option name="timeStamp" value="313" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/task/AmozonUpdateReplenishmentShipmentImpl.java</url>
+          <line>145</line>
+          <properties />
+          <option name="timeStamp" value="314" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="313" />
+      <option name="time" value="315" />
     </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
@@ -1648,388 +1507,457 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/WebRoot/WEB-INF/web.xml">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/state/gumballstatewinner/GumballMachineTestDrive.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="67" column="47" lean-forward="true" selection-start-line="67" selection-start-column="47" selection-end-line="67" selection-end-column="47" />
+        <state relative-caret-position="357">
+          <caret line="17" column="30" selection-start-line="17" selection-start-column="30" selection-end-line="17" selection-end-column="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web_app/com/itecheasy/core/order/addOrder.java">
+    <entry file="jar://$PROJECT_DIR$/lib/cxf/cxf-2.1.2.jar!/org/apache/cxf/transport/servlet/CXFServlet.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="651">
-          <caret line="96" column="52" lean-forward="true" selection-start-line="96" selection-start-column="52" selection-end-line="96" selection-end-column="52" />
+        <state relative-caret-position="63">
+          <caret line="29" column="13" selection-start-line="29" selection-start-column="13" selection-end-line="29" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/po/AmazonStockReportPO.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/state/gumballstatewinner/GumballMachine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="44" column="35" selection-start-line="44" selection-start-column="22" selection-end-line="44" selection-end-column="35" />
+        <state relative-caret-position="105">
+          <caret line="58" lean-forward="true" selection-start-line="58" selection-end-line="58" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/order/AmazonStockReport.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/GarageDoor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-441">
-          <caret line="10" column="19" lean-forward="true" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+        <state relative-caret-position="147">
+          <caret line="7" column="16" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
+          <folding>
+            <element signature="e#127#128#0" expanded="true" />
+            <element signature="e#175#176#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/core/task/AmazonStockReport.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/GarageDoorOpenCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="33" column="56" selection-start-line="33" selection-start-column="56" selection-end-line="33" selection-end-column="56" />
+        <state relative-caret-position="210">
+          <caret line="10" column="20" selection-start-line="10" selection-start-column="20" selection-end-line="10" selection-end-column="20" />
+          <folding>
+            <element signature="e#189#190#0" expanded="true" />
+            <element signature="e#224#225#0" expanded="true" />
+            <element signature="e#250#251#0" expanded="true" />
+            <element signature="e#272#273#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/task/SyncAmozonStackReportTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="164">
-          <caret line="13" column="9" selection-start-line="13" selection-start-column="9" selection-end-line="13" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/lib/spring/spring.jar!/org/springframework/aop/support/AopUtils.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="163" selection-start-line="163" selection-end-line="163" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/email/EmailService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="37" column="18" lean-forward="true" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/common/asynemail/AsynEmailService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/replenishment_order_product">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/email/EmailServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="67" selection-start-line="67" selection-end-line="67" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/util/StaticUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="114">
-          <caret line="169" selection-start-line="169" selection-end-line="169" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://e092c393-f804-4b26-8de6-541578693656/database/osms_dev_180710/schema/dbo/table/amazon_stock_report_history">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://e092c393-f804-4b26-8de6-541578693656/database/osms_dev_180710/schema/dbo/table/amazon_stock_report">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/amazon_stock_report">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/amazon_stock_report_history">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/console_1.sql">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="49" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/Cheese.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/Command.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="42">
           <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/fba/AmazonReportService.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/Light.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
-          <caret line="39" column="9" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
+        <state relative-caret-position="84">
+          <caret line="4" column="11" selection-start-line="4" selection-start-column="11" selection-end-line="4" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/webservice/client/AmazonClient.java">
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/task/AmozonUpdateReplenishmentShipmentImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="415" column="49" selection-start-line="415" selection-start-column="49" selection-end-line="415" selection-end-column="49" />
+        <state relative-caret-position="168">
+          <caret line="26" column="3" lean-forward="true" selection-start-line="26" selection-start-column="3" selection-end-line="26" selection-end-column="3" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/task/SyncAmozonStackReportTaskImpl.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/LightOffCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="26" column="28" lean-forward="true" selection-start-line="26" selection-start-column="28" selection-end-line="26" selection-end-column="28" />
+        <state relative-caret-position="105">
+          <caret line="5" column="39" lean-forward="true" selection-start-line="5" selection-start-column="39" selection-end-line="5" selection-end-column="39" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/BlackOlives.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/LightOnCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="9" column="25" lean-forward="true" selection-start-line="9" selection-start-column="25" selection-end-line="9" selection-end-column="25" />
+          <folding>
+            <element signature="e#157#158#0" expanded="true" />
+            <element signature="e#182#183#0" expanded="true" />
+            <element signature="e#209#210#0" expanded="true" />
+            <element signature="e#226#227#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/SimpleRemoteControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
+          <folding>
+            <element signature="e#233#234#0" expanded="true" />
+            <element signature="e#254#255#0" expanded="true" />
+            <element signature="e#290#291#0" expanded="true" />
+            <element signature="e#311#312#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/StereoOnWithCDCommand.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="42">
           <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/PizzaIngredientFactory.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/Light.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/CheesePizza.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="2" column="36" selection-start-line="2" selection-start-column="36" selection-end-line="2" selection-end-column="36" />
+        <state relative-caret-position="105">
+          <caret line="5" column="11" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
           <folding>
-            <element signature="e#198#199#0" expanded="true" />
-            <element signature="e#247#248#0" expanded="true" />
+            <element signature="e#125#126#0" expanded="true" />
+            <element signature="e#156#157#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/Pizza.java">
+    <entry file="file://$PROJECT_DIR$/core_impl/service_core.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+        <state relative-caret-position="433">
+          <caret line="178" column="20" selection-start-line="178" selection-start-column="20" selection-end-line="178" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/LightOnCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="5" column="11" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
           <folding>
-            <element signature="e#235#236#0" expanded="true" />
-            <element signature="e#290#291#0" expanded="true" />
-            <element signature="e#305#306#0" expanded="true" />
-            <element signature="e#372#373#0" expanded="true" />
-            <element signature="e#387#388#0" expanded="true" />
-            <element signature="e#454#455#0" expanded="true" />
-            <element signature="e#484#485#0" expanded="true" />
-            <element signature="e#507#508#0" expanded="true" />
-            <element signature="e#528#529#0" expanded="true" />
-            <element signature="e#546#547#0" expanded="true" />
+            <element signature="e#149#150#0" expanded="true" />
+            <element signature="e#174#175#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/ChicagoPizzaStore.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/CeilingFan.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="10" column="29" lean-forward="true" selection-start-line="10" selection-start-column="29" selection-end-line="10" selection-end-column="29" />
+          <folding>
+            <element signature="e#254#255#0" expanded="true" />
+            <element signature="e#285#286#0" expanded="true" />
+            <element signature="e#867#868#0" expanded="true" />
+            <element signature="e#886#887#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/GarageDoor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+          <folding>
+            <element signature="e#182#183#0" expanded="true" />
+            <element signature="e#240#241#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/GarageDoorUpCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="10" column="19" lean-forward="true" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/StereoOffCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="5" column="11" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
+          <folding>
+            <element signature="e#158#159#0" expanded="true" />
+            <element signature="e#185#186#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cfg/applicationContext.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="92" column="17" lean-forward="true" selection-start-line="92" selection-start-column="17" selection-end-line="92" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/email/EmailService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="576">
+          <caret line="37" column="16" selection-start-line="37" selection-start-column="16" selection-end-line="37" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/util/StaticUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="169" column="32" selection-start-line="169" selection-start-column="32" selection-end-line="169" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/LightOffCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="5" column="11" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
+          <folding>
+            <element signature="e#152#153#0" expanded="true" />
+            <element signature="e#177#178#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/Stereo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/TV.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/StereoOnWithCDCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="12" column="19" lean-forward="true" selection-start-line="12" selection-start-column="19" selection-end-line="12" selection-end-column="19" />
+          <folding>
+            <element signature="e#167#168#0" expanded="true" />
+            <element signature="e#194#195#0" expanded="true" />
+            <element signature="e#304#305#0" expanded="true" />
+            <element signature="e#323#324#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/NoCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="7" column="8" selection-start-line="7" selection-start-column="8" selection-end-line="7" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/Stereo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="29" column="16" selection-start-line="29" selection-start-column="16" selection-end-line="29" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/LightOnCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding>
+            <element signature="e#148#149#0" expanded="true" />
+            <element signature="e#173#174#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/RemoteControl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="29" column="16" selection-start-line="29" selection-start-column="16" selection-end-line="29" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/simpleremote/RemoteControlTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="11" column="30" lean-forward="true" selection-start-line="11" selection-start-column="30" selection-end-line="11" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/CeilingFanOnCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding>
+            <element signature="e#179#180#0" expanded="true" />
+            <element signature="e#214#215#0" expanded="true" />
+            <element signature="e#239#240#0" expanded="true" />
+            <element signature="e#263#264#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/RemoteLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="468">
+          <caret line="28" column="33" lean-forward="true" selection-start-line="28" selection-start-column="33" selection-end-line="28" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="968" column="40" selection-start-line="968" selection-start-column="40" selection-end-line="968" selection-end-column="40" />
+          <folding>
+            <element signature="e#40115#40123#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/party/MacroCommand.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="5" column="11" selection-start-line="5" selection-start-column="11" selection-end-line="5" selection-end-column="11" />
+          <folding>
+            <element signature="e#159#160#0" expanded="true" />
+            <element signature="e#190#191#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://D:/jdk16010/src.zip!/java/util/Iterator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="269">
+          <caret line="30" column="17" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/iterator/transition/Menu.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="84">
           <caret line="4" column="20" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/Garlic.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/iterator/transition/MenuItem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="14" selection-start-line="6" selection-start-column="14" selection-end-line="6" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/iterator/transition/Waitress.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="15" column="20" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="20" />
+          <folding>
+            <element signature="e#167#168#0" expanded="true" />
+            <element signature="e#192#193#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/iterator/dinermergeri/PancakeHouseMenu.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/facade/hometheater/Amplifier.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="42">
           <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/NYPizzaIngredientFactory.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/facade/hometheater/TheaterLights.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/GarageDoorDownCommand.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
-          <caret line="16" column="25" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
+          <caret line="10" column="24" lean-forward="true" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
           <folding>
-            <element signature="e#154#155#0" expanded="true" />
-            <element signature="e#188#189#0" expanded="true" />
-            <element signature="e#220#221#0" expanded="true" />
-            <element signature="e#253#254#0" expanded="true" />
-            <element signature="e#287#288#0" expanded="true" />
-            <element signature="e#321#322#0" expanded="true" />
-            <element signature="e#506#507#0" expanded="true" />
-            <element signature="e#541#542#0" expanded="true" />
-            <element signature="e#571#572#0" expanded="true" />
-            <element signature="e#601#602#0" expanded="true" />
+            <element signature="e#183#184#0" expanded="true" />
+            <element signature="e#218#219#0" expanded="true" />
+            <element signature="e#244#245#0" expanded="true" />
+            <element signature="e#266#267#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/NYPizzaStore.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/Command.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
+        <state relative-caret-position="63">
+          <caret line="3" column="16" selection-start-line="3" selection-start-column="16" selection-end-line="3" selection-end-column="16" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/PizzaTestDrive.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/CeilingFanOffCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
+        <state relative-caret-position="168">
+          <caret line="8" column="16" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding>
+            <element signature="e#181#182#0" expanded="true" />
+            <element signature="e#216#217#0" expanded="true" />
+            <element signature="e#241#242#0" expanded="true" />
+            <element signature="e#264#265#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/PizzaStore.java">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/RemoteControl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="7" column="15" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
+        <state relative-caret-position="405">
+          <caret line="27" column="41" selection-start-line="27" selection-start-column="41" selection-end-line="27" selection-end-column="41" />
+          <folding>
+            <element signature="e#597#598#0" expanded="true" />
+            <element signature="e#630#631#0" expanded="true" />
+            <element signature="e#676#677#0" expanded="true" />
+            <element signature="e#710#711#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cfg/asynemail.properties">
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/remote/RemoteLoader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="16" column="13" lean-forward="true" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+        <state relative-caret-position="756">
+          <caret line="45" column="30" lean-forward="true" selection-start-line="45" selection-start-column="30" selection-end-line="45" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/undo/CeilingFan.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/undo/RemoteControlWithUndo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="840">
+          <caret line="40" column="15" lean-forward="true" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
+          <folding>
+            <element signature="e#882#883#0" expanded="true" />
+            <element signature="e#907#908#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/command/undo/RemoteLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="40" column="29" lean-forward="true" selection-start-line="40" selection-start-column="29" selection-end-line="40" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="137" column="136" selection-start-line="137" selection-start-column="136" selection-end-line="137" selection-end-column="136" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cfg/deploy_config.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="6" column="31" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cfg/hibernate.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1155">
-          <caret line="55" column="63" selection-start-line="55" selection-start-column="63" selection-end-line="55" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cfg/jdbc_sqlserver.properties">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cfg/log4j.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-263" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cfg/rebel.xml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cfg/autotask.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="24" column="10" lean-forward="true" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/service_job.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="27" column="25" lean-forward="true" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
-          <folding>
-            <element signature="e#859#892#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/Test.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/TestTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/SWTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/service_core.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="291">
-          <caret line="186" column="4" selection-start-line="186" selection-start-column="4" selection-end-line="186" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/AmozonUpdateReplenishmentShipmentImplTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="189">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="670">
-          <caret line="122" lean-forward="true" selection-start-line="122" selection-end-line="122" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/task/AmozonUpdateReplenishmentShipmentImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="208">
-          <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/order/OrderService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="401" column="26" lean-forward="true" selection-start-line="401" selection-start-column="26" selection-end-line="401" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/common/asynemail/AsynEmailServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="385">
-          <caret line="105" column="33" lean-forward="true" selection-start-line="105" selection-start-column="33" selection-end-line="105" selection-end-column="33" />
-          <folding>
-            <element signature="e#1050#1051#0" expanded="true" />
-            <element signature="e#1091#1092#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/replenishment_order">
-      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
-        <state>
-          <filtering enabled="true" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="487">
-          <caret line="950" column="32" selection-start-line="950" selection-start-column="32" selection-end-line="950" selection-end-column="32" />
+        <state relative-caret-position="290">
+          <caret line="175" column="64" lean-forward="true" selection-start-line="175" selection-start-column="64" selection-end-line="175" selection-end-column="64" />
         </state>
       </provider>
     </entry>
@@ -2092,6 +2020,7 @@
             <option name="proportions">
               <list>
                 <option value="0.2" />
+                <option value="0.6" />
               </list>
             </option>
           </splitter-proportions>

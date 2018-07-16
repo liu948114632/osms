@@ -973,7 +973,7 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			throw new BussinessException("补货订单更新失败,订单编号："+orderPO.getCode());
+			throw new BussinessException("补货订单更新失败,订单编号："+orderPO.getCode() +"shopId:" +shopId);
         }
 
 		//创建补货订单成功后需要修改订单状态为已提交亚马逊，注意异常的处理
