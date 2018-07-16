@@ -1,0 +1,32 @@
+package com.itecheasy.core.fba;
+
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/4 08:46
+ * @Description:
+ */
+public class UpdateBlacklistVO {
+
+    private int shopId;
+    private List<String> skus;
+
+
+
+    public int getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(int shopId) {
+        this.shopId = shopId;
+    }
+
+    public List<String> getSkus() {
+        return skus;
+    }
+
+    public void setSkus(List<String> skus) {
+        this.skus = skus;
+    }
+}

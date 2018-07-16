@@ -1,0 +1,12 @@
+package com.itecheasy.common.asynemail;
+
+public abstract interface AsynEmailService
+{
+  public abstract void addEmail(Email paramEmail);
+
+  public abstract void sendEmail();
+
+  public abstract void start();
+
+  public abstract void stop();
+}

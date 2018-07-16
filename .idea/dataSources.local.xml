@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="osms_" uuid="40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d">
+      <database-info product="Microsoft SQL Server" version="12.00.2000" jdbc-version="4.2" driver-name="Microsoft JDBC Driver 6.4 for SQL Server" driver-version="6.4.0.0">
+        <extra-name-characters>$#@</extra-name-characters>
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>whw</user-name>
+      <introspection-schemas>Develop_OSMS:dbo</introspection-schemas>
+    </data-source>
+    <data-source name="osms_dev_180710" uuid="e092c393-f804-4b26-8de6-541578693656">
+      <database-info product="Microsoft SQL Server" version="12.00.4232" jdbc-version="4.2" driver-name="Microsoft JDBC Driver 6.4 for SQL Server" driver-version="6.4.0.0">
+        <extra-name-characters>$#@</extra-name-characters>
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>test1</user-name>
+      <introspection-schemas>osms_dev_180710:dbo</introspection-schemas>
+    </data-source>
+  </component>
+</project>

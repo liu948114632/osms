@@ -1,0 +1,35 @@
+package com.itecheasy.core.fba;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.core.BaseSearchForm;
+
+import com.itecheasy.core.order.AmazonStackReportSearchForm;
+import com.itecheasy.core.order.AmazonStockReport;
+
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/2 14:03
+ * @Description:
+ */
+public interface AmazonReportService {
+
+    //手动查询
+
+    /**
+     * @return
+     */
+    @Deprecated
+    AmazonStockReport getAmazonStockBySku(AmazonStackReportSearchForm form);
+
+// TODO: 2018/7/2
+    /**
+     * 分页查询
+     * public PageList<FbaInboundPlanVO> getFbaInboundPlanList(int shopId, int page, int pageSize, String sku,String productCode,int operatorId) {
+     *
+     */
+    PageList<AmazonStockReport> getAmazonStocks(AmazonStackReportSearchForm from);
+
+
+}

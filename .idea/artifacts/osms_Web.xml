@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="osms:Web">
+    <output-path>$PROJECT_DIR$/out/artifacts/osms_Web</output-path>
+    <root id="archive" name="osms_Web.war">
+      <element id="artifact" artifact-name="osms:Web exploded" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,122 @@
+package com.itecheasy.core.fba;
+
+import com.itecheasy.common.PageList;
+
+/**
+ * @author wanghw
+ * @date 2016-11-29
+ * @description fba店铺商品库存信息
+ * @version 1.2.2
+ */
+public interface ShopProductInventoryService {
+	/**
+	 * 新增fba店铺商品库存信息
+	 * 
+	 * @param inventory
+	 */
+	void addShopProductInventorys(FbaShopProductInventory[] inventorys, int shopId);
+	
+	@Deprecated
+	public int addShopProductInventory(FbaShopProductInventory inventory);
+	
+	/**
+	 * 修改FBA库存警戒值 <b>FBA警戒库存设置值、提醒FBA补货的动作，如果达到触发条件，还要自动计算fba待补货数量
+	 * 
+	 * @param fbaShopProductIds
+	 * @param value
+	 */
+	void setFbaInventorySecurityLine(int[] fbaShopProductIds, int value);
+
+	/**
+	 * 修改总库存警戒值 <b>修改总警戒库存设置值、提醒 C3补货的动作
+	 * 
+	 * @param fbaShopProductIds
+	 * @param value
+	 */
+	void setSumInventorySercurityLine(int[] fbaShopProductIds, int value);
+	
+	
+	/**
+	 * 修改FBA警戒库存标识
+	 * 30天FBA销量 > FBA警戒库存设置值
+	 * @param id
+	 */
+	void setIsUpdateFbaSecurityLine(int fbaShopProductId);
+
+	
+	/**
+	 * 修改总警戒库存标识
+	 * 45天订单销量 > 总警戒库存设置值
+	 * @param id
+	 */
+	void setIsUpdateSumSecurityLine(int fbaShopProductId) ;
+
+	/**
+	 * 修改fba待补货量、 设置是否提醒fba补货标识
+	 * FBA可用库存 < FBA警戒库存设置值，且FBA待补货数>0
+	 * @param id
+	 */
+	void setIsRemindFbaReplenishment(int fbaShopProductId);
+	
+	/**
+	 * 修改fba补货中的量，
+	 * 实时计算非已入仓状态的fba补货订单中商品的批数之和
+	 * 影响待补货数
+	 * @param fbaShopProductId
+	 */
+	void setTheFbaReplenishment(int... fbaShopProductId);
+	
+	/**
+	 * fba补货，修改fba补货中的数量
+	 * <br>影响fba待补货数量
+	 * <br><code>FBA待补货数量 = FBA警戒库存设置值 – FBA可用库存 – FBA补货中批数<code>
+	 * <br><code>FBA补货中数量=实时计算非已入仓状态的fba订单中商品的批数之和<code>
+	 * @param fbaShopProductId
+	 * @param Num 补货数
+	 */
+	void fbaReplenishment(int fbaShopProductId,int Num);
+
+	FbaShopProductInventory getFbaShopProductInventory(String sku, int shopId);
+
+	FbaShopProductInventory getFbaShopProductInventoryByOtherCode(String code, int shopId);
+
+	PageList<FbaShopProductInventoryDetail> findInventory(SearchShopProductInventory search);
+
+	/**
+	 * 同步fba库存
+	 */
+	void syncFbaInventory();
+
+	/**
+	 * 统计fba订单销量
+	 * @param shopId
+	 */
+	void statisticDaysSales4Fba();
+
+	/**
+	 * 统计订单销量（fba+非fba）
+	 * @param shopId
+	 */
+	void statisticDaysSales4All();
+	
+	/**
+	 * 自动设置总警戒库存（fba+非fba）销量*2
+	 */
+	void autoSetSumInventorySercurityLine();
+
+	FbaShopProductInventoryBo getFbaShopProductInventory(int fbaShopProductId);
+
+
+	/**
+	 * 更新海运黑名单
+	 *
+	 * @param updateBlacklistVO
+	 */
+	void updateSeaTransportationBlacklist(UpdateBlacklistVO updateBlacklistVO);
+
+
+
+
+
+
+}

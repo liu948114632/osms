@@ -1,0 +1,127 @@
+package com.itecheasy.core.po;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @author taozihao
+ * @date 2018年7月3日 下午6:41:35
+ * @description 海运备货计划
+ */
+@Entity
+@Table(name = "sea_transportation_prepare_plan")
+public class SeaTransportationPreparePlanPO {
+    private int id;
+    private Integer shopId;
+    private String planName;
+    private Integer planType;
+    private Date createTime;
+    private Date lastUpdateTime;
+    private Date shippingDate;
+    private Date arriveDate;
+    private BigDecimal stockPeriod;
+    private Integer status;
+    private String remark;
+
+    @Id
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Column(name = "shop_id", nullable = true)
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    @Column(name = "plan_name", nullable = true, length = 200)
+    public String getPlanName() {
+        return planName;
+    }
+
+    public void setPlanName(String planName) {
+        this.planName = planName;
+    }
+
+    @Column(name = "plan_type", nullable = true)
+    public Integer getPlanType() {
+        return planType;
+    }
+
+    public void setPlanType(Integer planType) {
+        this.planType = planType;
+    }
+
+    @Column(name = "create_time", nullable = true)
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    @Column(name = "last_update_time", nullable = true)
+    public Date getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(Date lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    @Column(name = "shipping_date", nullable = true)
+    public Date getShippingDate() {
+        return shippingDate;
+    }
+
+    public void setShippingDate(Date shippingDate) {
+        this.shippingDate = shippingDate;
+    }
+
+    @Column(name = "arrive_date", nullable = true)
+    public Date getArriveDate() {
+        return arriveDate;
+    }
+
+    public void setArriveDate(Date arriveDate) {
+        this.arriveDate = arriveDate;
+    }
+
+    @Column(name = "stock_period", nullable = true, precision = 2)
+    public BigDecimal getStockPeriod() {
+        return stockPeriod;
+    }
+
+    public void setStockPeriod(BigDecimal stockPeriod) {
+        this.stockPeriod = stockPeriod;
+    }
+
+    @Column(name = "status", nullable = true)
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    @Column(name = "remark", nullable = true, length = 500)
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+}

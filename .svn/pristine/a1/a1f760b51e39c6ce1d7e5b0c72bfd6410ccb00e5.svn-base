@@ -1,0 +1,14 @@
+package com.itecheasy.core.fba.dao;
+
+import com.itecheasy.common.BaseDAO;
+import com.itecheasy.core.po.FbaToAddressPO;
+
+/**
+ * 
+ * @author taozihao
+ * @date 2018-6-6
+ * @description 
+ */
+public interface FbaToAddressDao extends BaseDAO<FbaToAddressPO, Integer> {
+	
+}

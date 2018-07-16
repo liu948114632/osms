@@ -1,0 +1,106 @@
+package com.itecheasy.core.po;
+
+import javax.persistence.*;
+
+/**
+ * @author taozihao
+ * @date 2018年7月3日 下午6:41:35
+ * @description 海运备货计划商品项
+ */
+@Entity
+@Table(name = "sea_transportation_prepare_plan_item")
+public class SeaTransportationPreparePlanItemPO {
+    private int id;
+    private Integer seaTransportationPreparePlanId;
+    private Integer fbaShopProductId;
+    private Integer prepareQuantity;
+    private Integer actualQuantity;
+    private Double totalWeight;
+    
+    /**
+     * 已走过海运(0), 程序推荐海运(1), 人工加入海运(2);
+     */
+    private Integer productType;
+    
+    /**
+     * 未取消(0), 取消(1);
+     */
+    private Integer isCanceled;
+
+    @Id
+    @Column(name = "id", nullable = false)
+    @GeneratedValue
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    @Column(name = "sea_transportation_prepare_plan_id")
+    public Integer getSeaTransportationPreparePlanId() {
+		return seaTransportationPreparePlanId;
+	}
+
+	public void setSeaTransportationPreparePlanId(Integer seaTransportationPreparePlanId) {
+		this.seaTransportationPreparePlanId = seaTransportationPreparePlanId;
+	}
+
+	@Column(name = "fba_shop_product_id", nullable = true)
+    public Integer getFbaShopProductId() {
+        return fbaShopProductId;
+    }
+
+    public void setFbaShopProductId(Integer fbaShopProductId) {
+        this.fbaShopProductId = fbaShopProductId;
+    }
+
+    @Column(name = "prepareQuantity", nullable = true)
+    public Integer getPrepareQuantity() {
+        return prepareQuantity;
+    }
+
+    public void setPrepareQuantity(Integer prepareQuantity) {
+        this.prepareQuantity = prepareQuantity;
+    }
+
+    @Column(name = "actualQuantity", nullable = true)
+    public Integer getActualQuantity() {
+        return actualQuantity;
+    }
+
+    public void setActualQuantity(Integer actualQuantity) {
+        this.actualQuantity = actualQuantity;
+    }
+
+    @Column(name = "total_weight", nullable = true, precision = 2)
+    public Double getTotalWeight() {
+        return totalWeight;
+    }
+
+    public void setTotalWeight(Double totalWeight) {
+        this.totalWeight = totalWeight;
+    }
+
+    @Column(name = "product_type", nullable = true)
+    public Integer getProductType() {
+        return productType;
+    }
+
+    public void setProductType(Integer productType) {
+        this.productType = productType;
+    }
+
+    @Column(name = "is_canceled", nullable = true)
+    public Integer getIsCanceled() {
+        return isCanceled;
+    }
+
+    /**
+     * 未取消(0), 取消(1);
+     */
+    public void setIsCanceled(Integer isCanceled) {
+        this.isCanceled = isCanceled;
+    }
+
+}

@@ -1,0 +1,174 @@
+package com.itecheasy.core.fba;
+
+import java.util.List;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.core.BussinessException;
+import com.itecheasy.core.po.ReplenishmentOrderPO;
+import com.itecheasy.webservice.amazon.AmazonShipmentStatusListVO;
+import com.itecheasy.webservice.amazon.ListInboundShipmentsResultVO;
+
+
+/**
+ * 
+ * @author taozihao
+ * @date 2018-6-7
+ * @description fba补货
+ *
+ */
+public interface FbaInboundService {
+	
+	/**
+	 * 检查excel文件里面的商品项是否都有对应的   fba条码和条码名称 以及状态
+	 * 如果没有则给出错误项，每个错误sku之间采用英文逗号分开，如果都通过，则返回null
+	 * @param items
+	 * @return
+	 */
+	public String checkExcel(int shopId ,List<String> skus);
+	
+	/**
+	 * 如果导入的文件判断为全部通过后接着调用此方法，将商品的信息返回给前端
+	 * @param items
+	 * @return
+	 */
+	public List<FbaInboundPlanItemExcelResult> showExcelProductResult(int shopId ,List<InboundPlanProductItem> items);
+	
+	/**
+	 * 创建fba补货计划，放在本地，还未提交
+	 * @return
+	 */
+	public int createFbaInboundPlan(int shopId,String planName, String shipToCountryCode,String shippingMethod,List<InboundPlanProductItem> items,int isSubmitToAm,int operatorId)throws BussinessException;
+
+	/**
+	 * 查询补货计划
+	 * @param shopId
+	 * @param sku
+	 * @param productCode
+	 * @return
+	 */
+	public PageList<FbaInboundPlanVO> getFbaInboundPlanList(int shopId, int page, int pageSize, String sku,String productCode,int operatorId);
+	
+	/**
+	 * 修改fba本地补货计划，只能修改未提交的
+	 * 注意修改时间
+	 */
+	public void updateFbaInboundPlan(int planId,String planName, String shipToCountryCode,String shippingMethod,List<InboundPlanProductItem> items,int operatorId);
+	
+	/**
+	 * 取消fba补货计划，只能取消未提交的
+	 * 注意修改时间
+	 * @param planId
+	 */
+	public void cancelFbaInboundPlan(int planId,int operatorId) throws BussinessException;
+	
+	/**
+	 * 将创建好的本地fba补货计划提交给亚马逊,提交之后修改状态属性
+	 * @param planId
+	 */
+	public List<FbaPreInboundOrderVO> submitFbaInboundPlan(int planId,int shopId, int operatorId) throws BussinessException;
+	
+	/**
+	 * 提供shipmenId，然后将对应的补货计划提交上去
+	 * @param shipmenId
+	 * @return
+	 */
+	public String createFbaInboundOrder(int shopId,String shipmenId,String shipmentName,int planId,int operatorId) throws BussinessException;
+
+	public FbaInboundPlanSearchVO findFbaInboundPlanByPlanId(int planId);
+
+	public void deleteFbaInboundPlan(int planId, int operatorId);
+
+
+    /**
+     *
+     * 更新fba补货订单
+     * @param shipmentId
+     * @param shipmenIdAndNameVO
+     * @param planId
+     * @param shopId
+     * @param items
+     * @param operatorId
+     */
+	public void updateFbaInboundOrder(String shipmentId,  int shopId, List<FbaPreInboundItemVO> items, int operatorId);
+
+
+	public void updateFbaInboundOrder(ReplenishmentOrderPO replenishmentOrder, String ShipmentStatus, boolean areCasesRequired);
+
+
+	public enum FbaInboundPlanSubmitStatus {
+		未提交("0"), 已提交("1"), 已建单("2"),已删除("3");
+
+		private String val;
+
+		FbaInboundPlanSubmitStatus(String val) {
+			this.val = val;
+		}
+
+		public String getVal() {
+			return val;
+		}
+
+	}
+	
+	public enum FbaInboundOrderSubmitStatus {
+		未提交("0"), 已提交("1");
+
+		private String val;
+
+		FbaInboundOrderSubmitStatus(String val) {
+			this.val = val;
+		}
+
+		public String getVal() {
+			return val;
+		}
+
+	}
+
+	/**
+	 * 根据计划id查询对应的日志信息
+	 * @param planId
+	 * @return
+	 */
+	public List<FbaInboundPlanOperateLog> getOperateLogsByPlanId(int planId);
+
+	/**
+	 * 订单只能一个一个提交，为了方便一个计划分仓后一起提交
+	 * @param shipmenIdAndNameVO
+	 * @param shopId
+	 * @param planId
+	 * @param operatorId
+	 */
+	public void createFbaInboundOrder(List<ShipmenIdAndNameVO> shipmenIdAndNameVO, int shopId, int planId,int operatorId);
+
+	/**
+	 *
+	 * 配送入库货件的承运人。
+	 * @param shopId
+	 * @param operatorId
+	 * @return
+	 */
+	public String putTransportContent(PutTransportContentVO putTransportContentVO);
+
+
+	/**
+	 *
+	 * auto task
+	 *
+	 * @param amazonShipmentStatusListVO
+	 * @return
+	 */
+	public ListInboundShipmentsResultVO listInboundShipments(AmazonShipmentStatusListVO amazonShipmentStatusListVO,Integer shopId);
+
+	/**
+	 *auto task return next token
+	 *
+	 *
+	 * @param
+	 * @return
+	 */
+	public ListInboundShipmentsResultVO listInboundShipmentsByNextToken(String token,Integer shopId);
+
+
+
+}

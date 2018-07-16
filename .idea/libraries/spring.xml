@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="spring">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/spring/spring-web.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring/quartz-all-1.6.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring/spring-test.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring/spring-webmvc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring/spring.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/spring/spring-webmvc-struts.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

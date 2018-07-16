@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="web" name="Web">
+      <configuration>
+        <descriptors>
+          <deploymentDescriptor name="web.xml" url="file://$MODULE_DIR$/WebRoot/WEB-INF/web.xml" />
+        </descriptors>
+        <webroots>
+          <root url="file://$MODULE_DIR$/WebRoot" relative="/" />
+        </webroots>
+        <sourceRoots>
+          <root url="file://$MODULE_DIR$/communication_api" />
+          <root url="file://$MODULE_DIR$/communication_src" />
+          <root url="file://$MODULE_DIR$/core_api" />
+          <root url="file://$MODULE_DIR$/core_impl" />
+          <root url="file://$MODULE_DIR$/osms_api" />
+          <root url="file://$MODULE_DIR$/osms_impl" />
+          <root url="file://$MODULE_DIR$/web_app" />
+          <root url="file://$MODULE_DIR$/cfg" />
+        </sourceRoots>
+      </configuration>
+    </facet>
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/cfg/applicationContext.xml</file>
+          <file>file://$MODULE_DIR$/communication_src/communication_bean.xml</file>
+          <file>file://$MODULE_DIR$/communication_src/communication_cxf.xml</file>
+          <file>file://$MODULE_DIR$/web_app/dwr_core.xml</file>
+          <file>file://$MODULE_DIR$/cfg/hibernate.xml</file>
+          <file>file://$MODULE_DIR$/core_impl/service_core.xml</file>
+          <file>file://$MODULE_DIR$/core_impl/service_job.xml</file>
+          <file>file://$MODULE_DIR$/osms_impl/webservice_bean.xml</file>
+          <file>file://$MODULE_DIR$/osms_impl/webservice_cxf.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
+    <facet type="hibernate" name="Hibernate">
+      <configuration>
+        <datasource-map>
+          <unit-entry name="sessionFactory" value="40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d" />
+        </datasource-map>
+        <naming-strategy-map>
+          <unit-entry name="sessionFactory" />
+        </naming-strategy-map>
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/cfg/hibernate.xml" />
+      </configuration>
+    </facet>
+    <facet type="JRebel" name="JRebel">
+      <configuration>
+        <option name="deleteUnindexed" value="false" />
+        <option name="httpAuthEnabled" value="false" />
+        <option name="httpPassword" />
+        <option name="httpUsername" />
+        <option name="ideModuleStorage">
+          <map>
+            <entry key="com.zeroturnaround.jrebel.FormatVersion" value="7.0.0" />
+            <entry key="com.zeroturnaround.jrebel.remoting.DeleteUnindexedFiles" value="false" />
+            <entry key="com.zeroturnaround.jrebel.remoting.ModuleRemoteServerSelection" value="off" />
+            <entry key="jrebelEnabled" value="true" />
+          </map>
+        </option>
+        <option name="masterModuleName" />
+        <option name="overrideStandardXmlFolder" value="false" />
+        <option name="remotingEnabled" value="false" />
+        <option name="secure" value="true" />
+        <option name="url" />
+        <option name="xmlDir" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/communication_api" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/communication_src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core_api" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/core_impl" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/osms_api" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/osms_impl" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/web_app" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/cfg" type="java-resource" />
+    </content>
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="alibaba-discard" level="project" />
+    <orderEntry type="library" name="ebay" level="project" />
+    <orderEntry type="library" name="alibaba" level="project" />
+    <orderEntry type="library" name="hibernate" level="project" />
+    <orderEntry type="library" name="hibernate-annotations" level="project" />
+    <orderEntry type="library" name="lib1" level="project" />
+    <orderEntry type="library" name="cxf" level="project" />
+    <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="library" name="dbcp" level="project" />
+    <orderEntry type="library" name="aspectj" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+  </component>
+</module>

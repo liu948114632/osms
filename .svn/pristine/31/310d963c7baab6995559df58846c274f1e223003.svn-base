@@ -1,0 +1,102 @@
+package com.itecheasy.core.fba;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.core.fba.dao.AmazonStackReportDao;
+import com.itecheasy.core.order.AmazonStackReport;
+import com.itecheasy.core.order.AmazonStackReportSearchForm;
+import com.itecheasy.core.po.AmazonStackReportPO;
+import com.itecheasy.core.system.Shop;
+import com.itecheasy.core.system.SystemService;
+import com.itecheasy.core.user.Licence;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/2 14:05
+ * @Description:
+ */
+public class AmazonReportServiceImpl implements AmazonReportService  {
+
+    private SystemService systemService;
+    private AmazonStackReportDao amazonStackReportDao;
+
+    public void setAmazonStackReportDao(AmazonStackReportDao amazonStackReportDao) {
+        this.amazonStackReportDao = amazonStackReportDao;
+    }
+
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
+    }
+
+
+
+
+    @Override
+    public List<AmazonStackReport> getAmazonStockBySku(AmazonStackReportSearchForm form) {
+        return null;
+    }
+
+    @Override
+    public PageList<AmazonStackReport> getAmazonStocks(AmazonStackReportSearchForm form) {
+
+        //AmazonStackReportPO
+//        PageList<FbaReplenishmentPlanPO> pageList = fbaReplenishmentPlanDao.findPageListByHql(page,pageSize,buffer.toString(), o.toArray());
+
+        //根据店铺id ， sku,productCode查询出该店铺的补货计划
+        StringBuffer buffer = new StringBuffer();
+
+//        buffer.append("SELECT distinct a FROM FbaReplenishmentPlanPO a,FbaReplenishmentPlanItemPO b,FbaShopProductPO c WHERE a.id=b.fbaReplenishmentPlanId AND b.fbaShopProductId = c.id ");
+
+        buffer.append("SELECT * FROM AmazonStackReportPO a,shopPO b WHERE a.shopId=b.id ");
+        List<Object> o = new ArrayList<Object>();
+        if(form.getShopId()!=-1){
+            buffer.append("AND a.shopId = ? ");
+            o.add(form.getShopId());
+        }else{
+            buffer.append("AND a.shopId in ( ");
+            List<Shop> shops = systemService.getShopsByUserId(form.getOperatorId());
+            for (int i = 0; i < shops.size(); i++) {
+                if(i==shops.size()-1){
+                    buffer.append(shops.get(i).getId()+" )");
+                }else{
+                    buffer.append(shops.get(i).getId()+",");
+                }
+            }
+        }
+
+        if(form.getSku()!=null&&!form.getSku().trim().equals("")){
+            String[] skus = form.getSku().split(";");
+            if(skus.length==1){
+                buffer.append("AND a.sku = ? ");
+                o.add(form.getSku().trim());
+            }else{
+                buffer.append("AND a.sku in ( ");
+                for (int i = 0; i < skus.length; i++) {
+                    if(i==skus.length-1){
+                        buffer.append("'"+skus[i].trim()+"' )");
+                    }else{
+                        buffer.append("'"+skus[i].trim()+"',");
+                    }
+                }
+            }
+        }
+
+        buffer.append(" ORDER BY a.syncLast DESC");
+
+        PageList<AmazonStackReportPO> pageList = amazonStackReportDao.findPageListByHql(form.getCurrentPage(), form.getPageSize(), buffer.toString(), o.toArray());
+//        PageList<FbaReplenishmentPlanPO> pageList = fbaReplenishmentPlanDao.findPageListByHql(page,pageSize,buffer.toString(), o.toArray());
+
+//        List<AmazonStackReport> copyList = BeanUtils.copyList(pageList.getData(), AmazonStackReport.class);
+//        PageList<AmazonStackReport> pageList2 = new PageList<AmazonStackReport>();
+//        pageList2.setData(copyList);
+//        pageList2.setPage(pageList.getPage());
+
+        return BeanUtils.copyPageList(pageList, AmazonStackReport.class);
+    }
+
+
+
+}

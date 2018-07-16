@@ -1,0 +1,108 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:cxf="http://cxf.apache.org/core"
+	xsi:schemaLocation="http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd 
+	http://cxf.apache.org/core http://cxf.apache.org/schemas/core.xsd
+	http://www.springframework.org/schema/beans  
+	http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-autowire="byName" default-lazy-init="true">
+	
+	<jaxws:endpoint id="profileWS" implementor="#profileWebService"
+		address="/ProfileWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="producWS" implementor="#productWebService"
+		address="/productWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="systemWS" implementor="#systemWebService"
+		address="/systemWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="orderWS" implementor="#orderWebService"
+		address="/orderWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	
+	<jaxws:endpoint id="fbaShopProductWebServiceWS" implementor="#fbaShopProductWebService"
+		address="/fbaShopProductWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	
+	<jaxws:endpoint id="repositoryWebServiceWS" implementor="#repositoryWebService"
+		address="/repositoryWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	
+	<jaxws:endpoint id="replenishmentOrderWebServiceWS" implementor="#replenishmentOrderWebService"
+		address="/replenishmentOrderWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="replenishmentTaskWebServiceWS" implementor="#replenishmentTaskWebService"
+		address="/replenishmentTaskWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="orderCorrelationWebServiceWS" implementor="#orderCorrelationWebService"
+		address="/orderCorrelationWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="fbaFromAddressWebServiceWS" implementor="#fbaFromAddressWebService"
+		address="/fbaFromAddressWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="fbaInboundWebServiceWS" implementor="#fbaInboundWebService"
+		address="/fbaInboundWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+
+	<jaxws:endpoint id="amazonReportWebServiceWS" implementor="#amazonReportWebService"
+					address="/amazonReportWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+</beans>

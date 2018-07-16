@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="ebay">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/ebay/serializer.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/ebaysdkcore-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/resolver.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/ebaysdkcore.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/helper-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/FastInfoset.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/streambuffer.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/ebaycalls.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/ebaycalls-src.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/xalan.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ebay/helper.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

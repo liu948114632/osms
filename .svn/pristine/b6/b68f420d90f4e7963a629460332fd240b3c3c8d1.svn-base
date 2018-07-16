@@ -1,0 +1,271 @@
+package com.itecheasy.core.po;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/2 17:05
+ * @Description: 和amazon_stock_report一模一样，只是这张表是用来备份历史数据的
+ *                  所以时间要唯一
+ */
+@Entity
+@Table(name = "amazon_stock_report_history")
+public class AmazonStockReportHistoryPO {
+    private int id;
+    private Integer shopId;
+    private Date syncFirst;
+    private Date syncLast;
+    private String sku;
+
+    private Integer afnFulfillableQuantity; //在库可用库存
+
+    private Integer afnReservedQuantity;    //订单锁定&入库未完成
+
+    private Integer afnInboundWorkingQuantity;  //已建单
+
+    private Integer afnInboundShippedQuantity;  //已发货
+
+    private Integer afnInboundReceivingQuantity;    //签收中
+
+    private Integer afnUnsellableQuantity;  //已损坏
+
+    /**
+     * 可用库存及在途总量=在库可用库存+订单锁定&入库未完成+已建单+已发货+签收中
+     */
+    private Integer afnTotalQuantity;
+
+    private Integer afnWarehouseQuantity;   //???
+
+
+    /**
+     * 海运在途  求和（查FBA补货订单，FBA货运方式是海运，平台订单状态为非RECEIVING，CLOSED，FBA订单状态非取消）
+     */
+//    private Integer fbaSeaTransit;
+
+
+    //other statistic num   暂时不会使用,用于给以后分析来使用
+    private String fnsku;
+    private String amazonStockReportAsin;
+    private String productName;
+    private String condition;       //NEW UNKNOWN
+    private BigDecimal yourPrice;
+    private Integer mfnListingExists ;  //0 NO    1 YES
+    private Integer mfnFulfillableQuantity;
+    private Integer afnListingExists; //0 NO    1 YES
+    private BigDecimal perUnitVolume;
+
+    @Column(name = "fnsku")
+    public String getFnsku() {
+        return fnsku;
+    }
+
+    public void setFnsku(String fnsku) {
+        this.fnsku = fnsku;
+    }
+    @Column(name = "amazon_stock_report_asin")
+    public String getAmazonStockReportAsin() {
+        return amazonStockReportAsin;
+    }
+
+    public void setAmazonStockReportAsin(String amazonStockReportAsin) {
+        this.amazonStockReportAsin = amazonStockReportAsin;
+    }
+    @Column(name="product_name")
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    @Column(name ="condition")
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
+    @Column(name = "your_price")
+    public BigDecimal getYourPrice() {
+        return yourPrice;
+    }
+
+    public void setYourPrice(BigDecimal yourPrice) {
+        this.yourPrice = yourPrice;
+    }
+
+    @Column(name = "mfn_listing_exists")
+    public Integer getMfnListingExists() {
+        return mfnListingExists;
+    }
+
+    public void setMfnListingExists(Integer mfnListingExists) {
+        this.mfnListingExists = mfnListingExists;
+    }
+
+    @Column(name = "mfn_fulfillable_quantity")
+    public Integer getMfnFulfillableQuantity() {
+        return mfnFulfillableQuantity;
+    }
+
+    public void setMfnFulfillableQuantity(Integer mfnFulfillableQuantity) {
+        this.mfnFulfillableQuantity = mfnFulfillableQuantity;
+    }
+    @Column(name = "afn_listing_exists")
+    public Integer getAfnListingExists() {
+        return afnListingExists;
+    }
+
+    public void setAfnListingExists(Integer afnListingExists) {
+        this.afnListingExists = afnListingExists;
+    }
+    @Column(name = "per_unit_volume")
+    public BigDecimal getPerUnitVolume() {
+        return perUnitVolume;
+    }
+
+    public void setPerUnitVolume(BigDecimal perUnitVolume) {
+        this.perUnitVolume = perUnitVolume;
+    }
+
+
+
+    @Basic
+    @Column(name = "sync_first", nullable = true)
+    public Date getSyncFirst() {
+        return syncFirst;
+    }
+
+    public void setSyncFirst(Date syncFirst) {
+        this.syncFirst = syncFirst;
+    }
+
+    @Basic
+    @Column(name = "sync_last", nullable = true)
+    public Date getSyncLast() {
+        return syncLast;
+    }
+
+    public void setSyncLast(Date syncLast) {
+        this.syncLast = syncLast;
+    }
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Basic
+    @Column(name = "shopId", nullable = true)
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+
+    @Basic
+    @Column(name = "sku", nullable = true, length = 100)
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    @Basic
+    @Column(name = "afn_fulfillable_quantity", nullable = true)
+    public Integer getAfnFulfillableQuantity() {
+        return afnFulfillableQuantity;
+    }
+
+    public void setAfnFulfillableQuantity(Integer afnFulfillableQuantity) {
+        this.afnFulfillableQuantity = afnFulfillableQuantity;
+    }
+
+    @Basic
+    @Column(name = "afn_reserved_quantity", nullable = true)
+    public Integer getAfnReservedQuantity() {
+        return afnReservedQuantity;
+    }
+
+    public void setAfnReservedQuantity(Integer afnReservedQuantity) {
+        this.afnReservedQuantity = afnReservedQuantity;
+    }
+
+    @Basic
+    @Column(name = "afn_unsellable_quantity", nullable = true)
+    public Integer getAfnUnsellableQuantity() {
+        return afnUnsellableQuantity;
+    }
+
+    public void setAfnUnsellableQuantity(Integer afnUnsellableQuantity) {
+        this.afnUnsellableQuantity = afnUnsellableQuantity;
+    }
+
+    @Basic
+    @Column(name = "afn_inbound_working_quantity", nullable = true)
+    public Integer getAfnInboundWorkingQuantity() {
+        return afnInboundWorkingQuantity;
+    }
+
+    public void setAfnInboundWorkingQuantity(Integer afnInboundWorkingQuantity) {
+        this.afnInboundWorkingQuantity = afnInboundWorkingQuantity;
+    }
+
+    @Basic
+    @Column(name = "afn_inbound_shipped_quantity", nullable = true)
+    public Integer getAfnInboundShippedQuantity() {
+        return afnInboundShippedQuantity;
+    }
+
+    public void setAfnInboundShippedQuantity(Integer afnInboundShippedQuantity) {
+        this.afnInboundShippedQuantity = afnInboundShippedQuantity;
+    }
+
+    @Basic
+    @Column(name = "afn_inbound_receiving_quantity", nullable = true)
+    public Integer getAfnInboundReceivingQuantity() {
+        return afnInboundReceivingQuantity;
+    }
+
+    public void setAfnInboundReceivingQuantity(Integer afnInboundReceivingQuantity) {
+        this.afnInboundReceivingQuantity = afnInboundReceivingQuantity;
+    }
+
+    @Basic
+    @Column(name = "afn_total_quantity", nullable = true)
+    public Integer getAfnTotalQuantity() {
+        return afnTotalQuantity;
+    }
+
+    public void setAfnTotalQuantity(Integer afnTotalQuantity) {
+        this.afnTotalQuantity = afnTotalQuantity;
+    }
+
+    @Basic
+    @Column(name = "afn_warehouse_quantity", nullable = true)
+    public Integer getAfnWarehouseQuantity() {
+        return afnWarehouseQuantity;
+    }
+
+    public void setAfnWarehouseQuantity(Integer afnWarehouseQuantity) {
+        this.afnWarehouseQuantity = afnWarehouseQuantity;
+    }
+
+
+}

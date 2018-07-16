@@ -1,0 +1,148 @@
+package com.itecheasy.core.fba;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.common.util.DateUtils;
+import com.itecheasy.core.fba.dao.AmazonStockReportDao;
+import com.itecheasy.core.order.AmazonStockReportSearchForm;
+import com.itecheasy.core.order.AmazonStockReport;
+import com.itecheasy.core.po.AmazonStockReportPO;
+import com.itecheasy.core.product.ProductDevelop;
+import com.itecheasy.core.system.Shop;
+import com.itecheasy.core.system.SystemService;
+import com.itecheasy.core.user.Licence;
+import com.itecheasy.webservice.amazon.AmazonStockReportVO;
+import com.itecheasy.webservice.amazon.RequestReportVO;
+import com.itecheasy.webservice.client.AmazonClient;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/2 14:05
+ * @Description:
+ */
+public class AmazonReportServiceImpl implements AmazonReportService  {
+
+    private SystemService systemService;
+    private AmazonStockReportDao amazonStockReportDao;
+
+    public void setAmazonStockReportDao(AmazonStockReportDao amazonStockReportDao) {
+        this.amazonStockReportDao = amazonStockReportDao;
+    }
+
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
+    }
+
+    @Override
+    public AmazonStockReport getAmazonStockBySku(AmazonStockReportSearchForm form) {
+        return null;
+    }
+
+    @Override
+    public PageList<AmazonStockReport> getAmazonStocks(AmazonStockReportSearchForm form) {
+
+        //根据店铺id ， sku,productCode查询出该店铺的补货计划
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("SELECT distinct a FROM AmazonStockReportPO a,ShopPo b WHERE a.shopId=b.id ");
+        List<Object> o = new ArrayList<Object>();
+        if(form.getShopId()!=-1){
+            buffer.append("AND a.shopId = ? ");
+            o.add(form.getShopId());
+        }else{
+            buffer.append("AND a.shopId in ( ");
+            List<Shop> shops = systemService.getShopsByUserId(form.getOperatorId());
+            for (int i = 0; i < shops.size(); i++) {
+                if(i==shops.size()-1){
+                    buffer.append(shops.get(i).getId()+" )");
+                }else{
+                    buffer.append(shops.get(i).getId()+",");
+                }
+            }
+        }
+
+        if(form.getSku()!=null&&!form.getSku().trim().equals("")){
+            String[] skus = form.getSku().split(";");
+            if(skus.length==1){
+                buffer.append("AND a.sku = ? ");
+                o.add(form.getSku().trim());
+            }else{
+                buffer.append("AND a.sku in ( ");
+                for (int i = 0; i < skus.length; i++) {
+                    if(i==skus.length-1){
+                        buffer.append("'"+skus[i].trim()+"' )");
+                    }else{
+                        buffer.append("'"+skus[i].trim()+"',");
+                    }
+                }
+            }
+        }
+// TODO: 2018/7/4 分页查询库存管理
+        buffer.append(" ORDER BY a.syncLast DESC");
+
+        PageList<AmazonStockReportPO> pageList = amazonStockReportDao.findPageListByHql(form.getCurrentPage(), form.getPageSize(), buffer.toString(), o.toArray());
+
+//        PageList<AmazonStockReport> resultPage = new PageList<AmazonStockReport>();
+//        List<AmazonStockReport> copyList = new ArrayList<AmazonStockReport>();
+//        List<AmazonStockReportPO> data = pageList.getData();
+//        for (AmazonStockReportPO datum : data) {
+//            AmazonStockReport vo = new AmazonStockReport();
+//            vo.setShopId(datum.getShopId());
+//            vo.setSku(datum.getSku());
+//            vo.setSyncFirst(datum.getSyncFirst());
+//            vo.setSyncLast(datum.getSyncLast());
+//
+//            //other value
+//            copyList.add(vo);
+//        }
+
+//        resultPage.setData(copyList);
+//        resultPage.setPage(pageList.getPage());
+
+        PageList<AmazonStockReport> amazonStockReportPageList = BeanUtils.copyPageList(pageList, AmazonStockReport.class);
+
+        return amazonStockReportPageList;
+    }
+
+
+
+
+    @Override
+    public void getAmazonStockReportFromAmazon(List<Shop> shopList) {
+
+        for (Shop enableShop : shopList) {
+            RequestReportVO requestReportVO = new RequestReportVO();
+            requestReportVO.setReportType("_GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA_");
+
+            List<AmazonStockReportVO> amazonStockReport = AmazonClient.getAmazonStockReport(enableShop.getId(), requestReportVO);//调用amazon
+
+            List<AmazonStockReportPO> daoStockReportList = amazonStockReportDao.
+                    findListByHql("FROM AmazonStockReportPO WHERE shopId=? AND sku=? ", new Object[]{enableShop.getId()});
+
+            //返回的多个报告对象里，如果是旧的报告，则不跟新创建时间
+//            List<AmazonStockReportVO> localExist = new ArrayList<AmazonStockReportVO>();
+//            List<AmazonStockReportVO> notLocalExist = new ArrayList<AmazonStockReportVO>();
+
+            if (amazonStockReport!=null) {
+                for (AmazonStockReportVO amazonStockReportVO : amazonStockReport) { //new
+                    for (AmazonStockReportPO daoStockReport : daoStockReportList) {     //old
+                        if(amazonStockReportVO.getShopId().equals(daoStockReport.getShopId()) &&
+                                amazonStockReportVO.getSku().equalsIgnoreCase(daoStockReport.getSku())){
+                            amazonStockReportVO.setSyncFirst(DateUtils.getXMLGregorianCalendar(daoStockReport.getSyncFirst()));
+                            amazonStockReportVO.setShopId(enableShop.getId());
+                        }
+                    }
+                }
+                List<AmazonStockReportPO> _amazonStockReportPOS = BeanUtils.copyList(amazonStockReport, AmazonStockReportPO.class);
+                amazonStockReportDao.mergeObject(_amazonStockReportPOS);
+            }
+
+
+        }
+    }
+
+
+
+}

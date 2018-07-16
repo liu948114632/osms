@@ -1,0 +1,441 @@
+package com.itecheasy.webservice.client;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
+import com.itecheasy.common.util.DeployProperties;
+import com.itecheasy.webservice.amazon.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.apache.log4j.Logger;
+
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.common.util.DateUtils;
+import com.itecheasy.core.order.OrderDetail;
+import com.itecheasy.core.system.AmazonShippingMethod;
+import com.itecheasy.core.system.ShippingMethod;
+import com.itecheasy.core.util.APIUtils;
+import com.itecheasy.core.util.AmazonInfo;
+import com.itecheasy.core.util.StaticUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+
+/**
+ * @author wanghw
+ * @date 2015-4-7
+ * @description amazon 
+ * @version
+ */
+public class AmazonClient {
+	private static final String AM_SHIPPING_METHOD_OTHER = "Other";
+	private final static Logger logger = Logger.getLogger(AmazonClient.class);
+
+	public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+	private final static int MOCK = 0;
+	private final static int REAL_INVOKE = 1;
+	private static int IS_REAL_INVOKE =-1; //修改这个来用于判断是否真实调用亚马逊
+
+	public static void initOtherParam(){
+		IS_REAL_INVOKE = Integer.parseInt(DeployProperties.getInstance().getProperty("amazon.stock.report.invoke"));
+
+	}
+
+	public static AmazonWebService init(String ws)throws Exception{
+		URL url = null;
+		AmazonWebService amazon = null;
+		try {
+			URL baseUrl;
+			baseUrl = com.itecheasy.webservice.amazon.AmazonWebServiceImplService.class.getResource(".");
+			url = new URL(baseUrl, ws);
+			logger.info("请求地址："+ws);
+			AmazonWebServiceImplService service = new AmazonWebServiceImplService(url, 
+					new QName("http://amazon.core.itecheasy.com/", "AmazonWebServiceImplService"));
+			amazon = service.getAmazonWebServiceImplPort();
+			
+			Client client = ClientProxy.getClient(amazon);
+			HTTPConduit http = (HTTPConduit) client.getConduit();
+			HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+			httpClientPolicy.setConnectionTimeout(1000 * 60 * 10);
+			httpClientPolicy.setAllowChunking(false);
+			httpClientPolicy.setReceiveTimeout(1000 * 60 * 10);
+			http.setClient(httpClientPolicy);
+			return amazon;
+		} catch (Exception e) {
+			StaticUtils.addEmail("OSMS系统:Amazon中间服务调用异常", e.getMessage()+"\r\n"+ws);
+			logger.error("Failed to create URL for the wsdl Location: '" + ws + "', retrying as a local file");
+			throw new Exception(e.getMessage());
+		}
+	}
+	
+	public static String getResultBySessionId(int shopId, String sessionId) {
+		try {
+			AmazonWebService amazon=init(StaticUtils.getWebServiceURL(shopId));
+			return amazon.getResultBySessionId(sessionId,configInfo(shopId));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static String submitFeed(int shopId, byte[] file, String ext) {
+		try {
+			AmazonWebService amazon=init(StaticUtils.getWebServiceURL(shopId));
+			return amazon.submitFeed(file, ext,configInfo(shopId));
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+		}
+		return null;
+	}
+
+	public static ListOrdersResultAmazon listOrders(int shopId,Date lastUpdatedAfter,Date lastUpdatedBefore)throws Exception{
+		try {
+			AmazonWebService amazon=init(StaticUtils.getWebServiceURL(shopId));
+			return amazon.getOrders(null, null, DateUtils.getXMLGregorianCalendar(lastUpdatedAfter), 
+					DateUtils.getXMLGregorianCalendar(lastUpdatedBefore), null, null, null,configInfo(shopId));
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public static ListOrderItemsResult getOrderItems(int shopId,String amazonOrderId){
+		try {
+			AmazonWebService amazon=init(StaticUtils.getWebServiceURL(shopId));
+			return amazon.getOrderItems(amazonOrderId,configInfo(shopId));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static List<OrderAmazon> getOrder(int shopId,List<String> amazonOrderIds)throws Exception{
+		AmazonWebService amazon=init(StaticUtils.getWebServiceURL(shopId));
+		return amazon.getOrder(amazonOrderIds,configInfo(shopId));
+	}
+	
+	/**
+	 * 以账号为单位
+	 * @param shopId
+	 * @return
+	 */
+	public static AmazonConfigInfo configInfo(int shopId){
+		AmazonInfo info = StaticUtils.getAmazonInfo(shopId);
+		if (info!=null) {
+			return BeanUtils.copyProperties(info, AmazonConfigInfo.class);
+		}
+		return null;
+	}
+	
+	/**
+	 * 已店铺为单位
+	 * @param shopId
+	 * @return
+	 */
+	public static AmazonConfigInfo configInfoByShop(int shopId){
+		AmazonInfo info = StaticUtils.getAmazonInfoByShop(shopId);
+		if (info!=null) {
+			return BeanUtils.copyProperties(info, AmazonConfigInfo.class);
+		}
+		return null;
+	}
+	
+	
+	public static String updateTraceCode(int shopId,List<OrderDetail> details,int timeDiff){
+		List<AmazonUploadTraceTemplate> templates=new ArrayList<AmazonUploadTraceTemplate>();
+		try {
+			AmazonWebService amazon=init(StaticUtils.getWebServiceURL(shopId));
+			for (int i = 0; i < details.size(); i++) {
+				OrderDetail detail=details.get(i);
+				if (detail.getDeliveryDate()==null) {
+					StaticUtils.addEmail("无法上传跟踪单号到amazon", MessageFormat.format("订单{0}没有发货时间，无法上传跟踪单号到amazon", detail.getCode()));
+					logger.info(MessageFormat.format("订单{0}没有发货时间，无法上传跟踪单号到amazon", detail.getCode()));
+					return "";
+				}
+				AmazonUploadTraceTemplate template=new AmazonUploadTraceTemplate();
+				
+				template.setOrderId(detail.getShopOrderCode());
+				AmazonShippingMethod method= StaticUtils.convert2AmazonShipping(detail.getShippingMethod());
+				if (method!=null) {
+					template.setCarrierCode(method.getCarrierCode());
+					if (AM_SHIPPING_METHOD_OTHER.equalsIgnoreCase(method.getCarrierCode())) {
+						template.setCarrierName(method.getCarrierName());
+					}
+				}else{
+					ShippingMethod smethod=StaticUtils.getShippingMethod(detail.getShippingMethod());
+					template.setCarrierCode(AM_SHIPPING_METHOD_OTHER);
+					template.setCarrierName(smethod.getName());
+				}
+//				Date shipDate=org.apache.commons.lang.time.DateUtils.addHours(detail.getDeliveryDate(), timeDiff);
+//				/**
+//				 * 2016-12-15
+//				 * 防止发货时间早于 下单时间
+//				 * (下单时间+1)
+//				 * 
+//				 * ShopOrderDate amazon时间
+//				 */
+//				shipDate=detail.getShopOrderDate().after(shipDate)
+//						?org.apache.commons.lang.time.DateUtils.addHours(detail.getShopOrderDate(),1):shipDate;
+//				
+//				template.setShipDate(DateUtils.convertDate(
+//						shipDate,
+//						"yyyy-MM-dd"));
+				
+				template.setShipDate(DateUtils.convertDate2UTC(detail.getDeliveryDate()));//utc
+				
+				if (StringUtils.isNotEmpty(detail.getTrackingCode())) {
+					template.setTrackingNumber(detail.getTrackingCode());
+				}
+				template.setOrderItemId("");
+				template.setQuantity("");
+				template.setShipMethod("");
+				templates.add(template);
+				logger.info(MessageFormat.format("订单{0}开始发货", detail.getCode()));
+			}
+			return amazon.uploadTraceCode(templates,configInfo(shopId));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+//		return "ssss";
+		return null;
+	}
+	
+	/**
+	 * 查看fba库存
+	 * @param skus
+	 * @param startDate
+	 * @param shopId
+	 * @return
+	 */
+	public static List<FbaInventory> listInventorys(List<String> skus, Date startDate,
+			int shopId){
+		try {
+			AmazonWebService amazon=init(StaticUtils.getWebServiceURL(shopId));
+			AmazonConfigInfo amazonConfigInfo=configInfoByShop(shopId);
+			ListInventorysResult  result=amazon.listInventorys(skus, DateUtils.getXMLGregorianCalendar(startDate), false, amazonConfigInfo);
+			if(result!=null){
+				List<FbaInventory> ls=result.getFbaInventorys();
+				String nextToken=result.getNextToken();
+				while (StringUtils.isNotEmpty(nextToken)) {
+					ListInventorysResult  _next_result=amazon.listInventorysByNextToken(nextToken, amazonConfigInfo);
+					if(result!=null){
+						nextToken=_next_result.getNextToken();
+						ls.addAll(_next_result.getFbaInventorys());
+					}
+					break;
+				}
+				return ls;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static void main(String[] args) {
+		try {
+			AmazonWebService amazon=init("http://61.183.230.168:7968/osms_am/webService/osms_am.amazon?WSDL");
+//			AmazonWebService amazon=init("http://192.168.118.3:8081/osms_am/webService/osms_am.amazon?WSDL");
+//			AmazonWebService amazon=init("http://61.183.230.164:7960/osms_am/webService/osms_am.amazon?WSDL");
+//			init("http://23.228.223.103:8080/osms_am/webService/osms_am.amazon?WSDL");
+//			String result=amazon.getResultBySessionId("66515017448",APIUtils.getFr_2());
+//			System.out.println(result);
+			
+			List<String> amazonOrderIds=new ArrayList<String>();
+			amazonOrderIds.add("113-4820184-0209852");
+			List<OrderAmazon> o=amazon.getOrder(amazonOrderIds, APIUtils.getUS());
+			System.out.println(o);
+			
+//			Date d=DateUtils.convertDate("2017-12-03 00:00:00", "yyyy-MM-dd HH:mm:ss");
+//			ListOrdersResultAmazon l=amazon.getOrders(null, null, DateUtils.getXMLGregorianCalendar(d), 
+//					DateUtils.getXMLGregorianCalendar(DateUtils.convertDate("2017-12-04 00:00:00", "yyyy-MM-dd HH:mm:ss")), null, null, null,
+//					APIUtils.getFr_2());
+//			
+//			StringBuilder sb=new StringBuilder();
+//			if(l!=null){
+//				for (OrderAmazon o : l.getOrders()) {
+//					String r=o.getMarketplaceId()+"\t"+o.getAmazonOrderId()+"\t"+MessageFormat.format("addOrderCommunicationLog-->> order:{0},status:{1},type:{2}",
+//							o.getAmazonOrderId(),o.getOrderStatus(),o.getFulfillmentChannel())+"\t"+(o.getFulfillmentChannel().equals("MFN")?0:1);
+//					System.out.println(r);
+//					sb.append(r+"\r\n");
+//				}
+//				
+//				FileUtils.writeStringToFile(new File("c:\\uk.txt"), sb.toString());
+//			}
+//			System.out.println(l.getLastUpdatedBefore().toGregorianCalendar().getTime());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * 调用亚马逊接口创建补货计划
+	 * 
+	 * @param shopId
+	 * @param itemList
+	 * @param shipFromAddress
+	 * @param shipToCountryCode
+	 * @return
+	 */
+	public static List<InboundShipmentVO> createInboundShipmentPlan(int shopId, List<InboundItemVO> itemList,
+			AddressVO shipFromAddress, String shipToCountryCode) {
+		try {
+			
+			AmazonWebService amazon = init(StaticUtils.getWebServiceURL(shopId));
+			List<InboundShipmentVO> list = amazon.createInboundShipmentPlan(configInfoByShop(shopId), itemList, shipFromAddress, shipToCountryCode);
+
+			// 现在模拟环境，先使用指定的路径
+			//AmazonInboundWebService amazon = init("http://192.168.117.23:8081/osms_am/webService/osms_am.amazon?wsdl");
+			//这里应该是以账号为单位还是以店铺为单位
+			//List<InboundShipmentVO> list = amazon.createInboundShipmentPlan(configInfoByShop(shopId), itemList,
+			//		shipFromAddress, shipToCountryCode);
+			return list;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 调用亚马逊接口创建补货订单
+	 * @param shopId
+	 * @param inboundShipmentVO
+	 * @return
+	 */
+	public static String createInboundShipment(int shopId, InboundShipmentVO inboundShipmentVO) {
+		try {
+			
+			AmazonWebService amazon = init(StaticUtils.getWebServiceURL(shopId));
+			
+			String shipmentId = amazon.createInboundShipment(configInfoByShop(shopId), inboundShipmentVO);
+
+			// 现在模拟环境，先使用指定的路径
+			//AmazonInboundWebService amazon = init("http://192.168.117.23:8081/osms_am/webService/osms_am.amazon?wsdl");
+			//这里应该是以账号为单位还是以店铺为单位   configInfoByShop(shopId)
+			//String shipmentId = amazon.createInboundShipment(configInfoByShop(shopId), inboundShipmentVO);
+			return shipmentId;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	/**
+	 * 调用亚马逊接口更新
+	 *
+	 * @param shopId
+	 * @param inboundShipmentVO
+	 * @return
+	 */
+	public static String updateInboundShipment(int shopId, InboundShipmentVO inboundShipmentVO){
+		try {
+			AmazonWebService amazon = init(StaticUtils.getWebServiceURL(shopId));
+//			AmazonWebService amazon = init("http://192.168.117.11:8081/osms_am/webService/osms_am.amazon?wsdl"); //现在模拟环境，先使用指定的路径
+			//调用更新
+			String shipmentId = amazon.updateInboundShipment(configInfoByShop(shopId), inboundShipmentVO);
+			return shipmentId;
+		} catch (Exception e) {
+//			logger.error(OBJECT_MAPPER.writeValueAsString(inboundShipmentVO));
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	/**
+	 *
+	 * @param shopId
+	 * @param transportContentVO
+	 * @return
+	 */
+	public static String putTransportContent(int shopId,TransportContentVO transportContentVO) {
+		try {
+//			AmazonWebService amazon =
+//					init(StaticUtils.getWebServiceURL(shopId));
+
+            // 现在模拟环境，先使用指定的路径
+            AmazonWebService amazon = init("http://192.168.117.11:8081/osms_am/webService/osms_am.amazon?wsdl");
+
+			//调用PutTransportContent
+			String transportStatus = amazon.putTransportContent(configInfoByShop(shopId),transportContentVO);
+
+			return transportStatus;
+		} catch (Exception e) {
+			//add log
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static ListInboundShipmentsResultVO listInboundShipments(int shopId,AmazonShipmentStatusListVO amazonShipmentStatusListVO) {
+		try {
+			AmazonWebService amazon = init(StaticUtils.getWebServiceURL(shopId));
+//            AmazonWebService amazon = init("http://192.168.117.11:8081/osms_am/webService/osms_am.amazon?wsdl");	// 现在模拟环境，先使用指定的路径
+
+			ListInboundShipmentsResultVO listInboundShipmentsResultVO = amazon.listInboundShipments(configInfoByShop(shopId), amazonShipmentStatusListVO);
+			return listInboundShipmentsResultVO;
+		} catch (Exception e) {
+			//add log
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static ListInboundShipmentsResultVO listInboundShipmentsByNextToken(int shopId,AmazonShipmentStatusListVO amazonShipmentStatusListVO) {
+		try {
+//			AmazonWebService amazon = init(StaticUtils.getWebServiceURL(shopId));
+            AmazonWebService amazon = init("http://192.168.117.11:8081/osms_am/webService/osms_am.amazon?wsdl");	// 现在模拟环境，先使用指定的路径
+
+			return amazon.listInboundShipmentsByNextToken(configInfoByShop(shopId), amazonShipmentStatusListVO);
+		} catch (Exception e) {
+			//add log
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/**
+	 * 自动任务，调用中间服务osms_am
+	 * 获取每一个shop的所有报告
+	 * @param shopId
+	 * @param requestReportVO
+	 * @return
+	 */
+	public static List<AmazonStockReportVO> getAmazonStockReport(int shopId,RequestReportVO requestReportVO) {
+		AmazonConfigInfo amazonConfigInfo = configInfoByShop(shopId);
+		try {
+			initOtherParam();
+			logger.info("开始同步amazon下载 shopId："+ shopId + "   SellerID" + (amazonConfigInfo != null ? amazonConfigInfo.getSellerID() : null) + "的报告");
+			AmazonWebService amazon = null;
+			if (IS_REAL_INVOKE== MOCK) {
+				logger.error("warning please caution！！！模拟请求发送amazon");
+				 amazon = init("http://192.168.117.11:8081/osms_am/webService/osms_am.amazon?wsdl");	// 现在模拟环境，先使用指定的路径
+			} else if(IS_REAL_INVOKE == REAL_INVOKE) {
+				logger.error("warning please caution！！！真实的请求调用amazon");
+				 amazon = init(StaticUtils.getWebServiceURL(shopId));
+			}
+
+			List<AmazonStockReportVO> reportSingleStore = amazon != null ? amazon.getReport(requestReportVO, amazonConfigInfo) : null;
+			logger.info("完成同步amazon下载 shopId："+ shopId +"的报告");
+			return reportSingleStore;
+		} catch (Exception e) {
+			logger.info("同步亚马逊stock report异常shopId："+shopId + "   SellerID" + (amazonConfigInfo != null ? amazonConfigInfo.getSellerID() : null));
+
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+}

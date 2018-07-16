@@ -1,0 +1,285 @@
+package com.itecheasy.core.order;
+
+import java.util.Date;
+import java.util.List;
+
+import com.itecheasy.core.BussinessException;
+import com.itecheasy.core.order.OrderService.OrderProductStatus;
+import com.itecheasy.core.order.OrderService.OrderStatus;
+import com.itecheasy.core.po.OrderPO;
+import com.itecheasy.core.product.AMShopProduct;
+import com.itecheasy.core.product.CMSProduct;
+import com.itecheasy.core.system.ShopInfo;
+import com.itecheasy.webservice.sw.ArrivalStatus;
+
+/** 
+ * @author wanghw
+ * @date 2016-7-26 
+ * @description TODO
+ * @version 1.2.0
+ */
+public interface IBaseOrder {
+	/**
+	 * 确认订单失败
+	 */
+	static final String EX_CONFIRM_ORDER="确认订单失败";
+	static final int MAIL_POST = 23;
+	static final int DGM = 126;
+	static final int NL_MAILPOST = 42;
+	static final int SL_IT = 139;
+	static final int SL_UK = 36;
+	static final int SL_ES = 140;
+	static final int SL_CA = 54;
+	static final int USPS = 38;
+	static final int EUB = 44;
+
+
+	static final int SLDE_DESPECIALLINE =134;
+
+	static final int GERMANY = 24;
+	static final int US = 103;
+	static final int FRANCE = 34;
+	static final int ITALY = 50;
+	static final int SPAIN = 31;
+	/**
+	 * 墨西哥
+	 */
+	static final int MEXICO = 71; 
+	
+	/**
+	 * 加拿大
+	 */
+	static final int CANADA = 16; 
+	
+	/**
+	 * 澳大利亚
+	 */
+	static final int AUSTRALIA=6;
+	
+	/**
+	 * 英国
+	 */
+	static final int UK=35;
+	
+	/**
+	 * 其他备货
+	 */
+	static final int ORDER_PREPARE_TYPE_OTHER=0;
+	/**
+	 * cms备货(默认cms备货)
+	 */
+	static final int ORDER_PREPARE_TYPE_CMS=1;
+	
+	/**
+	 * sw备货(商品都是sw商品才能是sw备货)
+	 */
+	static final int ORDER_PREPARE_TYPE_SW=2;
+	
+	static final String KEY_ORDER_CODE="orderCode";
+	static final String KEY_PACKAGE_CODE="packageCode";
+	/**
+	 * 跟踪号
+	 */
+	static final String KEY_TRACE_CODE="traceCode";
+	/**
+	 * 订单状态 {@linkplain OrderStatus}
+	 */
+	static final String KEY_ORDER_STATUS = "orderStatus";
+	/**
+	 * 订单备货状态 {@linkplain ArrivalStatus}
+	 */
+	static final String KEY_ORDER_ARRIVAL_STATUS = "orderArrivalStatus";
+	/**
+	 * 订单项状态 {@link OrderProductStatus}
+	 */
+	static final String KEY_ORDER_PRODUCT_STATUS = "OrderProductStatus";
+	/**
+	 * 订单商品业务ID
+	 */
+	static final String KEY_BUSINESS_ID = "businessId";
+	
+	/**
+	 * 订单商品业务ID
+	 */
+	static final String KEY_BUSINESS_ID_LIST = "businessIds";
+	/**
+	 * 发货日期
+	 */
+	static final String KEY_DELIVERY_DATE = "deliveryDate";
+	/**
+	 * 运费
+	 */
+	static final String KEY_FREIGHT = "freight";
+	/**
+	 * 货运客服
+	 */
+	static final String KEY_DELIVERY_CUSTOMER_SERVICE = "deliveryCustomerService";
+	/**
+	 * 操作人名字
+	 */
+	static final String KEY_OPERATOR_NAME = "operatorName";
+	/**
+	 * 操作人工号
+	 */
+	static final String KEY_OPERATOR_CODE = "operatorCode";
+	
+	/**
+	 * 订单项已备量
+	 */
+	static final String KEY_READY_QTY = "readyQty";
+	
+	static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+	static final String SW_MESSAGE = "SW消息：";
+	static final String MESSAGE_SOURCE_SYSTEM = "SW";
+	
+	/**
+	 * 匹配fba店铺商品
+	 * @param orderAddress
+	 * @param condition
+	 * @param sellerSku
+	 * @param orderProduct
+	 * @return
+	 */
+	public boolean mateFbaShopProductOfOrder(OrderAddress orderAddress, ConditionOfAddNewOrder condition,
+			String sellerSku, OrderProduct orderProduct,int shopId);
+	
+	/**
+	 * 匹配amazon店铺商品
+	 * @param orderAddress
+	 * @param condition
+	 * @param orderProductAmazonPO
+	 * @param am
+	 * @param orderProduct
+	 * @return
+	 */
+	public boolean mateShopProductOfOrder(OrderAddress orderAddress, ConditionOfAddNewOrder condition,
+			 AMShopProduct am, OrderProduct orderProduct);
+	
+	/**
+	 * 匹配cms商品
+	 * @param orderAddress
+	 * @param condition
+	 * @param sellerSku
+	 * @param orderProduct
+	 * @return
+	 */
+	boolean mateOtherProductOfOrder(OrderAddress orderAddress, ConditionOfAddNewOrder condition,
+			String sellerSku, OrderProduct orderProduct);
+	
+	
+	/**
+	 * 订单条件判断、带电，纺织品、带磁
+	 * @param orderAddress
+	 * @param condition
+	 * @param orderProduct
+	 * @param cmsProduct
+	 */
+	void processOrderProductLimit4AddOrder(OrderAddress orderAddress, ConditionOfAddNewOrder condition,
+			OrderProduct orderProduct, CMSProduct cmsProduct) ;
+	
+	/**
+	 * 处理order货运方式
+	 * @param remark
+	 * @param detail
+	 * @param condition
+	 */
+	void processOrderShippingMethod(StringBuilder remark, OrderDetail detail, ConditionOfAddNewOrder condition);
+	
+	/**
+	 * 按业务规则匹配货运方式
+	 * @param detail
+	 * @return
+	 */
+	boolean checkShopShippingMethod(OrderDetail detail);
+
+
+	/**
+	 * 按业务规则匹配货运方式 返回数字
+	 * @param detail
+	 * @return int
+	 */
+	int checkShopShippingMethodReturnNum(OrderDetail detail,List productCodeList);
+
+
+
+
+
+	/**
+	 * 初始化订单状态
+	 * @param detail
+	 * @param orderAddress
+	 * @param condition
+	 */
+	void initOrderProblem(OrderDetail detail, OrderAddress orderAddress,
+			ConditionOfAddNewOrder condition);
+	
+	/**
+	 * 地址信息特殊处理
+	 * @param detail
+	 * @param orderAddress
+	 * @return
+	 */
+	OrderAddress processOrderAddressSpecial(OrderDetail detail, OrderAddress orderAddress,ShopInfo shopInfo);
+	
+	/**
+	 * 判断是否 货运信息有问题
+	 * @param address
+	 * @return <em>true</em> 有  <em>false</em> 没有
+	 */
+	boolean hasProblemForAddressInfo(OrderAddress address);
+	
+	/**
+	 * 请求校对，通讯cms，判断发货标识，订单状态
+	 * @param orderId
+	 * @param operator
+	 * @return
+	 */
+	public boolean orderCheck(int orderId,String operator);
+
+	/**
+	 * 订单重发
+	 * @param orderId
+	 * @param operator
+	 */
+	void resendOrder(int orderId,int operator)throws BussinessException;	
+	
+	int getCurrencyIdByCode(String code);
+	
+	void addOrderOperateLog(String comment, String operator, int objectId);
+
+
+	void addOrderOperateLog(String comment, String operator, int objectId, Date operatorTime);
+
+	public List<OrderOperateLog> getOrderOperateLogs(int orderId);
+
+	/**
+	 * 永久下架判断可用库存
+	 * @param form
+	 * @param updateProductCode
+	 * @param product
+	 */
+	void hasAvailableStockout(UpdateOrderProductForm form, String updateProductCode, CMSProduct product);
+	
+	
+	/**
+	 * 远程取消
+	 * @param orderId
+	 * @param operator
+	 */
+	public void cancelOrderCommunication(int orderId, String operator);
+	
+	/**
+	 * 订单申请上架
+	 * @param orderId
+	 * @param operator
+	 */
+	void putway(int orderId, String operator);
+	
+	/**
+	 * 设置上架标记
+	 * @param orderId
+	 */
+	void setPutawayFlag(int orderId,String operator);
+	
+	BaseOrderItem getOrderItem(int orderId,int cmsProductId);
+}

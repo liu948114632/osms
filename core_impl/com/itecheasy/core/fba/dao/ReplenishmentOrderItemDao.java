@@ -1,0 +1,34 @@
+package com.itecheasy.core.fba.dao;
+
+import java.util.Date;
+import java.util.Map;
+
+import com.itecheasy.common.BaseDAO;
+import com.itecheasy.core.po.ReplenishmentOrderItemPO;
+
+/** 
+ * @author wanghw
+ * @date 2016-12-3 
+ * @description TODO
+ * @version 1.2.2
+ */
+public interface ReplenishmentOrderItemDao extends BaseDAO<ReplenishmentOrderItemPO, Integer>{
+	
+	/**
+	 * 获取该店铺的制定日期前该sku的海运在途批量
+	 * @param shopId
+	 * @param sku
+	 * @return
+	 */
+	public int getSeaTransOnPassageQuantity(int shopId,String sku,Date startDate,Date endDate);
+	
+	/**
+	 * 获取该店铺的制定日期前这批sku的海运在途批量
+	 * @param shopId
+	 * @param skus
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public Map<String,Integer> getSeaTransOnPassageQuantity(int shopId,String[] skus,Date startDate,Date endDate);
+}

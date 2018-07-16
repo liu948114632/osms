@@ -1,0 +1,49 @@
+package com.itecheasy.core.fba;
+
+import java.util.List;
+
+/**
+ * @author wanghw
+ * @date 2016-12-5
+ * @description TODO
+ * @version 1.2.2
+ */
+public class ReplenishmentOrderDetail {
+	private ReplenishmentOrder replenishmentOrder;
+	private List<ReplenishmentOrderItem> replenishmentOrderItems;
+	private Repository repository;
+	private FbaToAddress fbaToAddress;
+
+	public FbaToAddress getFbaToAddress() {
+		return fbaToAddress;
+	}
+
+	public void setFbaToAddress(FbaToAddress fbaToAddress) {
+		this.fbaToAddress = fbaToAddress;
+	}
+
+	public Repository getRepository() {
+		return repository;
+	}
+
+	public void setRepository(Repository repository) {
+		this.repository = repository;
+	}
+
+	public ReplenishmentOrder getReplenishmentOrder() {
+		return replenishmentOrder;
+	}
+
+	public void setReplenishmentOrder(ReplenishmentOrder replenishmentOrder) {
+		this.replenishmentOrder = replenishmentOrder;
+	}
+
+	public List<ReplenishmentOrderItem> getReplenishmentOrderItems() {
+		return replenishmentOrderItems;
+	}
+
+	public void setReplenishmentOrderItems(List<ReplenishmentOrderItem> replenishmentOrderItems) {
+		this.replenishmentOrderItems = replenishmentOrderItems;
+	}
+
+}

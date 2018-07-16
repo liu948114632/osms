@@ -1,0 +1,578 @@
+package com.itecheasy.core.task;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.core.fba.*;
+import com.itecheasy.core.fba.dao.ReplenishmentOrderDao;
+import com.itecheasy.core.fba.dao.ReplenishmentOrderItemDao;
+import com.itecheasy.core.order.dao.OrderDao;
+import com.itecheasy.core.order.dao.OrderProductDao;
+import com.itecheasy.core.po.*;
+
+import com.itecheasy.webservice.dms.MessageType;
+import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
+
+import com.itecheasy.common.sysconfig.SysConfigService;
+import com.itecheasy.common.util.CollectionUtils;
+import com.itecheasy.common.util.DateUtils;
+import com.itecheasy.common.util.DeployProperties;
+import com.itecheasy.core.BussinessException;
+import com.itecheasy.core.PackageStatus;
+import com.itecheasy.core.order.BackDeliveryProcessType;
+import com.itecheasy.core.order.IOrderSchedule;
+import com.itecheasy.core.order.IOrderSchedule.OrderTableType;
+import com.itecheasy.core.order.ModifyRecordService;
+import com.itecheasy.core.order.OrderApplyOperatType;
+import com.itecheasy.core.order.OrderApplyType;
+import com.itecheasy.core.order.OrderCancelResendService;
+import com.itecheasy.core.order.OrderCancelResendService.OrderCancelResendProcessedStatus;
+import com.itecheasy.core.order.OrderService;
+import com.itecheasy.core.order.OrderSwMessageService;
+import com.itecheasy.core.order.PackageProblem;
+import com.itecheasy.core.order.PackageProblemService;
+import com.itecheasy.core.order.PackageProblemStatus;
+import com.itecheasy.core.order.PackageProblemType;
+import com.itecheasy.core.order.PackageProblemTypeTag;
+import com.itecheasy.core.system.dao.ConfigDMSDao;
+import com.itecheasy.core.user.ProfileService;
+import com.itecheasy.core.util.StaticUtils;
+import com.itecheasy.webservice.client.CMSOrderClient;
+import com.itecheasy.webservice.client.DMSClient;
+import com.itecheasy.webservice.client.OAWebService;
+import com.itecheasy.webservice.cms.order.CommunicationLog;
+import com.itecheasy.webservice.cms.order.Order;
+import com.itecheasy.webservice.cms.order.OrderCancleResendApplay;
+import com.itecheasy.webservice.cms.order.OrderCancleResendApplayItem;
+import com.itecheasy.webservice.cms.order.OrderItem;
+import com.itecheasy.webservice.cms.order.OrderModifyOperatorLog;
+import com.itecheasy.webservice.dms.AccountSetting;
+import com.itecheasy.webservice.dms.MessageInfo;
+import com.itecheasy.webservice.oa.UserModel;
+
+/**
+ * @author wanghw
+ * @date 2015-5-20
+ * @description 通讯消息自动处理
+ * @version
+ */
+public class MessageTaskServiceImpl implements MessageTaskService {
+	private final static Logger LOGGER = Logger.getLogger(MessageTaskServiceImpl.class);
+	private static final String CMS_LOG_START_DATE = "cms_log_start_date";
+	private static final String CMS_MODIFY_MAX_ID="cms_modify_max_id";
+	private static final String SW_ORDER_MAX_ID="sw_message_max_id";
+	private static final boolean SYNC_CMS_DELAYED = 
+			DeployProperties.getInstance().getProperty("sync.cms.delayed").equalsIgnoreCase("true")?
+			true:false;
+	
+	private static int token = 1;
+	
+	protected ProfileService profileService;
+	private SysConfigService sysConfigService;
+	private ConfigDMSDao configDMSDao;
+	private PackageProblemService packageProblemService;
+	private IOrderSchedule orderSchedule;
+	private OrderService orderService;
+	private OrderCancelResendService orderCancelResendService;
+	private ModifyRecordService modifyRecordService;
+	private OrderSwMessageService orderSwMessageService;
+	private ReplenishmentTaskService replenishmentTaskService;
+
+	private ReplenishmentOrderItemDao replenishmentOrderItemDao;
+	private OrderProductDao orderProductDao;
+	private OrderDao orderDao;
+	private ReplenishmentOrderDao replenishmentOrderDao;
+	private FbaInboundService fbaInboundService;
+
+	public void setOrderDao(OrderDao orderDao) {
+		this.orderDao = orderDao;
+	}
+
+	public void setReplenishmentOrderDao(ReplenishmentOrderDao replenishmentOrderDao) {
+		this.replenishmentOrderDao = replenishmentOrderDao;
+	}
+
+	public void setReplenishmentOrderItemDao(ReplenishmentOrderItemDao replenishmentOrderItemDao) {
+		this.replenishmentOrderItemDao = replenishmentOrderItemDao;
+	}
+
+	public void setOrderProductDao(OrderProductDao orderProductDao) {
+		this.orderProductDao = orderProductDao;
+	}
+
+
+
+	public void setFbaInboundService(FbaInboundService fbaInboundService) {
+		this.fbaInboundService = fbaInboundService;
+	}
+
+	public void setReplenishmentTaskService(ReplenishmentTaskService replenishmentTaskService) {
+		this.replenishmentTaskService = replenishmentTaskService;
+	}
+
+	public void setOrderSwMessageService(OrderSwMessageService orderSwMessageService) {
+		this.orderSwMessageService = orderSwMessageService;
+	}
+
+	public void setModifyRecordService(ModifyRecordService modifyRecordService) {
+		this.modifyRecordService = modifyRecordService;
+	}
+
+	public void setOrderCancelResendService(OrderCancelResendService orderCancelResendService) {
+		this.orderCancelResendService = orderCancelResendService;
+	}
+
+	public void setOrderService(OrderService orderService) {
+		this.orderService = orderService;
+	}
+
+	public void setOrderSchedule(IOrderSchedule orderSchedule) {
+		this.orderSchedule = orderSchedule;
+	}
+
+	public void setPackageProblemService(PackageProblemService packageProblemService) {
+		this.packageProblemService = packageProblemService;
+	}
+
+	public void setConfigDMSDao(ConfigDMSDao configDMSDao) {
+		this.configDMSDao = configDMSDao;
+	}
+
+	public void setSysConfigService(SysConfigService sysConfigService) {
+		this.sysConfigService = sysConfigService;
+	}
+
+	public void setProfileService(ProfileService profileService) {
+		this.profileService = profileService;
+	}
+
+	@Override
+	public void syncFirstWayOrder(){
+//		fbaStoreOrderService.syncFBAStoreProduct();
+	}
+	
+	@Override
+	public void processingDMSMessage() throws BussinessException {
+		List<ConfigDMSPO> pos = configDMSDao.getAll();
+		if (CollectionUtils.isEmpty(pos)) {
+			return;
+		}
+		for (ConfigDMSPO configDMSPO : pos) {
+			AccountSetting accountSetting = new AccountSetting();
+			accountSetting.setAccountNumber(configDMSPO.getAccountNumber());
+			accountSetting.setSignature(configDMSPO.getSignature());
+			LOGGER.info("JO====processingDMSMessage");
+			List<MessageInfo> infos = DMSClient.getMessage(accountSetting);
+
+//			//test
+//			MessageInfo messageInfo = new MessageInfo();
+//			messageInfo.setContent("{\"serviceLineName\":\"Fedex Economical\",\"operatorUser\":\"ite01793\",\"deliveryTime\":\"2017-09-02 17:05:15\",\"orderCode\":\"WA150515365040\",\"freight\":1015.61,\"traceCode\":\"704306680255\",\"deliveryWeight\":34.940,\"deliveryRemark\":\"\",\"url\":\"\",\"freightForwardingCompanyName\":\"FedEx-SZ\",\"serviceLineType\":\"EXPRESS\"}");
+//			messageInfo.setType(MessageType.DELIVERY);
+//			infos.add(messageInfo);
+//			//test
+
+
+			if (CollectionUtils.isNotEmpty(infos)) {
+				List<Integer> messageIds = new ArrayList<Integer>();
+				List<Integer> notifys_messageId = new ArrayList<Integer>();
+				List<Integer> notifys = new ArrayList<Integer>();
+				for (MessageInfo info : infos) {
+					JSONObject jo = JSONObject.fromObject(info.getContent());
+					LOGGER.info("JO====" + jo.toString());
+					String orderCode = jo.getString("orderCode");
+					String name = "DMS";
+					if(jo.containsKey("operatorUser")&&!jo.containsKey("operatorName")){
+						String userCode = jo.getString("operatorUser");
+						if(userCode.contains("ite")){
+							try {
+								UserModel user = OAWebService.getUserModel(userCode);
+								if (user != null) {
+									name = user.getName();
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					Date operateTime =DateUtils.getDateByXMLGregorianCalendar(info.getCreateTime());
+					if(operateTime==null) {
+						operateTime = new Date();
+					}
+					switch (info.getType()) {
+					case DELIVERY:
+						// 订单发货0
+						Date deliveryTime = DateUtils.convertDate(jo.getString("deliveryTime"), "yyyy-MM-dd HH:mm:ss");
+						Double freight = jo.getDouble("freight");
+						String traceCode = jo.getString("traceCode");
+						LOGGER.info("JO====DELIVERY");
+						BaseOrderView order = orderSchedule.getOrderByCode(orderCode);   //从视图中查找所有的订单
+						if (order != null) {
+							orderSchedule.getInstanceMessage(order.getTableType()).updateDeliveryFromMessage(orderCode, traceCode, freight,
+									deliveryTime, operateTime, name,jo.getString("url"));	//更新订单跟踪
+							messageIds.add(info.getId());
+							if(order.getTableType()==OrderTableType.ORDER.getVal()){
+								notifys.add(order.getId());
+								notifys_messageId.add(info.getId());
+
+								// TODO: 2018/6/25
+								//如果是订单的情况，在订单表中查出这个订单所属的shopId   order中没有shipmentId
+//								OrderPO orderPO = orderDao.getObject(order.getId());   //视图中拿到了orderId，再来查看完整的订单
+//								if (order.getCode()!=null && order.getTrackingCode()!=null) {
+//									//shop id 订单发货且有订单跟踪号 3.9.1	更新货运单号至亚马逊
+//									PutTransportContentVO putTransportContentVO = null;
+//									TransportResult transportResult = fbaInboundService.putTransportContent(putTransportContentVO, order.getCode(), orderPO.getShopId(), -3);
+//									//3.9.2	更新亚马逊货件状态为已发货
+//									fbaInboundService.updateFbaInboundOrder(BeanUtils.copyProperties(orderPO,ReplenishmentOrder.class),"SHIPPED",false);
+//								}
+							}
+                            // TODO: 2018/6/26
+							//补货订单的情况
+//							if(order.getTableType()==OrderTableType.REPLENISHMENT_ORDER.getVal()){
+//								ReplenishmentOrderPO replenishmentOrderPO = replenishmentOrderDao.getObject(order.getId());
+//								if (order.getCode()!=null && traceCode!=null) {
+//									//shop id 订单发货且有订单跟踪号 3.9.1	更新货运单号至亚马逊
+//									PutTransportContentVO putTransportContentVO = new PutTransportContentVO();
+//									putTransportContentVO.setOrderTrackCode(traceCode);
+//									putTransportContentVO.setShipmentId(replenishmentOrderPO.getShipmentID());
+//									putTransportContentVO.setReplenishmentOrderCode(order.getCode());
+//									putTransportContentVO.setShopId(replenishmentOrderPO.getShopId());
+//
+//									String transportStatus = fbaInboundService.putTransportContent(putTransportContentVO);
+//									if (transportStatus==null){
+//										throw new BussinessException("更新货运单号至亚马逊失败,补货订单编号:"+order.getCode());
+//									}
+//									//更新亚马逊货件状态为已发货
+//									fbaInboundService.updateFbaInboundOrder(replenishmentOrderPO,"SHIPPED",false);
+//								}
+//							}
+
+						}
+						break;
+					case TRACE_CODE:
+						traceCode = jo.getString("traceCode");
+						BaseOrderView order2 = orderSchedule.getOrderByCode(orderCode);
+						// 修改运单号1
+						if (orderSchedule.getInstanceMessage(order2.getTableType()).
+								updateTraceCode(orderCode, traceCode, name, operateTime,jo.getString("url"))) {
+							messageIds.add(info.getId());
+							if(order2.getTableType()==OrderTableType.ORDER.getVal()){
+								notifys.add(order2.getId());
+								notifys_messageId.add(info.getId());
+							}
+						}
+						break;
+					case FREIGHT:
+						// 运费2
+						freight = jo.getDouble("freight");
+						if (orderSchedule.getInstanceMessage(orderCode).updateFreight(orderCode, freight, name, operateTime)) {
+							messageIds.add(info.getId());
+						}
+						break;
+					case TRACE_STATUS:
+						// 物流状态3
+						String traceStatus = jo.getString("traceStatus");
+						messageIds.add(info.getId());
+						if ("CONFIRM".equals(traceStatus)) {
+							// 完成订单
+							orderSchedule.getInstanceMessage(orderCode).orderComplete(orderCode, name, operateTime);
+						}
+						//物流同步
+						orderSchedule.getInstanceMessage(orderCode).processPackageStatus(orderCode, 
+								PackageStatus.convertPackageStatus(traceStatus), name,operateTime);
+						break;
+					case SHIPPING_METHOD ://修改货运方式
+						int shippingMethodId=jo.getInt("deliveryId");
+						orderSchedule.getInstanceMessage(orderCode).updateShippingMethod(orderCode,
+								shippingMethodId, name, operateTime);
+						messageIds.add(info.getId());
+						break;
+					case SERVICE_CUSTOMER:
+						// 货运客服 5
+						String customerService = jo.getString("serviceCustomerName");
+						orderSchedule.getInstanceMessage(orderCode).updateDeliveryCustomerService(orderCode, customerService, name, operateTime);
+						messageIds.add(info.getId());
+						break;
+					case CREATE_QUESTION:
+						//问题件 6
+						LOGGER.info("JO====CREATE_QUESTION:"+orderCode);
+						PackageProblem packageProblem=new PackageProblem();
+						packageProblem.setCreateUser(jo.getString("operatorName"));
+						packageProblem.setType(PackageProblemType.问题件.getVal());
+						packageProblem.setDeliveryCustomerService(jo.getString("serviceCustomerName"));
+						packageProblem.setStatus(PackageProblemStatus.处理中.getVal());
+						packageProblem.setCreateDate(DateUtils.convertDate(jo.getString("createTime"), 
+								"yyyy-MM-dd HH:mm:ss"));
+						packageProblem.setOrderCode(orderCode);
+						packageProblem.setTypeTag(PackageProblemTypeTag.DMS_问题件_未妥投件.getVal());
+						packageProblemService.createPackageProblem(packageProblem);
+						
+						messageIds.add(info.getId());
+						break;
+					case SEND_QUESTION://7
+						String[] files=null;
+						String[] downloads=null;
+						Integer processResult=null;
+						if(jo.containsKey("fileName")){
+							files=jo.getString("fileName").split(",");
+						}
+						
+						if(jo.containsKey("downloadName")){
+							downloads=jo.getString("downloadName").split(",");
+						}
+						if(jo.containsKey("processResult")){//未妥投件处理意见
+							processResult=jo.getInt("processResult");
+						}
+						packageProblemService.applyPackageProblem(
+								orderCode, 
+								jo.getString("operatorName"),
+								jo.getString("content"), 
+								DateUtils.convertDate(jo.getString("createTime"), 
+										"yyyy-MM-dd HH:mm:ss"),downloads,files
+										,processResult);
+						messageIds.add(info.getId());
+						break;
+					case CLOSE_QUESTION:
+						packageProblemService.closePackageProblem(orderCode, name, 
+								DateUtils.convertDate(jo.getString("closeTime"), 
+										"yyyy-MM-dd HH:mm:ss"));
+						messageIds.add(info.getId());
+						break;
+					case REOPEN:
+						packageProblemService.reopenPackageProblem(orderCode, 
+								jo.getString("operatorUser"));
+						messageIds.add(info.getId());
+						break;
+					case BACKORDETAIN://退件10
+						PackageProblem back=new PackageProblem();
+						back.setCreateUser(jo.getString("operatorUser"));
+						back.setType(PackageProblemType.退件.getVal());
+						back.setCreateDate(new Date());
+						back.setOrderCode(orderCode);
+						back.setStatus(PackageProblemStatus.处理中.getVal());
+						back.setTypeTag(PackageProblemTypeTag.DMS_退件.getVal());
+						packageProblemService.createPackageProblem(back);
+						
+						messageIds.add(info.getId());
+						break;
+					case ISNOTDELIVERED://未妥投件true/false
+						PackageProblem updatePackageProblem=new PackageProblem();
+						updatePackageProblem.setOrderCode(orderCode);
+						updatePackageProblem.setType(jo.getBoolean("isNoteDelivered")?PackageProblemType.未妥投件.getVal():PackageProblemType.问题件.getVal());
+						updatePackageProblem.setTypeTag(PackageProblemTypeTag.DMS_问题件_未妥投件.getVal());
+						packageProblemService.updatePackageProblem(updatePackageProblem);
+						messageIds.add(info.getId());
+						break;
+					case BACKDELIVERYPROCESS://退件处理结果
+						packageProblemService.backPackageConfirmType(orderCode, jo.getString("operatorName"), 
+								BackDeliveryProcessType.getBackDeliveryProcessTypeText(jo.getInt("processType")));
+						messageIds.add(info.getId());
+						break;
+					default:
+						messageIds.add(info.getId());
+						break;
+					}
+				}
+
+				if (CollectionUtils.isNotEmpty(notifys)) {
+					if (!orderService.delivering2WS3rdProxy(notifys)) {
+						messageIds.removeAll(notifys_messageId);
+					}
+				}
+				// 确认消息
+				if (messageIds.size() > 0) {
+					DMSClient.comfirmMessage(messageIds, accountSetting);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void processingCMSMeseeage() throws BussinessException {
+		token++;
+		if(token%4==0){
+			processingDMSMessage();
+		}else if(token%4==1){
+			String startDate = sysConfigService.getValue(CMS_LOG_START_DATE);
+			Date currentDate = new Date();
+			List<CommunicationLog> logs_order = CMSOrderClient.getOrderOperatorLog(startDate);
+			List<CommunicationLog> logs_orderItem = CMSOrderClient.getOrderItemOperatorLog(startDate);
+			List<CommunicationLog> logs_apply = CMSOrderClient.getOrderApplayOperatorLog(startDate);
+			processingCMSMeseeage$order(logs_order);
+			processingCMSMeseeage$OrderItem(logs_orderItem);
+			processingCMSMeseeage$Apply(logs_apply);
+			// 服务器延迟
+			if(SYNC_CMS_DELAYED){
+				sysConfigService.setValue(CMS_LOG_START_DATE, DateUtils.convertDate(
+					org.apache.commons.lang.time.DateUtils.addMinutes(currentDate, -1), "yyyy-MM-dd HH:mm:ss"));
+			}else{
+				sysConfigService.setValue(CMS_LOG_START_DATE, DateUtils.convertDate(
+						currentDate, "yyyy-MM-dd HH:mm:ss"));
+			}
+		}else if(token%4==2){
+			LOGGER.info("sync swOrder begin...");
+			String maxID = sysConfigService.getValue(SW_ORDER_MAX_ID);
+			LOGGER.info("sync swOrder id..." + maxID);
+			Integer _maxId =Integer.valueOf(maxID);
+			_maxId=orderSwMessageService.readMessage(_maxId);
+			sysConfigService.setValue(SW_ORDER_MAX_ID, String.valueOf(_maxId));
+			LOGGER.info("sync ModifyOrder end...maxID:"+_maxId);
+		}else{
+			LOGGER.info("sync replenishmentTask begin...");
+			replenishmentTaskService.readMessage();
+			LOGGER.info("sync replenishmentTask end...");
+		}
+	}
+
+	private void processingCMSMeseeage$Apply(List<CommunicationLog> logs_apply) throws BussinessException {
+		if (CollectionUtils.isNotEmpty(logs_apply)) {
+			for (CommunicationLog log : logs_apply) {
+				OrderCancleResendApplay apply = CMSOrderClient.getApplayById(log.getObjectId());
+				List<OrderCancleResendApplayItem> items = CMSOrderClient.getApplayItemsByApplayId(apply.getId());
+				if (CollectionUtils.isEmpty(items)) {
+					return;
+				}
+				
+				for (OrderCancleResendApplayItem item : items) {
+					Order cmsOrder= CMSOrderClient.getOrderById(item.getOrderId());
+					BaseOrderView baseOrderView=orderSchedule.getOrderByCode(cmsOrder.getCode());
+					if(baseOrderView==null)
+						continue;
+					
+					// 重发
+					if (apply.getApplayType() == OrderApplyType.RESEND.getVal()) {
+						//确认处理
+						if(apply.getOperaterType()==OrderApplyOperatType.CONFIRM_PROCESS.getVal()){
+							if(item.getProcessStatus()!=OrderCancelResendProcessedStatus.完成.getVal()){
+								//dms申请的重发--重发标记(重置货运单审核状态)
+								orderSchedule.getInstanceMessage(cmsOrder.getCode()).setResendTagFromMessage(cmsOrder.getCode(),apply.getApplayOperaterName());
+							}
+							//重发确认可以处理的时候不做处理，等待CMS改状态的通讯去处理
+							//2016-12-19 dms申请的重发，cms确认没有通讯消息
+						}else{
+							// 如果订单为全部c3备货，则取消订单，记录日志：“已出库订单，申请订单重发失败，原因为订单丢失，自动将订单状态改为取消”
+							orderSchedule.getInstanceMessage(cmsOrder.getCode()).refuseResendOrder(cmsOrder.getCode(), apply.getCause(),
+									apply.getOperaterType(), "系统");
+//							orderCancelResendService.complateOrderOperating(cmsOrder.getCode());
+						}
+					}
+					
+					// 取消
+					if (apply.getApplayType() == OrderApplyType.CANCEL.getVal()) {
+						//确认处理
+						if(apply.getOperaterType()==OrderApplyOperatType.CONFIRM_PROCESS.getVal()){
+							// 取消
+							orderSchedule.getInstanceMessage(cmsOrder.getCode()).confirmCacelOrder(cmsOrder.getCode(), apply.getApplayOperaterName(), 
+									"订单申请取消，后端已确认处理，取消订单");
+//							orderCancelResendService.complateOrderOperating(cmsOrder.getCode());
+						}
+						
+						if (apply.getOperaterType() == OrderApplyOperatType.ORDER_MISS.getVal()) {
+							orderSchedule.getInstanceMessage(cmsOrder.getCode()).confirmCacelOrder(cmsOrder.getCode(), apply.getApplayOperaterName(),
+									"订单申请取消，后端已确认货丢了，取消订单");
+//							orderCancelResendService.complateOrderOperating(cmsOrder.getCode());
+							
+						}
+						//无法追回||撤销申请
+						if(apply.getOperaterType()==OrderApplyOperatType.COULD_NOT_RETRIEVE.getVal()
+								||apply.getOperaterType()==OrderApplyOperatType.UNDO_APPLY.getVal()){
+							// 取消
+							orderSchedule.getInstanceMessage(cmsOrder.getCode()).refuseCancelOrder(cmsOrder.getCode(), apply.getCause(),  "系统");
+						}
+					}
+
+					if (apply.getApplayType() == OrderApplyType.BACK.getVal()) {
+						//处理完成
+						if(item.getProcessStatus()==OrderCancelResendProcessedStatus.完成.getVal()){
+							orderSchedule.getInstanceMessage(cmsOrder.getCode()).syncBackTagFromMessage(cmsOrder.getCode(), false);
+						}else if(item.getProcessStatus()==OrderCancelResendProcessedStatus.确认中.getVal()){
+							orderCancelResendService.applyOrderOperating(cmsOrder.getCode(),OrderApplyType.BACK.getVal());
+							orderSchedule.getInstanceMessage(cmsOrder.getCode()).syncBackTagFromMessage(cmsOrder.getCode(), true);
+						}else if(item.getProcessStatus()==OrderCancelResendProcessedStatus.处理中.getVal()){
+							orderSchedule.getInstanceMessage(cmsOrder.getCode()).syncBackTagFromMessage(cmsOrder.getCode(), true);
+						}
+					}
+					
+					//同步取消重发状态 v1.2.2，暴力同步，（只做比较数据）
+					orderCancelResendService.updateOrderApplyOperatingFromMessage(cmsOrder.getCode(), item.getProcessStatus(),apply.getApplayType());
+				}
+			}
+		}
+	}
+
+	private void processingCMSMeseeage$OrderItem(List<CommunicationLog> logs2) {
+		if (CollectionUtils.isNotEmpty(logs2)) {
+			for (CommunicationLog log : logs2) {
+				if ("INSERT".equalsIgnoreCase(log.getStatus())) {
+					continue;// 忽略新增数据
+				}
+				updateOrderItem(log.getObjectId(), log.getOperatorTime());
+			}
+		}
+	}
+
+	private void processingCMSMeseeage$order(List<CommunicationLog> logs) throws BussinessException {
+		if (CollectionUtils.isNotEmpty(logs)) {
+			for (CommunicationLog log : logs) {
+				if ("INSERT".equalsIgnoreCase(log.getStatus())) {
+					continue;// 忽略新增数据
+				}
+				Order cmsOrder = CMSOrderClient.getOrderById(log.getObjectId());
+				BaseOrderView order = orderSchedule.getOrderByCode(cmsOrder.getCode());
+				if (order == null) {
+					String msg=MessageFormat.format("订单：{0}不存在", cmsOrder.getCode());
+					LOGGER.info(msg);
+					StaticUtils.addEmail("同步cms订单状态", msg);
+					continue;
+				}
+				updateOrder(cmsOrder, order, log.getOperatorTime());
+			}
+		}
+	}
+	
+
+	private void updateOrderItem(int objectId,XMLGregorianCalendar operatorTime) {
+		OrderItem cmsOrderItem = CMSOrderClient.getOrderItemById(objectId);
+		Order cmsOrder = CMSOrderClient.getOrderById(cmsOrderItem.getOrderId());
+		BaseOrderView order = orderSchedule.getOrderByCode(cmsOrder.getCode());
+		if (order == null) {
+			String msg=MessageFormat.format("订单：{0}不存在", cmsOrder.getCode());
+			LOGGER.info(msg);
+			StaticUtils.addEmail("同步cms订单状态", msg);
+			return;
+		}
+		orderSchedule.getInstanceMessage(order.getTableType()).updateOrderItemFromMessage(cmsOrderItem, operatorTime.toGregorianCalendar().getTime());
+	}
+
+	
+	private void updateOrder(Order cmsOrder, BaseOrderView orderView, XMLGregorianCalendar operatorTime) {
+		orderSchedule.getInstanceMessage(orderView.getTableType()).updateOrderFromMessage(cmsOrder, orderView, operatorTime.toGregorianCalendar().getTime());
+	}
+	
+	@Override
+	public void processingModifyOrder() {
+		LOGGER.info("sync ModifyOrder begin...");
+		String maxID = sysConfigService.getValue(CMS_MODIFY_MAX_ID);
+		LOGGER.info("sync ModifyOrder id..." + maxID);
+		long _maxId =Long.valueOf(maxID);
+		List<OrderModifyOperatorLog> logs_order = CMSOrderClient.getOrderModifyOperatorLog(_maxId);
+		if (CollectionUtils.isNotEmpty(logs_order)) {
+			for (OrderModifyOperatorLog g : logs_order) {
+				if (_maxId < g.getId().intValue()) {
+					_maxId = g.getId().intValue();
+				}
+
+				modifyRecordService.syncModifyRecordOrder(g.getOrderModifyId().intValue(), g.getType());
+			}
+			sysConfigService.setValue(CMS_MODIFY_MAX_ID, String.valueOf(_maxId));
+			LOGGER.info("sync ModifyOrder end...maxID:"+_maxId);
+		}
+	}
+	
+}

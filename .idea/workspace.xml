@@ -1,0 +1,2137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="osms:Web" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list id="49e716d0-204e-4229-8d24-cea7df76b31c" name="ignore" comment="不上传到svn的">
+      <change beforePath="$PROJECT_DIR$/cfg/applicationContext.xml" beforeDir="false" afterPath="$PROJECT_DIR$/cfg/applicationContext.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cfg/deploy_config.properties" beforeDir="false" afterPath="$PROJECT_DIR$/cfg/deploy_config.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cfg/hibernate.xml" beforeDir="false" afterPath="$PROJECT_DIR$/cfg/hibernate.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cfg/log4j.properties" beforeDir="false" afterPath="$PROJECT_DIR$/cfg/log4j.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core_impl/com/itecheasy/printMethod/AccessPath.java" beforeDir="false" afterPath="$PROJECT_DIR$/core_impl/com/itecheasy/printMethod/AccessPath.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/com/itecheasy/test/ProductTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/com/itecheasy/test/ProductTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java" afterDir="false" />
+    </list>
+    <list default="true" readonly="true" id="3d8a2851-4738-4512-a3be-e3c4f5ea5577" name="Default" comment="" />
+    <ignored path="$PROJECT_DIR$/out/" />
+    <manually-removed-from-ignored>
+      <directory path="test/" />
+    </manually-removed-from-ignored>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <file path="$PROJECT_DIR$/core_impl/com/itecheasy/printMethod/AccessPath.java" ignored="false" />
+    <file path="$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java" ignored="false" />
+    <file path="$PROJECT_DIR$/cfg/deploy_config.properties" ignored="false" />
+    <file path="$PROJECT_DIR$/cfg/applicationContext.xml" ignored="false" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_" type="feb32156:DbDataSourceImpl" />
+        <item name="Develop_OSMS: database" type="bdf80c8a:MssqlImplModel$Database" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_" type="feb32156:DbDataSourceImpl" />
+        <item name="Develop_OSMS: database" type="bdf80c8a:MssqlImplModel$Database" />
+        <item name="dbo: schema" type="3adcb6a6:MssqlImplModel$Schema" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_" type="feb32156:DbDataSourceImpl" />
+        <item name="Develop_OSMS: database" type="bdf80c8a:MssqlImplModel$Database" />
+        <item name="dbo: schema" type="3adcb6a6:MssqlImplModel$Schema" />
+        <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_" type="feb32156:DbDataSourceImpl" />
+        <item name="Develop_OSMS: database" type="bdf80c8a:MssqlImplModel$Database" />
+        <item name="dbo: schema" type="3adcb6a6:MssqlImplModel$Schema" />
+        <item name="routines" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_dev_180710" type="feb32156:DbDataSourceImpl" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_dev_180710" type="feb32156:DbDataSourceImpl" />
+        <item name="osms_dev_180710: database" type="bdf80c8a:MssqlImplModel$Database" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_dev_180710" type="feb32156:DbDataSourceImpl" />
+        <item name="osms_dev_180710: database" type="bdf80c8a:MssqlImplModel$Database" />
+        <item name="dbo: schema" type="3adcb6a6:MssqlImplModel$Schema" />
+      </path>
+      <path>
+        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
+        <item name="osms_dev_180710" type="feb32156:DbDataSourceImpl" />
+        <item name="osms_dev_180710: database" type="bdf80c8a:MssqlImplModel$Database" />
+        <item name="dbo: schema" type="3adcb6a6:MssqlImplModel$Schema" />
+        <item name="tables" type="d4e8921:DatabaseStructure$FamilyGroup" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="rebel.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cfg/rebel.xml">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="autotask.properties" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cfg/autotask.properties">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="441">
+              <caret line="24" column="10" lean-forward="true" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="service_job.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core_impl/service_job.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="328">
+              <caret line="27" column="25" lean-forward="true" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
+              <folding>
+                <element signature="e#859#892#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AsynEmailServiceImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/common/asynemail/AsynEmailServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="385">
+              <caret line="105" column="33" lean-forward="true" selection-start-line="105" selection-start-column="33" selection-end-line="105" selection-end-column="33" />
+              <folding>
+                <element signature="e#1050#1051#0" expanded="true" />
+                <element signature="e#1091#1092#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AmozonUpdateReplenishmentShipmentImpl.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/task/AmozonUpdateReplenishmentShipmentImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="208">
+              <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SprintTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="670">
+              <caret line="122" lean-forward="true" selection-start-line="122" selection-end-line="122" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AmozonUpdateReplenishmentShipmentImplTest.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/AmozonUpdateReplenishmentShipmentImplTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="189">
+              <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="service_core.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/core_impl/service_core.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="291">
+              <caret line="186" column="4" selection-start-line="186" selection-start-column="4" selection-end-line="186" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="replenishment_order" pinned="false" current-in-tab="false">
+        <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/replenishment_order">
+          <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+            <state>
+              <filtering enabled="true" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FbaInboundServiceImpl.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="487">
+              <caret line="950" column="32" selection-start-line="950" selection-start-column="32" selection-end-line="950" selection-end-column="32" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JUnit4 Test Class" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>start</find>
+      <find>邮件</find>
+      <find>removeObserver</find>
+      <find>save_sent_email</find>
+      <find>start()</find>
+      <find>mail.smtp.host</find>
+      <find>smtpUsername</find>
+      <find>observer</find>
+      <find>addemail</find>
+      <find>emails.put</find>
+      <find>补货订单更新失败</find>
+      <find>tos</find>
+      <find>DestinationFulfillmentCenterId</find>
+      <find>ShipmentID</find>
+      <find>fbarep</find>
+      <find>replenishmentOrderId</find>
+      <find>ShipmentName</find>
+      <find>if(po.getFbaReplenishmentPlanId()!=null){ 				FbaReplenishmentPlanPO replenishmentPlanPO = fbaReplenishmentPlanDao.getObject(po.getFbaReplenishmentPlanId()); 				detail.setAutoGenerated(replenishmentPlanPO.getIsSubmitToAm()==null||replenishmentPlanPO.getIsSubmitToAm()==0?false:true); 			}</find>
+      <find>if(po.getFbaReplenishmentPlanId()!=null</find>
+      <find>po.getFbaReplenishmentPlanI</find>
+      <find>FbaReplenishmentPlanPO</find>
+      <find>replenishment_order_id</find>
+      <find>Iterator</find>
+      <find>fbaSeaTransit</find>
+      <find>getAmazonStockReportFromAmazon</find>
+      <find>logger</find>
+      <find>补货订单更新失败,订单编号</find>
+      <find>asynEmailCron</find>
+      <find>application</find>
+      <find>orderAmazonStatus</find>
+    </findStrings>
+    <replaceStrings>
+      <replace>AmazonStockReportSearchForm</replace>
+    </replaceStrings>
+    <dirStrings>
+      <dir>E:\osms</dir>
+      <dir>E:\osms\osms_api\com\itecheasy\osms\order</dir>
+    </dirStrings>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/dao/AmazonStockReportHistoryDao.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/dao/AmazonStockReportHistoryDaoImpl.java" />
+        <option value="$PROJECT_DIR$/core_impl/service_core.xml" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/strategy/MallardDuck.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/order/BaseOrder.java" />
+        <option value="$PROJECT_DIR$/cfg/applicationContext.xml" />
+        <option value="$PROJECT_DIR$/cfg/jdbc_sqlserver.properties" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/console_5.sql" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/OrderAmazon.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/TransportContentVO.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/AmazonShipmentStatusListVO.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/po/AmazonStockReportHistoryPO.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/common/util/HqlUtils.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/decorator/starbuzz/StarbuzzCoffee.java" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/console.sql" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/decorator/starbuzz/DarkRoast.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/decorator/starbuzz/Whip.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/WeatherStation/WeatherData.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/WeatherStation/HeatIndexDisplay.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/WeatherStationObservable/WeatherData.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/WeatherStation/ForecastDisplay.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/WeatherStation/WeatherStation.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/myObserver/Cocoa.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/myObserver/Shiro.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/myObserver/Look.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/myObserver/Pricious.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/myObserver/PriciousData.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/observer/myObserver/Chino.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/common/asynemail/AsynEmailServiceImpl.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/common/util/Mail.java" />
+        <option value="$PROJECT_DIR$/cfg/autotask.properties" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/task/SyncAmozonStackReportTaskImpl.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/util/StaticUtils.java" />
+        <option value="$PROJECT_DIR$/core_api/com/itecheasy/core/email/EmailService.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/email/EmailServiceImpl.java" />
+        <option value="$PROJECT_DIR$/core_api/com/itecheasy/common/asynemail/AsynEmailService.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/prepare/SeaTransportationPrepareServiceImpl.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/amazon/InboundShipmentVO.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/webservice/client/AmazonClient.java" />
+        <option value="$PROJECT_DIR$/core_impl/service_job.xml" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/po/AmazonStockReportPO.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/core/task/AmazonStockReport.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java" />
+        <option value="$APPLICATION_CONFIG_DIR$/consoles/db/40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/console_1.sql" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/NYPizzaStore.java" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java" />
+        <option value="$PROJECT_DIR$/cfg/deploy_config.properties" />
+        <option value="$PROJECT_DIR$/core_impl/com/itecheasy/core/task/AmozonUpdateReplenishmentShipmentImpl.java" />
+        <option value="$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java" />
+        <option value="$PROJECT_DIR$/core_api/com/itecheasy/core/order/OrderService.java" />
+      </list>
+    </option>
+  </component>
+  <component name="JRebelWorkspace">
+    <option name="jrebelEnabledAutocompile" value="true" />
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState>
+      <expand />
+      <select />
+    </treeState>
+  </component>
+  <component name="MavenRunner">
+    <option name="jreName" value="1.6" />
+  </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="221" />
+    <option name="y" value="79" />
+    <option name="width" value="1760" />
+    <option name="height" value="966" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="AndroidView" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="cfg" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_api" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_api" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_api" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_api" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+              <item name="order" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="core_impl" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="core" type="462c0819:PsiDirectoryNode" />
+              <item name="fba" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="headfirst" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="headfirst" type="462c0819:PsiDirectoryNode" />
+              <item name="factory" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="web_app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="web_app" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="osms" type="b2602c69:ProjectViewProjectNode" />
+              <item name="osms" type="462c0819:PsiDirectoryNode" />
+              <item name="web_app" type="462c0819:PsiDirectoryNode" />
+              <item name="itecheasy" type="462c0819:PsiDirectoryNode" />
+              <item name="order" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="JPA.DatabaseSchemaImportDialog" value="40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d" />
+    <property name="TODO_SCOPE" value="Project Files" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.intellij.database.dataSource.DataSourceTemplate" value="SQL Server (Microsoft)" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
+    <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit4" value="" />
+    <property name="database.console.LAST_STATE" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/test/com/itecheasy/headfirst" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.excludes" />
+  </component>
+  <component name="RecentsManager">
+    <key name="ImportMappingsDialog.RecentPackages">
+      <recent name="com.itecheasy.core.po" />
+      <recent name="" />
+      <recent name="c" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.itecheasy.test" />
+      <recent name="com.itecheasy.core.task" />
+    </key>
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.itecheasy.osms.order" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.itecheasy.core.fba.dao" />
+      <recent name="com.itecheasy.core.po" />
+      <recent name="com.itecheasy.webservice.amazon" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\osms\core_impl\com\itecheasy\webservice\amazon" />
+      <recent name="E:\osms\test\com\itecheasy" />
+      <recent name="E:\osms\core_impl\com\itecheasy\webservice" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.get_amazon_REPORT">
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    </configuration>
+    <configuration name="FbaInboundWebServiceTest.putTransportContent" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="osms" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.itecheasy.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.itecheasy.test" />
+      <option name="MAIN_CLASS_NAME" value="com.itecheasy.test.FbaInboundWebServiceTest" />
+      <option name="METHOD_NAME" value="putTransportContent" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="SprintTest.test007" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="osms" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.itecheasy.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.itecheasy.test" />
+      <option name="MAIN_CLASS_NAME" value="com.itecheasy.test.SprintTest" />
+      <option name="METHOD_NAME" value="test007" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="autoSyncInboundShipments2" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="osms" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.itecheasy.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.itecheasy.test" />
+      <option name="MAIN_CLASS_NAME" value="com.itecheasy.test.AmozonUpdateReplenishmentShipmentImplTest" />
+      <option name="METHOD_NAME" value="autoSyncInboundShipments" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="get_amazon_REPORT" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="osms" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.itecheasy.core.task.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.itecheasy.core.task" />
+      <option name="MAIN_CLASS_NAME" value="com.itecheasy.core.task.AmazonStockReport" />
+      <option name="METHOD_NAME" value="testCase" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration name="插入stock数据" type="JUnit" factoryName="JUnit" temporary="true">
+      <module name="osms" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.itecheasy.core.task.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" value="com.itecheasy.core.task" />
+      <option name="MAIN_CLASS_NAME" value="com.itecheasy.core.task.AmazonStockReport" />
+      <option name="METHOD_NAME" value="testCase002" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" value="" />
+      <option name="WORKING_DIRECTORY" value="file://%MODULE_WORKING_DIR%" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <patterns />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="%MODULE_WORKING_DIR%" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <properties />
+      <listeners />
+    </configuration>
+    <configuration name="osms" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 6.0.45" ALTERNATIVE_JRE_ENABLED="true" ALTERNATIVE_JRE_PATH="1.6">
+      <deployment>
+        <artifact name="osms:Web exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/osms" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="Unnamed_osms_6" />
+        <option name="JNDI_PORT" value="1098" />
+      </server-settings>
+      <predefined_log_file id="Tomcat" enabled="true" />
+      <predefined_log_file id="Tomcat Catalina" enabled="true" />
+      <predefined_log_file id="Tomcat Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Host Manager" enabled="false" />
+      <predefined_log_file id="Tomcat Localhost Access" enabled="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="57941" />
+      </RunnerSettings>
+      <RunnerSettings RunnerId="JRebel Debug">
+        <option name="DEBUG_PORT" value="52299" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="JRebel Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="JRebel Executor">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method>
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="osms:Web exploded" />
+        </option>
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Tomcat Server.osms" />
+      <item itemvalue="JUnit.FbaInboundWebServiceTest.putTransportContent" />
+      <item itemvalue="JUnit.autoSyncInboundShipments2" />
+      <item itemvalue="JUnit.get_amazon_REPORT" />
+      <item itemvalue="JUnit.插入stock数据" />
+      <item itemvalue="JUnit.SprintTest.test007" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.get_amazon_REPORT" />
+        <item itemvalue="JUnit.SprintTest.test007" />
+        <item itemvalue="JUnit.插入stock数据" />
+        <item itemvalue="JUnit.FbaInboundWebServiceTest.putTransportContent" />
+        <item itemvalue="JUnit.autoSyncInboundShipments2" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpringBeansView">
+    <option name="beanDetailsProportion" value="0.3" />
+  </component>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>C:\Users\Administrator\AppData\Roaming\Subversion</configuration>
+    <supportedVersion>125</supportedVersion>
+    <option name="FORCE_UPDATE" value="true" />
+    <option name="UPDATE_DEPTH" value="infinity" />
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\osms" />
+          <option name="myCopyRoot" value="E:\osms" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="E:\osms" />
+          <option name="myCopyRoot" value="E:\osms" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3d8a2851-4738-4512-a3be-e3c4f5ea5577" name="Default" comment="" />
+      <changelist id="49e716d0-204e-4229-8d24-cea7df76b31c" name="ignore" comment="不上传到svn的" />
+      <created>1528446281117</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1528446281117</updated>
+      <workItem from="1528446282719" duration="384000" />
+      <workItem from="1528446767913" duration="5703000" />
+      <workItem from="1528675926597" duration="30117000" />
+      <workItem from="1528762672041" duration="35470000" />
+      <workItem from="1528849081302" duration="33415000" />
+      <workItem from="1528935345538" duration="31502000" />
+      <workItem from="1529021894736" duration="36161000" />
+      <workItem from="1529107974666" duration="28423000" />
+      <workItem from="1529366693788" duration="7289000" />
+      <workItem from="1529374208281" duration="22851000" />
+      <workItem from="1529453817218" duration="15371000" />
+      <workItem from="1529540239151" duration="25079000" />
+      <workItem from="1529625940676" duration="12467000" />
+      <workItem from="1529646707822" duration="10688000" />
+      <workItem from="1529885819665" duration="33138000" />
+      <workItem from="1529972306322" duration="34281000" />
+      <workItem from="1530010739029" duration="4204000" />
+      <workItem from="1530059028573" duration="10533000" />
+      <workItem from="1530070980977" duration="14434000" />
+      <workItem from="1530091799286" duration="1602000" />
+      <workItem from="1530144911934" duration="23860000" />
+      <workItem from="1530231121606" duration="25621000" />
+      <workItem from="1530317899366" duration="16431000" />
+      <workItem from="1530489936399" duration="25746000" />
+      <workItem from="1530576790682" duration="15445000" />
+      <workItem from="1530663064400" duration="31767000" />
+      <workItem from="1530749575767" duration="14800000" />
+      <workItem from="1530835599347" duration="5184000" />
+      <workItem from="1530842566498" duration="14232000" />
+      <workItem from="1531095073637" duration="11126000" />
+      <workItem from="1531180968573" duration="21720000" />
+      <workItem from="1531267855271" duration="12293000" />
+      <workItem from="1531302631162" duration="3284000" />
+      <workItem from="1531354414287" duration="30686000" />
+      <workItem from="1531440977614" duration="30651000" />
+      <workItem from="1531526971683" duration="28405000" />
+      <workItem from="1531563109194" duration="229000" />
+      <workItem from="1531699619258" duration="5130000" />
+    </task>
+    <task id="LOCAL-00018" summary="ccc">
+      <created>1529056592964</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1529056592964</updated>
+    </task>
+    <task id="LOCAL-00019" summary="ccc">
+      <created>1529109506575</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1529109506575</updated>
+    </task>
+    <task id="LOCAL-00020" summary="ccc">
+      <created>1529115975250</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1529115975250</updated>
+    </task>
+    <task id="LOCAL-00021" summary="ccc">
+      <created>1529118936922</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1529118936922</updated>
+    </task>
+    <task id="LOCAL-00022" summary="ccc">
+      <created>1529136883397</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1529136883397</updated>
+    </task>
+    <task id="LOCAL-00023" summary="ccc">
+      <created>1529141663369</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1529141663369</updated>
+    </task>
+    <task id="LOCAL-00024" summary="ccc">
+      <created>1529141930087</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1529141930088</updated>
+    </task>
+    <task id="LOCAL-00025" summary="ccc">
+      <created>1529367972813</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1529367972813</updated>
+    </task>
+    <task id="LOCAL-00026" summary="order tracking fixed&#10;order shipping method fixed&#10;repeat">
+      <created>1529376315134</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1529376315134</updated>
+    </task>
+    <task id="LOCAL-00027" summary="order tracking fixed&#10;order shipping method fixed&#10;repeat">
+      <created>1529378145214</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1529378145214</updated>
+    </task>
+    <task id="LOCAL-00028" summary="order tracking fixed&#10;order shipping method fixed&#10;repeat">
+      <created>1529386692843</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1529386692843</updated>
+    </task>
+    <task id="LOCAL-00029" summary="order tracking fixed&#10;order shipping method fixed&#10;repeat three">
+      <created>1529393317469</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1529393317469</updated>
+    </task>
+    <task id="LOCAL-00030" summary="sw to cms&#10;inspector selected">
+      <created>1529454963589</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1529454963590</updated>
+    </task>
+    <task id="LOCAL-00031" summary="log produce">
+      <created>1529542990176</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1529542990177</updated>
+    </task>
+    <task id="LOCAL-00032" summary="1.&#9;FBA补货订单详细，取消商品项还需要将字段“提交AM批量“改为0， 不传提交亚马逊就不对了">
+      <created>1529545371870</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1529545371870</updated>
+    </task>
+    <task id="LOCAL-00033" summary="取消状态的item提交给亚马逊时，亚马逊的批量改为零">
+      <created>1529552459098</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1529552459098</updated>
+    </task>
+    <task id="LOCAL-00034" summary="update异常处理">
+      <created>1529567305780</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1529567305780</updated>
+    </task>
+    <task id="LOCAL-00035" summary="修改update返回值">
+      <created>1529567745466</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1529567745466</updated>
+    </task>
+    <task id="LOCAL-00036" summary="重构排序，只要商品中有一个子商品（配件）是待审核状态，就把这个商品排在最上面">
+      <created>1529655889497</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1529655889497</updated>
+    </task>
+    <task id="LOCAL-00037" summary="重构排序，只要商品中有一个子商品（配件）是待审核状态，就把这个商品排在最上面&#10;order by bug fixed">
+      <created>1529894913361</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1529894913362</updated>
+    </task>
+    <task id="LOCAL-00038" summary="FBA补货订单详细中添加item 只要是通过补货计划自动生成的，设置默认提交亚马逊那一列的值为订购批量的值&#10;bug fixed">
+      <created>1529910630793</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1529910630793</updated>
+    </task>
+    <task id="LOCAL-00039" summary="自卖订单管理 默认货运方式 jp2店铺&#10;bug fixed">
+      <created>1529911273226</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1529911273226</updated>
+    </task>
+    <task id="LOCAL-00040" summary="自卖订单管理 默认货运方式 jp2店铺&#10;bug fixed">
+      <created>1529926749561</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1529926749561</updated>
+    </task>
+    <task id="LOCAL-00041" summary="3.9.1&#9;更新货运单号至亚马逊&#10;3.9.2&#9;更新亚马逊货件状态为已发货">
+      <created>1530080935921</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1530080935921</updated>
+    </task>
+    <task id="LOCAL-00042" summary="3.9.1&#9;更新货运单号至亚马逊&#10;3.9.2&#9;更新亚马逊货件状态为已发货">
+      <created>1530082312709</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1530082312709</updated>
+    </task>
+    <task id="LOCAL-00043" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing">
+      <created>1530586144853</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1530586144853</updated>
+    </task>
+    <task id="LOCAL-00044" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;bean register">
+      <created>1530667458400</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1530667458400</updated>
+    </task>
+    <task id="LOCAL-00045" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;bean register">
+      <created>1530674536860</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1530674536860</updated>
+    </task>
+    <task id="LOCAL-00046" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;po vo name update&#10;cxf fixed&#10;datestamp to date">
+      <created>1530683249927</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1530683249927</updated>
+    </task>
+    <task id="LOCAL-00047" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;vo 补全&#10;po 补全">
+      <created>1530750921959</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1530750921959</updated>
+    </task>
+    <task id="LOCAL-00048" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;--new script 1&#10; ALTER TABLE replenishment_order&#10; ADD&#10;    order_amazon_status int DEFAULT 0&#10;--new script 2&#10; ALTER TABLE replenishment_order&#10; ADD&#10;&#9;amazon_practicality_arrive_date datetime">
+      <created>1530752572667</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1530752572667</updated>
+    </task>
+    <task id="LOCAL-00049" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;stock">
+      <created>1530773673892</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1530773673892</updated>
+    </task>
+    <task id="LOCAL-00050" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;stock">
+      <created>1530774073260</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1530774073261</updated>
+    </task>
+    <task id="LOCAL-00051" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;stock">
+      <created>1530774157404</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1530774157404</updated>
+    </task>
+    <task id="LOCAL-00052" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;分页查询amazon stock test pass">
+      <created>1530778381155</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1530778381156</updated>
+    </task>
+    <task id="LOCAL-00053" summary="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;auto task amazon_stock_sync">
+      <created>1530862653461</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1530862653461</updated>
+    </task>
+    <task id="LOCAL-00054" summary="rollback urgency批量修改">
+      <created>1531117885239</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1531117885240</updated>
+    </task>
+    <task id="LOCAL-00055" summary="amazon stock report&#10;connect osms_am">
+      <created>1531208048270</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1531208048271</updated>
+    </task>
+    <task id="LOCAL-00056" summary="amazon stock report&#10;finish auto task &#10;add logger">
+      <created>1531374498249</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1531374498250</updated>
+    </task>
+    <task id="LOCAL-00057" summary="增加amazon——stock——report备份表&#10;请求和同步失败发送邮件&#10;写入数据库更新发送邮件">
+      <created>1531387545403</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1531387545403</updated>
+    </task>
+    <task id="LOCAL-00058" summary="增加amazon——stock——report备份表&#10;请求和同步失败发送邮件&#10;写入数据库更新发送邮件">
+      <created>1531388043167</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1531388043167</updated>
+    </task>
+    <task id="LOCAL-00059" summary="auto task 关闭&#10;amazon stock表中增加新的字段&#10;webservice修复">
+      <created>1531452527855</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1531452527856</updated>
+    </task>
+    <task id="LOCAL-00060" summary="amazon stock report po 字段映射修复">
+      <created>1531460552705</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1531460552705</updated>
+    </task>
+    <task id="LOCAL-00061" summary="hql 拼接">
+      <created>1531469031562</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1531469031562</updated>
+    </task>
+    <task id="LOCAL-00062" summary="修改补货订单是否是对接过亚马逊的逻辑">
+      <created>1531549983189</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1531549983190</updated>
+    </task>
+    <task id="LOCAL-00063" summary="look 日志补齐">
+      <created>1531550111881</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1531550111881</updated>
+    </task>
+    <task id="LOCAL-00064" summary="自动任务启动">
+      <created>1531555017942</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1531555017942</updated>
+    </task>
+    <task id="LOCAL-00065" summary="自动任务启动 test">
+      <created>1531561077154</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1531561077154</updated>
+    </task>
+    <task id="LOCAL-00066" summary="enum status">
+      <created>1531703853797</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1531703853798</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 08m 29s.xml">
+      <configuration name="SprintTest.test007" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 30m 00s.xml">
+      <configuration name="SprintTest.test007" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 32m 03s.xml">
+      <configuration name="SprintTest.test007" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 34m 21s.xml">
+      <configuration name="SprintTest.test007" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 35m 31s.xml">
+      <configuration name="SprintTest.test007" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="SprintTest_test007 - 2018.07.14 at 15h 37m 13s.xml">
+      <configuration name="SprintTest.test007" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="AmazonStockReport_testCase - 2018.07.14 at 17h 16m 30s.xml">
+      <configuration name="AmazonStockReport.testCase" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="get_amazon_REPORT - 2018.07.14 at 17h 23m 45s.xml">
+      <configuration name="get_amazon_REPORT" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="get_amazon_REPORT - 2018.07.14 at 17h 27m 35s.xml">
+      <configuration name="get_amazon_REPORT" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="get_amazon_REPORT - 2018.07.14 at 17h 35m 17s.xml">
+      <configuration name="get_amazon_REPORT" configurationId="JUnit" />
+    </history-entry>
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="709493000" />
+  </component>
+  <component name="TodoView" selected-index="1">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="221" y="79" width="1760" height="966" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info anchor="right" id="Palette" order="2" />
+      <window_info anchor="bottom" id="Event Log" order="17" sideWeight="0.47961494" side_tool="true" weight="0.30530974" />
+      <window_info anchor="bottom" id="Application Servers" order="10" sideWeight="0.49882352" weight="0.32535884" />
+      <window_info anchor="bottom" id="JRebel Console" order="0" sideWeight="0.47961494" side_tool="true" weight="0.30530974" />
+      <window_info anchor="right" id="Maven Projects" order="8" weight="0.32951808" />
+      <window_info anchor="bottom" id="Database Changes" order="15" show_stripe_button="false" />
+      <window_info anchor="bottom" id="JRebel Executor" order="1" />
+      <window_info id="Capture Tool" order="7" />
+      <window_info id="Designer" order="3" />
+      <window_info anchor="right" id="Database" order="5" weight="0.26385927" />
+      <window_info id="Structure" order="2" sideWeight="0.5051546" side_tool="true" weight="0.20117646" />
+      <window_info anchor="right" id="Ant Build" order="4" weight="0.25" />
+      <window_info id="UI Designer" order="5" />
+      <window_info anchor="bottom" id="Debug" order="6" sideWeight="0.51698756" weight="0.3901869" />
+      <window_info anchor="bottom" id="TODO" order="9" sideWeight="0.49941176" weight="0.3492823" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.36682242" />
+      <window_info anchor="right" id="Palette&#9;" order="6" />
+      <window_info id="Image Layers" order="4" />
+      <window_info anchor="bottom" id="Java Enterprise" order="14" sideWeight="0.49941176" weight="0.326555" />
+      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="bottom" id="Version Control" order="16" sideWeight="0.520385" visible="true" weight="0.30382776" />
+      <window_info anchor="bottom" id="Run" order="5" weight="0.26769912" />
+      <window_info anchor="bottom" id="Spring" order="11" sideWeight="0.4982353" weight="0.37799042" />
+      <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.49941176" weight="0.3277512" />
+      <window_info id="Persistence" order="0" sideWeight="0.50584114" side_tool="true" weight="0.25882354" />
+      <window_info anchor="bottom" id="Database Console" order="18" weight="0.34935522" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49484536" visible="true" weight="0.20117646" />
+      <window_info anchor="bottom" id="Problems" order="18" weight="0.3277512" />
+      <window_info anchor="bottom" id="Web" order="20" side_tool="true" weight="0.32972974" />
+      <window_info anchor="bottom" id="JRebel" order="21" sideWeight="0.49354005" side_tool="true" weight="0.31425485" />
+      <window_info anchor="bottom" id="Find" order="4" weight="0.3276644" />
+      <window_info anchor="right" id="Theme Preview" order="7" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
+      <window_info anchor="bottom" id="SQL Generator" order="19" weight="0.33294392" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="SVN Properties" order="2" weight="0.3293979" />
+      <window_info anchor="bottom" id="Message" order="3" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="Persistence" order="0" sideWeight="0.5027322" side_tool="true" weight="0.24705882" />
+      <window_info anchor="bottom" id="Application Servers" order="10" sideWeight="0.49882352" weight="0.32655367" />
+      <window_info id="Designer" order="3" />
+      <window_info anchor="right" id="Palette" order="2" />
+      <window_info anchor="bottom" id="JRebel" order="22" sideWeight="0.49354005" side_tool="true" weight="0.31425485" />
+      <window_info anchor="bottom" id="Spring" order="11" sideWeight="0.4982353" weight="0.32881355" />
+      <window_info anchor="bottom" id="Database Console" order="18" weight="0.35066372" />
+      <window_info anchor="bottom" id="Run" order="5" weight="0.26814988" />
+      <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
+      <window_info anchor="right" id="Ant Build" order="4" weight="0.25" />
+      <window_info id="UI Designer" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.49941176" weight="0.32881355" />
+      <window_info id="Capture Tool" order="7" />
+      <window_info anchor="right" id="Capture Analysis" order="3" />
+      <window_info anchor="bottom" id="SVN Properties" order="2" weight="0.3293979" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="bottom" id="Event Log" order="17" sideWeight="0.5018072" side_tool="true" weight="0.3446712" />
+      <window_info anchor="bottom" id="Messages" order="13" weight="0.36723164" />
+      <window_info anchor="bottom" id="TODO" order="9" sideWeight="0.49941176" weight="0.3502825" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Problems" order="19" weight="0.32937366" />
+      <window_info id="Image Layers" order="4" />
+      <window_info anchor="bottom" id="Java Enterprise" order="14" sideWeight="0.49941176" weight="0.32768363" />
+      <window_info anchor="bottom" id="Database Changes" order="15" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="16" sideWeight="0.52117646" weight="0.30530974" />
+      <window_info anchor="right" id="Maven Projects" order="8" weight="0.32951808" />
+      <window_info anchor="bottom" id="JRebel Executor" order="1" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" sideWeight="0.49726775" visible="true" weight="0.24631937" />
+      <window_info anchor="bottom" id="JRebel Console" order="0" sideWeight="0.47882354" side_tool="true" weight="0.3062147" />
+      <window_info anchor="right" id="Database" order="5" weight="0.2644394" />
+      <window_info anchor="bottom" id="Message" order="3" />
+      <window_info anchor="bottom" id="Web" order="21" side_tool="true" weight="0.32972974" />
+      <window_info anchor="right" id="Palette&#9;" order="6" />
+      <window_info anchor="right" id="Theme Preview" order="7" />
+      <window_info id="Structure" order="2" sideWeight="0.5027322" side_tool="true" weight="0.24705882" />
+      <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
+      <window_info anchor="bottom" id="Find" order="4" weight="0.3276644" />
+      <window_info anchor="bottom" id="SQL Generator" order="20" weight="0.33333334" />
+      <window_info anchor="bottom" id="Debug" order="6" sideWeight="0.51411766" weight="0.3949115" />
+    </layout-to-restore>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="自卖订单管理 默认货运方式 jp2店铺&#10;bug fixed" />
+    <MESSAGE value="3.9.1&#9;更新货运单号至亚马逊&#10;3.9.2&#9;更新亚马逊货件状态为已发货" />
+    <MESSAGE value="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing" />
+    <MESSAGE value="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;bean register" />
+    <MESSAGE value="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;po vo name update&#10;cxf fixed&#10;datestamp to date" />
+    <MESSAGE value="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;vo 补全&#10;po 补全" />
+    <MESSAGE value="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;--new script 1&#10; ALTER TABLE replenishment_order&#10; ADD&#10;    order_amazon_status int DEFAULT 0&#10;--new script 2&#10; ALTER TABLE replenishment_order&#10; ADD&#10;&#9;amazon_practicality_arrive_date datetime" />
+    <MESSAGE value="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;stock" />
+    <MESSAGE value="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;分页查询amazon stock test pass" />
+    <MESSAGE value="4.0 更新OSMS的FBA补货订单状态&#10;&#10;6.1 海运备货计划辅助功能doing&#10;&#10;auto task amazon_stock_sync" />
+    <MESSAGE value="rollback 批量修改" />
+    <MESSAGE value="rollback urgency批量修改" />
+    <MESSAGE value="amazon stock report" />
+    <MESSAGE value="amazon stock report&#10;connect osms_am" />
+    <MESSAGE value="amazon stock report&#10;finish auto task &#10;add logger" />
+    <MESSAGE value="增加amazon——stock——report备份表&#10;请求和同步失败发送邮件&#10;写入数据库更新发送邮件" />
+    <MESSAGE value="auto task 关闭&#10;amazon stock表中增加新的字段&#10;webservice修复" />
+    <MESSAGE value="amazon stock report po 字段映射修复" />
+    <MESSAGE value="hql 拼接" />
+    <MESSAGE value="修改补货订单是否是对接过亚马逊的逻辑" />
+    <MESSAGE value="look 日志补齐" />
+    <MESSAGE value="自动任务启动" />
+    <MESSAGE value="自动任务启动 test" />
+    <MESSAGE value="enum" />
+    <MESSAGE value="enum status" />
+    <option name="LAST_COMMIT_MESSAGE" value="enum status" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint type="java-line">
+          <option name="description" value="1.2findbyid" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentTaskServiceImpl.java</url>
+          <line>177</line>
+          <properties />
+          <option name="timeStamp" value="16" />
+          <description>1.2findbyid</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="cancelReplenishmentOrder" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java</url>
+          <line>1725</line>
+          <properties />
+          <option name="timeStamp" value="58" />
+          <description>cancelReplenishmentOrder</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="ordercancel" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/order/AmazonOrderServiceImpl.java</url>
+          <line>679</line>
+          <properties />
+          <option name="timeStamp" value="67" />
+          <description>ordercancel</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="repelnishmentCancel" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java</url>
+          <line>560</line>
+          <properties />
+          <option name="timeStamp" value="80" />
+          <description>repelnishmentCancel</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="150" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/order/OrderTrackingMessageServiceImpl.java</url>
+          <line>162</line>
+          <properties />
+          <option name="timeStamp" value="91" />
+          <description>150</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="wherein" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentTaskServiceImpl.java</url>
+          <line>1417</line>
+          <properties />
+          <option name="timeStamp" value="107" />
+          <description>wherein</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="shipmethod" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java</url>
+          <line>1352</line>
+          <properties />
+          <option name="timeStamp" value="110" />
+          <description>shipmethod</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="iterrator" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentTaskServiceImpl.java</url>
+          <line>713</line>
+          <properties />
+          <option name="timeStamp" value="146" />
+          <description>iterrator</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="判断库存" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java</url>
+          <line>1018</line>
+          <properties />
+          <option name="timeStamp" value="151" />
+          <description>判断库存</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="properties" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/common/util/DeployProperties.java</url>
+          <line>128</line>
+          <properties />
+          <option name="timeStamp" value="153" />
+          <description>properties</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="problem" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java</url>
+          <line>426</line>
+          <properties />
+          <option name="timeStamp" value="154" />
+          <description>problem</description>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <option name="description" value="apart" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentTaskServiceImpl.java</url>
+          <line>640</line>
+          <properties />
+          <option name="timeStamp" value="217" />
+          <description>apart</description>
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ShopProductInventoryServiceImpl.java</url>
+          <line>233</line>
+          <properties />
+          <option name="timeStamp" value="228" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/webservice/client/CMSClient.java</url>
+          <line>306</line>
+          <properties />
+          <option name="timeStamp" value="232" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java</url>
+          <line>866</line>
+          <properties />
+          <option name="timeStamp" value="257" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/com/itecheasy/test/FbaInboundWebServiceTest.java</url>
+          <line>28</line>
+          <properties />
+          <option name="timeStamp" value="258" />
+        </line-breakpoint>
+        <line-breakpoint type="java-line">
+          <option name="description" value="study" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/system/SystemServiceImpl.java</url>
+          <line>83</line>
+          <properties />
+          <option name="timeStamp" value="259" />
+          <description>study</description>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <option name="description" value="" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/ReplenishmentTaskServiceImpl.java</url>
+          <line>649</line>
+          <properties />
+          <option name="timeStamp" value="264" />
+          <description />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <option name="description" value="" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/webservice/client/AmazonClient.java</url>
+          <line>160</line>
+          <properties />
+          <option name="timeStamp" value="281" />
+          <description />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <option name="description" value="" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/common/asynemail/AsynEmailServiceImpl.java</url>
+          <line>103</line>
+          <properties />
+          <option name="timeStamp" value="284" />
+          <description />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/test/com/itecheasy/core/task/AmazonStockReport.java</url>
+          <line>112</line>
+          <properties />
+          <option name="timeStamp" value="285" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/order/OrderServiceImpl.java</url>
+          <line>998</line>
+          <properties />
+          <option name="timeStamp" value="287" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <option name="description" value="taozh" />
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/prepare/SeaTransportationPrepareServiceImpl.java</url>
+          <line>190</line>
+          <properties />
+          <option name="timeStamp" value="293" />
+          <description>taozh</description>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java</url>
+          <line>908</line>
+          <properties />
+          <option name="timeStamp" value="294" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java</url>
+          <line>938</line>
+          <properties />
+          <option name="timeStamp" value="295" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java</url>
+          <line>964</line>
+          <properties />
+          <option name="timeStamp" value="297" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/util/StaticUtils.java</url>
+          <line>169</line>
+          <properties />
+          <option name="timeStamp" value="300" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/email/EmailServiceImpl.java</url>
+          <line>67</line>
+          <properties />
+          <option name="timeStamp" value="301" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/common/asynemail/AsynEmailServiceImpl.java</url>
+          <line>55</line>
+          <properties />
+          <option name="timeStamp" value="302" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/webservice/client/AmazonClient.java</url>
+          <line>431</line>
+          <properties />
+          <option name="timeStamp" value="304" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java</url>
+          <line>152</line>
+          <properties />
+          <option name="timeStamp" value="305" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java</url>
+          <line>195</line>
+          <properties />
+          <option name="timeStamp" value="309" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java</url>
+          <line>163</line>
+          <properties />
+          <option name="timeStamp" value="310" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java</url>
+          <line>229</line>
+          <properties />
+          <option name="timeStamp" value="312" />
+        </line-breakpoint>
+      </breakpoints>
+      <breakpoints-dialog>
+        <breakpoints-dialog />
+      </breakpoints-dialog>
+      <option name="time" value="313" />
+    </breakpoint-manager>
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/WebRoot/WEB-INF/web.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="132">
+          <caret line="67" column="47" lean-forward="true" selection-start-line="67" selection-start-column="47" selection-end-line="67" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web_app/com/itecheasy/core/order/addOrder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="651">
+          <caret line="96" column="52" lean-forward="true" selection-start-line="96" selection-start-column="52" selection-end-line="96" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/po/AmazonStockReportPO.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="44" column="35" selection-start-line="44" selection-start-column="22" selection-end-line="44" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/order/AmazonStockReport.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-441">
+          <caret line="10" column="19" lean-forward="true" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/core/task/AmazonStockReport.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="33" column="56" selection-start-line="33" selection-start-column="56" selection-end-line="33" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/task/SyncAmozonStackReportTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="13" column="9" selection-start-line="13" selection-start-column="9" selection-end-line="13" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/spring/spring.jar!/org/springframework/aop/support/AopUtils.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="185">
+          <caret line="163" selection-start-line="163" selection-end-line="163" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/email/EmailService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="37" column="18" lean-forward="true" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/common/asynemail/AsynEmailService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/replenishment_order_product">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/email/EmailServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="67" selection-start-line="67" selection-end-line="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/util/StaticUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="114">
+          <caret line="169" selection-start-line="169" selection-end-line="169" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://e092c393-f804-4b26-8de6-541578693656/database/osms_dev_180710/schema/dbo/table/amazon_stock_report_history">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://e092c393-f804-4b26-8de6-541578693656/database/osms_dev_180710/schema/dbo/table/amazon_stock_report">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/amazon_stock_report">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/amazon_stock_report_history">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/consoles/db/40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/console_1.sql">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="49" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/Cheese.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/fba/AmazonReportService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="672">
+          <caret line="39" column="9" selection-start-line="39" selection-start-column="9" selection-end-line="39" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/webservice/client/AmazonClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="415" column="49" selection-start-line="415" selection-start-column="49" selection-end-line="415" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/task/SyncAmozonStackReportTaskImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="26" column="28" lean-forward="true" selection-start-line="26" selection-start-column="28" selection-end-line="26" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/BlackOlives.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/PizzaIngredientFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/CheesePizza.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="36" selection-start-line="2" selection-start-column="36" selection-end-line="2" selection-end-column="36" />
+          <folding>
+            <element signature="e#198#199#0" expanded="true" />
+            <element signature="e#247#248#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/Pizza.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="9" column="24" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+          <folding>
+            <element signature="e#235#236#0" expanded="true" />
+            <element signature="e#290#291#0" expanded="true" />
+            <element signature="e#305#306#0" expanded="true" />
+            <element signature="e#372#373#0" expanded="true" />
+            <element signature="e#387#388#0" expanded="true" />
+            <element signature="e#454#455#0" expanded="true" />
+            <element signature="e#484#485#0" expanded="true" />
+            <element signature="e#507#508#0" expanded="true" />
+            <element signature="e#528#529#0" expanded="true" />
+            <element signature="e#546#547#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/ChicagoPizzaStore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="4" column="20" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/Garlic.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/NYPizzaIngredientFactory.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="16" column="25" selection-start-line="16" selection-start-column="25" selection-end-line="16" selection-end-column="25" />
+          <folding>
+            <element signature="e#154#155#0" expanded="true" />
+            <element signature="e#188#189#0" expanded="true" />
+            <element signature="e#220#221#0" expanded="true" />
+            <element signature="e#253#254#0" expanded="true" />
+            <element signature="e#287#288#0" expanded="true" />
+            <element signature="e#321#322#0" expanded="true" />
+            <element signature="e#506#507#0" expanded="true" />
+            <element signature="e#541#542#0" expanded="true" />
+            <element signature="e#571#572#0" expanded="true" />
+            <element signature="e#601#602#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/NYPizzaStore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="9" column="30" selection-start-line="9" selection-start-column="30" selection-end-line="9" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/PizzaTestDrive.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/headfirst/factory/pizzaaf/PizzaStore.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="7" column="15" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cfg/asynemail.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="16" column="13" lean-forward="true" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/AmazonReportServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="137" column="136" selection-start-line="137" selection-start-column="136" selection-end-line="137" selection-end-column="136" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cfg/deploy_config.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="6" column="31" selection-start-line="6" selection-start-column="31" selection-end-line="6" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cfg/hibernate.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1155">
+          <caret line="55" column="63" selection-start-line="55" selection-start-column="63" selection-end-line="55" selection-end-column="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cfg/jdbc_sqlserver.properties">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cfg/log4j.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-263" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cfg/rebel.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cfg/autotask.properties">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="24" column="10" lean-forward="true" selection-start-line="24" selection-start-column="10" selection-end-line="24" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/service_job.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="328">
+          <caret line="27" column="25" lean-forward="true" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
+          <folding>
+            <element signature="e#859#892#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/Test.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/TestTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="84">
+          <caret line="30" column="13" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/SWTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="12" column="13" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/service_core.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="291">
+          <caret line="186" column="4" selection-start-line="186" selection-start-column="4" selection-end-line="186" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/AmozonUpdateReplenishmentShipmentImplTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="189">
+          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/com/itecheasy/test/SprintTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="670">
+          <caret line="122" lean-forward="true" selection-start-line="122" selection-end-line="122" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/task/AmozonUpdateReplenishmentShipmentImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="138" lean-forward="true" selection-start-line="138" selection-end-line="138" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_api/com/itecheasy/core/order/OrderService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="401" column="26" lean-forward="true" selection-start-line="401" selection-start-column="26" selection-end-line="401" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/common/asynemail/AsynEmailServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="105" column="33" lean-forward="true" selection-start-line="105" selection-start-column="33" selection-end-line="105" selection-end-column="33" />
+          <folding>
+            <element signature="e#1050#1051#0" expanded="true" />
+            <element signature="e#1091#1092#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="das://40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d/database/Develop_OSMS/schema/dbo/table/replenishment_order">
+      <provider selected="true" editor-type-id="com.intellij.database.editor.DatabaseTableFileEditorProvider">
+        <state>
+          <filtering enabled="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/core_impl/com/itecheasy/core/fba/FbaInboundServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="487">
+          <caret line="950" column="32" selection-start-line="950" selection-start-column="32" selection-end-line="950" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <last-edited>osms:Web</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>Hibernate</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.6</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>osms</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.6</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>lib</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ScopeChooserConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

@@ -1,0 +1,102 @@
+package com.itecheasy.core.fba.dao;
+
+import com.itecheasy.core.po.ReplenishmentOrderItemPO;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate3.HibernateCallback;
+
+import com.itecheasy.common.BaseDAOImpl;
+
+/**
+ * @author wanghw
+ * @date 2016-12-3
+ * @description TODO
+ * @version 1.2.2
+ */
+public class ReplenishmentOrderItemDaoImpl extends BaseDAOImpl<ReplenishmentOrderItemPO, Integer>
+		implements ReplenishmentOrderItemDao {
+
+	@Override
+	public int getSeaTransOnPassageQuantity(int shopId, String sku,Date startDate, Date endDate) {
+		StringBuffer buffer = new StringBuffer("SELECT SUM(d.orderedQuantity) ");
+		buffer.append("FROM SeaTransportationPreparePlanPO a,FbaReplenishmentPlanPO b, ReplenishmentOrderPO c,ReplenishmentOrderItemPO d ");
+		buffer.append("WHERE a.id=b.seaTransportationPreparePlanId ");
+		buffer.append("AND a.status=4 ");
+		buffer.append("AND b.id=c.fbaReplenishmentPlanId ");
+		buffer.append("AND c.id=d.replenishmentOrderId ");
+		buffer.append("AND c.status<>132 ");
+		buffer.append("AND d.status<>12 ");
+		buffer.append("AND c.fbaShipmentMethod='ST' ");
+		//buffer.append("AND c.order_amazon_status");
+		buffer.append("AND c.shopId = ? ");
+		buffer.append("AND d.sku = ? ");
+		buffer.append("AND a.arriveDate >=?  ");
+		buffer.append("AND a.arriveDate <= ? ");
+		Iterator<?> iterate = getHibernateTemplate().iterate(buffer.toString(),new Object[] { shopId, sku,startDate ,endDate});
+		if (iterate.hasNext()) {
+			Object obj =iterate.next();
+			if(obj!=null){
+				return ((Double) obj).intValue();
+			}
+		}
+		return 0;
+		//findListBySql(sql, parameters, clazz)
+	}
+
+	@Override
+	public Map<String, Integer> getSeaTransOnPassageQuantity(final int shopId, String[] skus, final Date startDate, final Date endDate) {
+		final StringBuilder sql = new StringBuilder("SELECT d.sku, SUM(d.order_qty) as quantity ");
+		sql.append("FROM sea_transportation_prepare_plan a,fba_replenishment_plan b, replenishment_order c,replenishment_order_product d ");
+		sql.append("WHERE a.id=b.sea_transportation_prepare_plan_id ");
+		sql.append("AND a.status=4 ");
+		sql.append("AND b.id=c.fba_replenishment_plan_id ");
+		sql.append("AND c.id=d.replenishment_order_id ");
+		sql.append("AND c.status<>132 ");
+		sql.append("AND d.status<>12 ");
+		sql.append("AND c.fba_shipment_method='ST' ");
+		sql.append("AND c.shop_id=? ");
+		sql.append("AND a.arrive_date >=? ");
+		sql.append("AND a.arrive_date <=? ");
+		sql.append("AND d.sku in ( ");
+		for (int i = 0; i < skus.length; i++) {
+			sql.append("'");
+			sql.append(skus[i]);
+			sql.append("'");
+			if(i!=skus.length-1){
+				sql.append(",");
+			}
+		}
+		sql.append(" ) ");
+		sql.append("GROUP BY d.sku ");
+		final Map<String, Integer> map = new HashMap<String, Integer>();
+		this.getHibernateTemplate().execute(new HibernateCallback() {
+			
+			@Override
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				@SuppressWarnings("deprecation")
+				Connection connection = session.connection();
+				PreparedStatement ps = connection.prepareStatement(sql.toString());
+				ps.setInt(1, shopId);
+				ps.setDate(2, new java.sql.Date(startDate.getTime()));
+				ps.setDate(3, new java.sql.Date(endDate.getTime()));
+				ResultSet rs = ps.executeQuery();
+				while(rs.next()){
+					map.put(rs.getString("sku"), rs.getInt("quantity"));
+				}
+				return map;
+			}
+		});
+		return map;
+	}
+
+}

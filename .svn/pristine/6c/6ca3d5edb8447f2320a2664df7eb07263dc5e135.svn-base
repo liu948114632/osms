@@ -1,0 +1,16 @@
+package com.itecheasy.core.task;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/3 11:00
+ * @Description:
+ */
+public interface SyncAmozonStackReportTask {
+
+    /**
+     * 同步亚马逊库存
+     *
+     */
+    void syncAmozonStackReportTask();
+
+}

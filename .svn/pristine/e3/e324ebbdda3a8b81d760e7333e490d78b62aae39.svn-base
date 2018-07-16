@@ -1,0 +1,46 @@
+package com.itecheasy.core.fba.dao;
+
+import com.itecheasy.core.po.ReplenishmentOrderItemPO;
+
+import java.util.Date;
+import java.util.Iterator;
+
+import com.itecheasy.common.BaseDAOImpl;
+
+/**
+ * @author wanghw
+ * @date 2016-12-3
+ * @description TODO
+ * @version 1.2.2
+ */
+public class ReplenishmentOrderItemDaoImpl extends BaseDAOImpl<ReplenishmentOrderItemPO, Integer>
+		implements ReplenishmentOrderItemDao {
+
+	@Override
+	public int getSeaTransOnPassageQuantity(int shopId, String sku,Date startDate, Date endDate) {
+		StringBuffer buffer = new StringBuffer("SELECT SUM(d.amQuantity) ");
+		buffer.append("FROM SeaTransportationPreparePlanPO a,FbaReplenishmentPlanPO b, ReplenishmentOrderPO c,ReplenishmentOrderItemPO d ");
+		buffer.append("WHERE a.id=b.seaTransportationPreparePlanId ");
+		buffer.append("AND a.status=4 ");
+		buffer.append("AND b.id=c.fbaReplenishmentPlanId ");
+		buffer.append("AND c.id=d.replenishmentOrderId ");
+		buffer.append("AND c.status<>132 ");
+		buffer.append("AND d.status<>12 ");
+		buffer.append("AND c.fbaShipmentMethod='ST' ");
+		//buffer.append("AND c.order_amazon_status");
+		buffer.append("AND c.shopId = ? ");
+		buffer.append("AND d.sku = ? ");
+		buffer.append("AND a.shippingDate >=?  ");
+		buffer.append("AND a.arriveDate <= ? ");
+		Iterator<?> iterate = getHibernateTemplate().iterate(buffer.toString(),new Object[] { shopId, sku,startDate ,endDate});
+		if (iterate.hasNext()) {
+			Object obj =iterate.next();
+			if(obj!=null){
+				return (Integer) obj;
+			}
+		}
+		return 0;
+		//findListBySql(sql, parameters, clazz)
+	}
+
+}

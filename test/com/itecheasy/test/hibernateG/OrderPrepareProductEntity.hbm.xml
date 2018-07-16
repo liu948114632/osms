@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+    <class name="com.itecheasy.test.hibernateG.OrderPrepareProductEntity" table="order_prepare_product" schema="dbo"
+           catalog="Develop_OSMS">
+        <id name="id">
+            <column name="id" sql-type="int"/>
+        </id>
+        <property name="orderQty">
+            <column name="order_qty" sql-type="decimal(18,2)" precision="18" scale="2" not-null="true"/>
+        </property>
+        <property name="prepareQty">
+            <column name="prepare_qty" sql-type="decimal(18,2)" precision="18" scale="2" not-null="true"/>
+        </property>
+        <property name="status">
+            <column name="status" sql-type="int" not-null="true"/>
+        </property>
+        <property name="cmsProductId">
+            <column name="cms_product_id" sql-type="int" not-null="true"/>
+        </property>
+        <property name="unitQty">
+            <column name="unit_qty" sql-type="int" not-null="true"/>
+        </property>
+        <property name="unit">
+            <column name="unit" sql-type="varchar(10)" length="10" not-null="true"/>
+        </property>
+        <property name="cmsProductCode">
+            <column name="cms_product_code" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+        <property name="orderId">
+            <column name="order_id" sql-type="int" not-null="true"/>
+        </property>
+        <property name="unitWeight">
+            <column name="unit_weight" sql-type="decimal(18)" precision="18" not-null="true"/>
+        </property>
+        <property name="unitVolume">
+            <column name="unit_volume" sql-type="decimal(18)" precision="18" not-null="true"/>
+        </property>
+        <property name="box">
+            <column name="box" sql-type="varchar(50)" length="50" not-null="true"/>
+        </property>
+        <property name="costPrice">
+            <column name="cost_price" sql-type="decimal(10,3)" precision="10" scale="3" not-null="true"/>
+        </property>
+        <property name="isLimit">
+            <column name="is_limit" sql-type="bit" not-null="true"/>
+        </property>
+        <property name="cmsPrepare">
+            <column name="cms_prepare" sql-type="tinyint" not-null="true"/>
+        </property>
+        <property name="abnormalMate">
+            <column name="abnormal_mate" sql-type="bit" not-null="true"/>
+        </property>
+        <property name="electronic">
+            <column name="electronic" sql-type="bit" not-null="true"/>
+        </property>
+        <property name="isDeleted">
+            <column name="is_deleted" sql-type="bit" not-null="true"/>
+        </property>
+        <property name="magnetism">
+            <column name="magnetism" sql-type="bit" not-null="true"/>
+        </property>
+        <property name="textile">
+            <column name="Textile" sql-type="bit" not-null="true"/>
+        </property>
+        <property name="customerRemark">
+            <column name="customer_remark" sql-type="nvarchar(500)" length="500" not-null="true"/>
+        </property>
+        <property name="branchRemark">
+            <column name="branch_remark" sql-type="nvarchar(500)" length="500" not-null="true"/>
+        </property>
+        <property name="csRemark">
+            <column name="cs_remark" sql-type="nvarchar(500)" length="500" not-null="true"/>
+        </property>
+        <property name="swPackageStockOut">
+            <column name="sw_package_stock_out" sql-type="bit" not-null="true"/>
+        </property>
+        <property name="purchaseRemark">
+            <column name="purchase_remark" sql-type="nvarchar(max)" length="2147483647" not-null="true"/>
+        </property>
+        <property name="moreBatchAuditWaitTaskId">
+            <column name="more_batch_audit_wait_task_id" sql-type="int" not-null="true"/>
+        </property>
+    </class>
+</hibernate-mapping>

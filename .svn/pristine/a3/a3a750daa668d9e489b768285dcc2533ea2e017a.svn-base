@@ -1,0 +1,49 @@
+package com.itecheasy.core.order;
+
+import com.itecheasy.core.BaseSearchForm;
+
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/2 14:12
+ * @Description:
+ */
+public class AmazonStockReportSearchForm extends BaseSearchForm {
+
+    private Integer shopId;
+
+  //  private List<String> skuList;
+
+    private String sku;
+
+    private int operatorId;
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public int getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(int operatorId) {
+        this.operatorId = operatorId;
+    }
+
+//    int shopId, int page, int pageSize, String sku,String productCode,int operatorId)
+
+}

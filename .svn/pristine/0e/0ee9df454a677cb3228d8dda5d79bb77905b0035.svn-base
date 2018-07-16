@@ -1,0 +1,812 @@
+package com.itecheasy.core.order;
+
+import java.math.BigDecimal;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import com.itecheasy.core.order.dao.*;
+import com.itecheasy.core.po.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
+import com.itecheasy.common.Param;
+import com.itecheasy.common.dao.Criteria;
+import com.itecheasy.common.dao.Restriction;
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.common.util.CalcUtils;
+import com.itecheasy.common.util.CollectionUtils;
+import com.itecheasy.common.util.ConstantUtils;
+import com.itecheasy.common.util.DateUtils;
+import com.itecheasy.common.util.DeployProperties;
+import com.itecheasy.core.BussinessException;
+import com.itecheasy.core.product.AMShopProduct;
+import com.itecheasy.core.product.CMSProduct;
+import com.itecheasy.core.product.Product;
+import com.itecheasy.core.product.ProductService;
+import com.itecheasy.core.product.ShopProductService;
+import com.itecheasy.core.system.Shop;
+import com.itecheasy.core.system.ShopInfo;
+import com.itecheasy.core.system.SystemService;
+import com.itecheasy.core.util.StaticUtils;
+import com.itecheasy.core.util.SystemEnumDicts.ShopType;
+import com.itecheasy.webservice.amazon.ListOrdersResultAmazon;
+import com.itecheasy.webservice.amazon.OrderAmazon;
+import com.itecheasy.webservice.amazon.OrderItem;
+import com.itecheasy.webservice.client.AmazonClient;
+import com.itecheasy.webservice.client.CMSClient;
+import org.apache.xmlbeans.impl.inst2xsd.Inst2Xsd;
+
+/**
+ * @author wanghw
+ * @date 2015-5-9
+ * @description amazon订单服务
+ * @version
+ */
+public class AmazonOrderServiceImpl extends OrderServiceImpl implements AmazonOrderService {
+	private static final String 订单下载被取消_详情查看邮件_WHW = "订单下载被取消。详情查看邮件！ --whw";
+	static final String STANDARD = "Standard";
+	private final static Logger LOGGER =Logger.getLogger(AmazonOrderServiceImpl.class);
+	
+	private OrderAmazonDao orderAmazonDao;
+	private OrderAddressAmazonDao orderAddressAmazonDao;
+	private OrderProductAmazomDao orderProductAmazomDao;
+	private ShopProductService shopProductService;
+	private AMOrderCommunicationLogDao amOrderCommunicationLogDao;
+	private FBAStoreOrderService fbaStoreOrderService;
+
+
+	public void setFbaStoreOrderService(FBAStoreOrderService fbaStoreOrderService) {
+		this.fbaStoreOrderService = fbaStoreOrderService;
+	}
+
+	public void setAmOrderCommunicationLogDao(AMOrderCommunicationLogDao amOrderCommunicationLogDao) {
+		this.amOrderCommunicationLogDao = amOrderCommunicationLogDao;
+	}
+
+	public void setShopProductService(ShopProductService shopProductService) {
+		this.shopProductService = shopProductService;
+	}
+
+	public void setOrderProductAmazomDao(OrderProductAmazomDao orderProductAmazomDao) {
+		this.orderProductAmazomDao = orderProductAmazomDao;
+	}
+
+	public void setOrderAddressAmazonDao(OrderAddressAmazonDao orderAddressAmazonDao) {
+		this.orderAddressAmazonDao = orderAddressAmazonDao;
+	}
+
+	public void setOrderAmazonDao(OrderAmazonDao orderAmazonDao) {
+		this.orderAmazonDao = orderAmazonDao;
+	}
+
+	public void setSystemService(SystemService systemService) {
+		this.systemService = systemService;
+	}
+
+	@Override
+	public Date listOrders(int devId, Date lastUpdatedAfter,Date lastUpdatedBefore)throws Exception {
+		LOGGER.info("开始获取amazon订单,账号"+devId);
+		List<Shop> shops=systemService.getCacheShopsByDevAccount(devId);
+		if(CollectionUtils.isEmpty(shops)){
+			return null;
+		}
+		ListOrdersResultAmazon result = AmazonClient.listOrders(shops.get(0).getId(), lastUpdatedAfter,lastUpdatedBefore);
+		if (result != null) {
+			List<com.itecheasy.webservice.amazon.OrderAmazon> orders = result.getOrders();
+			LOGGER.info("获取到"+orders.size()+"个订单");
+			if (CollectionUtils.isNotEmpty(orders)) {
+				for (OrderAmazon orderAmazon : orders) {
+					for (Shop shop : shops) {
+						if(shop.getMarketplaceID().equals(orderAmazon.getMarketplaceId())){
+							String remark=MessageFormat.format("addOrderCommunicationLog-->> order:{0},status:{1},type:{2}",
+									orderAmazon.getAmazonOrderId(),orderAmazon.getOrderStatus(),orderAmazon.getFulfillmentChannel());
+							LOGGER.info(remark);
+							addOrderCommunicationLog(shop.getId(), orderAmazon.getAmazonOrderId(),remark,
+									ConstantUtils.FULFILLMENTCHANNELS_AFN.equalsIgnoreCase(orderAmazon.getFulfillmentChannel()));
+							break;
+						}
+					}
+				}
+			}
+			return result.getLastUpdatedBefore().toGregorianCalendar().getTime();
+		}
+		return null;
+	}
+	
+	
+
+	/**
+	 * 增加订单
+	 * @param shopId
+	 * @param info
+	 * @param orders
+	 */
+	private void addOrderAmazon(int shopId, ShopInfo info, List<com.itecheasy.webservice.amazon.OrderAmazon> orders) {
+		if (CollectionUtils.isNotEmpty(orders)) {
+			for (com.itecheasy.webservice.amazon.OrderAmazon order : orders) {
+				convertTimeZone(order, info.getTimeDiff());
+				addOrderSimple(shopId, info, order);
+
+			}
+		}
+	}
+
+	/**
+	 * 时间时区转换
+	 * @param order
+	 * @param timeDiff
+	 */
+	private void convertTimeZone(com.itecheasy.webservice.amazon.OrderAmazon order,Integer timeDiff){
+		if (timeDiff==null) {
+			return;
+		}
+		if (order.getPurchaseDate()!=null) {
+			order.setPurchaseDate(DateUtils.getXMLGregorianCalendar(
+					org.apache.commons.lang.time.DateUtils.addHours(
+							order.getPurchaseDate().toGregorianCalendar().getTime(),timeDiff)));
+		} 
+		
+		if (order.getEarliestDeliveryDate()!=null) {
+			order.setEarliestDeliveryDate(DateUtils.getXMLGregorianCalendar(
+					org.apache.commons.lang.time.DateUtils.addHours(
+							order.getEarliestDeliveryDate().toGregorianCalendar().getTime(),timeDiff)));
+		} 
+		if (order.getEarliestShipDate()!=null) {
+			order.setEarliestShipDate(DateUtils.getXMLGregorianCalendar(
+					org.apache.commons.lang.time.DateUtils.addHours(
+							order.getEarliestShipDate().toGregorianCalendar().getTime(),timeDiff)));
+		} 
+		if (order.getLatestDeliveryDate()!=null) {
+			order.setLatestDeliveryDate(DateUtils.getXMLGregorianCalendar(
+					org.apache.commons.lang.time.DateUtils.addHours(
+							order.getLatestDeliveryDate().toGregorianCalendar().getTime(),timeDiff)));
+		} 
+		if (order.getLatestShipDate()!=null) {
+			order.setLatestShipDate(DateUtils.getXMLGregorianCalendar(
+					org.apache.commons.lang.time.DateUtils.addHours(
+							order.getLatestShipDate().toGregorianCalendar().getTime(),timeDiff)));
+		} 
+	}
+	
+	@Override
+	public void addOrderSimple(int shopId, ShopInfo info, com.itecheasy.webservice.amazon.OrderAmazon order) {
+		Order o = getOrderByShopOrderCode(order.getAmazonOrderId(),
+				ShopType.AMAZON.getVal(),shopId);
+		LOGGER.info(MessageFormat.format("addOrder---->> order:{0},status:{1},type:{2}",
+				order.getAmazonOrderId(),order.getOrderStatus(),order.getFulfillmentChannel()));
+		// 订单状态判断
+		if (AMAZON_STATUS_UNSHIPPED.equalsIgnoreCase(order.getOrderStatus())||
+				AMAZON_STATUS_PARTIALLY_SHIPPED.equalsIgnoreCase(order.getOrderStatus())||
+				(ConstantUtils.FULFILLMENTCHANNELS_AFN.equalsIgnoreCase(order.getFulfillmentChannel())
+						&&(!AMAZON_STATUS_CANCELED.equalsIgnoreCase(order.getOrderStatus())))) {
+			if (o!=null) {
+				LOGGER.info("addOrder---->>order has exist!"+o.getCode()+"<--->"+o.getShopOrderCode());
+				return;
+			}
+			// --已付款,新增订单||FBA订单
+			processOrderAddNew(shopId, info, order);
+		}else{
+			//同步订单状态
+			processOrderStatusChange(order, o);
+		}
+	}
+
+	/**
+	 * 新增订单
+	 * @param shopId
+	 * @param info
+	 * @param order
+	 * @param remark
+	 */
+	private void processOrderAddNew(int shopId, ShopInfo info, com.itecheasy.webservice.amazon.OrderAmazon order) {
+		OrderDetail detail = null;
+
+		// 增加amazon order记录
+		OrderAmazonPO po = convertOrderAmazon2PO(order);
+		
+		po.setShopId(shopId);
+		Integer orderAmazonId = orderAmazonDao.addObject(po);
+
+		detail = convertAmazonOrder2OrderDetail(po);
+		detail.setOrderAmazonId(orderAmazonId);
+		detail.setMerchandiserId(CMSClient.getUserByCode(info.getMerchandiserId()).getId());
+	
+		
+		// 增加amazon order address 记录
+		OrderAddress orderAddress = processOrderAddress(order, detail, orderAmazonId,info);
+		detail.setOrderAddress(orderAddress);
+		// 增加amazon order product 记录
+		List<OrderItem> items = order.getOrderItems();
+		
+		ConditionOfAddNewOrder condition=new ConditionOfAddNewOrder();//信息处理条件
+		//订单商品信息处理
+		 processOrderProductInfo(shopId, order, detail, orderAmazonId, orderAddress, items,
+				 condition);
+		 
+		 //反向添加fba货运方式
+		if(ConstantUtils.FULFILLMENTCHANNELS_AFN.equalsIgnoreCase(order.getFulfillmentChannel())){
+			systemService.addFBAShippingMethod(detail.getShopShippingMethod());
+			detail.setStatus(OrderStatus.已发货.getVal());
+		}
+		addOrder(detail, ShopType.AMAZON.getVal(),"系统");
+//		try {
+//		} catch (BussinessException e) {
+//			throw new RuntimeException();
+//		}
+		LOGGER.info("新加amazon订单"+order.getAmazonOrderId());
+	}
+
+	/**
+	 * 订单地址
+	 * @param order
+	 * @param detail
+	 * @param orderAmazonId
+	 * @return
+	 */
+	private OrderAddress processOrderAddress(com.itecheasy.webservice.amazon.OrderAmazon order, OrderDetail detail,
+			Integer orderAmazonId,ShopInfo shopInfo) {
+		//订单没有地址
+		if(order.getShippingAddress()==null){
+			return new OrderAddress();
+		}
+		OrderAddressAmazonPO orderAddressAmazonPO = BeanUtils.copyProperties(
+				order.getShippingAddress(), OrderAddressAmazonPO.class);
+		orderAddressAmazonPO.setOrderAmazomId(orderAmazonId);
+		orderAddressAmazonDao.addObject(orderAddressAmazonPO);
+		OrderAddress orderAddress = BeanUtils.copyProperties(order.getShippingAddress(),
+				OrderAddress.class);
+		//addressline3
+		if(StringUtils.isNotEmpty(order.getShippingAddress().getAddressLine3())){
+			orderAddress.setAddressLine2(StringUtils.isEmpty(orderAddress.getAddressLine2())?order.getShippingAddress().getAddressLine3():orderAddress.getAddressLine2()
+					+order.getShippingAddress().getAddressLine3());
+		}
+		return processOrderAddressSpecial(detail, orderAddress,shopInfo);
+	}
+
+	
+
+	/**
+	 * 同步订单状态
+	 * @param order
+	 * @param o
+	 */
+	private void processOrderStatusChange(com.itecheasy.webservice.amazon.OrderAmazon order, Order o) {
+		if(o!=null){
+			if(ConstantUtils.FULFILLMENTCHANNELS_MFN.equalsIgnoreCase(order.getFulfillmentChannel())){
+				updateMFNOrderStatus(order.getOrderStatus(),order.getAmazonOrderId(), o);
+			}else if(ConstantUtils.FULFILLMENTCHANNELS_AFN.equalsIgnoreCase(order.getFulfillmentChannel())){
+				//同步FBA订单状态,好像下单就是已发货状态。
+				OrderPO po= orderDao.getObject(o.getId());
+				po.setShopOrderStatus(order.getOrderStatus());
+				if (AMAZON_STATUS_CANCELED.equalsIgnoreCase(order.getOrderStatus())) {
+					// --取消订单
+					LOGGER.info("取消amazon FBA订单"+order.getAmazonOrderId());
+					po.setStatus(OrderStatus.取消.getVal());
+				}
+				orderDao.mergeObject(po);
+			}
+		}
+	}
+
+	private void updateMFNOrderStatus(String oredrStatus,String amOrderId, Order o) {
+		if (AMAZON_STATUS_CANCELED.equalsIgnoreCase(oredrStatus)) {
+			// --取消订单
+			LOGGER.info("取消amazon订单"+amOrderId);
+			cancelOrder(o.getId(), "系统");
+		}else if (AMAZON_STATUS_SHIPPED.equalsIgnoreCase(oredrStatus)) {
+			// --已发货，更新订单
+			OrderPO po= orderDao.getObject(o.getId());
+			po.setShopOrderStatus(oredrStatus);
+			LOGGER.info("amazon订单"+amOrderId+"已发货");
+			orderDao.mergeObject(po);
+			
+			OrderAmazonPO apo= getAmazonOrderByAmazonId(amOrderId);
+			apo.setAmOrderStatus(oredrStatus);
+			//更新订单项的已备量
+//					if (apo!=null) {
+//						List<OrderItem> items = order.getOrderItems();
+//						for (OrderItem orderItem : items) {
+//							OrderProductPO orderProductPo= getOrderProductPOs(o.getId(),orderItem.getOrderItemId());
+//							if (orderProductPo!=null) {
+//								orderProductPo.setShippedQty(orderItem.getQuantityShipped().intValue());
+//								orderProductDao.mergeObject(orderProductPo);
+//							}
+//							
+//							OrderProductAmazonPO amazonPO= getOrderProductAmazonPOs(order.getAmazonOrderId(), orderItem.getOrderItemId());
+//							if (amazonPO!=null) {
+//								amazonPO.setQuantityShipped(orderItem.getQuantityShipped().intValue());
+//								orderProductAmazomDao.mergeObject(amazonPO);
+//							}
+//						}
+//					}
+		}
+	}
+
+	/**
+	 * 处理订单商品项
+	 * @param shopId
+	 * @param order
+	 * @param remark
+	 * @param detail
+	 * @param orderAmazonId
+	 * @param orderAddress
+	 * @param items
+	 * @param order_status
+	 * @param isElectronic
+	 * @param _not_recognition 无法识别备货商品的pending订单  sp 1.2.2
+	 * @param shippingMethod
+	 * @return
+	 */
+	private void processOrderProductInfo(int shopId, com.itecheasy.webservice.amazon.OrderAmazon order, 
+			OrderDetail detail, Integer orderAmazonId, OrderAddress orderAddress, List<OrderItem> items,
+			ConditionOfAddNewOrder condition) {
+		if (CollectionUtils.isNotEmpty(items)) {
+			List<OrderProduct> orderProducts = new ArrayList<OrderProduct>();
+			List<String> _sku=new ArrayList<String>();
+			for (OrderItem orderItem : items) {
+				//如果订购量等于0，则表示商品已被取消
+				if(orderItem.getQuantityOrdered()<= 0)
+				{
+					LOGGER.error(MessageFormat.format("订单[{0}]的商品[{1}]订购数量为{2},忽略该订购商品。",order.getAmazonOrderId(),orderItem.getSellerSKU(),orderItem.getQuantityOrdered()));
+					continue;
+				}
+				
+				OrderProductAmazonPO orderProductAmazonPO = convertOrderItem2PO(orderItem);
+				orderProductAmazonPO.setOrderAmazonId(orderAmazonId);
+				orderProductAmazonPO.setAmazonOrderId(order.getAmazonOrderId());
+
+				orderProductAmazomDao.addObject(orderProductAmazonPO);
+				condition.setShipTotalPrice(condition.getShipTotalPrice()+
+						(orderProductAmazonPO.getShippingPrice()-orderProductAmazonPO.getShippingDiscount()));
+				// 根据sku获取对应的店铺商品
+				AMShopProduct am = shopProductService.getProductBySku(orderItem.getSellerSKU(),shopId);
+				OrderProduct orderProduct = convertAmazonOrderProduct2product(orderProductAmazonPO);
+				
+				//判断重复商品
+				if (_sku.contains(orderItem.getSellerSKU())) {
+					int _index=_sku.indexOf(orderItem.getSellerSKU());
+					orderProducts.get(_index).setShopItemPrice(
+							orderProducts.get(_index).getShopItemPrice()+orderProductAmazonPO.getItemPrice());
+					orderProducts.get(_index).setShopQuantityOrdered(
+							orderProducts.get(_index).getShopQuantityOrdered()+orderProductAmazonPO.getQuantityOrdered());
+					orderProducts.get(_index).setShopDiscount(
+							orderProducts.get(_index).getShopDiscount()+orderProductAmazonPO.getPromotionDiscount());
+					orderProducts.get(_index).setShippedQty(orderProducts.get(_index).getShippedQty()+orderProductAmazonPO.getQuantityShipped());
+					continue;
+				}
+				_sku.add(orderItem.getSellerSKU());
+				
+				//商品是否无法匹配  sp 1.2.2
+				boolean _not_mate=true;
+				
+				if (am != null) {
+					_not_mate = mateShopProductOfOrder(orderAddress, condition, am,
+							orderProduct);
+					
+				}else{
+					//fba订单匹配fba店铺商品 v1.2.2-->v1.2.8普通订单
+//					if(ConstantUtils.FULFILLMENTCHANNELS_AFN.equalsIgnoreCase(order.getFulfillmentChannel())){
+						_not_mate = mateFbaShopProductOfOrder(orderAddress, condition, orderItem.getSellerSKU(),
+								orderProduct,shopId);
+//					}
+					//按规则匹配cms商品  sp 1.2.2
+					if (_not_mate) {
+						_not_mate = mateOtherProductOfOrder(orderAddress, condition, orderItem.getSellerSKU(),
+								orderProduct);
+					}
+				}
+				
+				if (_not_mate) {
+					condition.setOrder_status(0);
+					condition.set_not_recognition(true);
+				}
+				
+				if(ConstantUtils.FULFILLMENTCHANNELS_MFN.equalsIgnoreCase(order.getFulfillmentChannel())){
+					
+				}else{
+					if(_not_mate){
+						orderProduct.setCmsProductCode(orderItem.getSellerSKU());
+					}
+					detail.setStatus(OrderStatus.已发货.getVal());
+					fbaStoreOrderService.usedFBAStoreProducts(orderItem.getSellerSKU(), orderProduct.getShopQuantityOrdered(), shopId);
+				}
+				
+				orderProducts.add(orderProduct);
+				
+			}
+			
+			this.initOrderProblem(detail, orderAddress, condition);
+			if(ConstantUtils.FULFILLMENTCHANNELS_MFN.equalsIgnoreCase(order.getFulfillmentChannel())){
+				detail.setShopShippingMethod(STANDARD);
+			}
+			
+			detail.setCostPrice(condition.get_cost_price());
+			detail.setShopShippingPrice(condition.getShipTotalPrice());
+			detail.setOrderItems(orderProducts);
+		}
+	}
+
+	
+	private OrderAmazonPO getAmazonOrderByAmazonId(String amazonId){
+		Criteria criteria=new Criteria(OrderAmazonPO.class);
+		criteria.and(Restriction.eq("amOrderId", amazonId));
+		return orderAmazonDao.get(criteria);
+	}
+	
+//	private OrderProductAmazonPO getOrderProductAmazonPO(String orderamazonId,String orderItemId){
+//		Criteria criteria=new Criteria(OrderProductAmazonPO.class);
+//		criteria.and(Restriction.eq("amazonOrderId", orderamazonId));
+//		criteria.and(Restriction.eq("orderItemId", orderItemId));
+//		return orderProductAmazomDao.get(criteria);
+//	}
+	
+	protected OrderProductAmazonPO getOrderProductAmazonPOs(String orderamazonId,String orderItemId){
+		Criteria criteria=new Criteria(OrderProductAmazonPO.class);
+		criteria.and(Restriction.eq("amazonOrderId", orderamazonId));
+		criteria.and(Restriction.eq("orderItemId", orderItemId));
+		return orderProductAmazomDao.get(criteria);
+	}
+	
+	protected OrderProductPO getOrderProductPOs(int orderId,String orderItemId){
+		Criteria criteria=new Criteria(OrderProductPO.class);
+		criteria.and(Restriction.eq("orderId", orderId));
+		criteria.and(Restriction.eq("shopOrderItemId", orderItemId));
+		return orderProductDao.get(criteria);
+	}
+	
+
+	private OrderProduct convertAmazonOrderProduct2product(OrderProductAmazonPO po) {
+		OrderProduct product = new OrderProduct();
+		product.setShopItemPrice(po.getItemPrice());
+		product.setShopItemCurtype(po.getItemPriceCurrency());
+		product.setShopDiscount(po.getPromotionDiscount());
+		product.setShopItemShippingPrice(po.getShippingPrice()-po.getShippingDiscount());
+		product.setShopQuantityOrdered(po.getQuantityOrdered());
+		product.setShippedQty(po.getQuantityShipped());
+		product.setTitle(po.getTitle());
+		product.setShopOrderItemId(po.getOrderItemId());
+		product.setShopSellerSku(po.getSellerSku());
+		product.setStatus(0);
+		StringBuilder sb = new StringBuilder();
+	
+		sb.append("<table style=\" width:520px;\"><tr><td colspan=\"2\" style=\"color:blue;text-decoration:underline;font-weight:bold;\">");
+		sb.append(po.getTitle()).append("</td></tr>");
+		sb.append("<tr><td style=\"font-weight:bold;width:115px;\">").append("Quantity:").append("</td><td style=\"400px;\">").append(po.getQuantityOrdered())
+				.append("</td></tr>");
+		sb.append("<tr><td style=\"font-weight:bold;\">").append("SKU:").append("</td><td>").append(po.getSellerSku()).append("</td></tr>");
+		sb.append("<tr><td style=\"font-weight:bold;\">").append("ASIN:").append("</td><td>").append(po.getAsin()).append("</td></tr>");
+//		sb.append("<tr><td style=\"font-weight:bold;\">").append("Listing ID:").append("</td><td>").append(po.getAmazonOrderId())
+//				.append("</td></tr>");
+		sb.append("<tr><td style=\"font-weight:bold;\">").append("Order Item ID:").append("</td><td>").append(po.getOrderItemId())
+				.append("</td></tr>");
+		sb.append("<tr><td style=\"font-weight:bold;\">").append("Condition:").append("</td><td>").append(po.getConditionId())
+				.append("</td></tr>");
+		sb.append("</table>");
+		product.setProductDetail(sb.toString());
+		return product;
+	}
+
+	private OrderDetail convertAmazonOrder2OrderDetail(OrderAmazonPO po) {
+		OrderDetail detail = new OrderDetail();
+		detail.setIsSend(true);
+		detail.setCustomerAccount(po.getBuyerEmail());
+		detail.setCustomerName(po.getBuyerName());
+		detail.setShopOrderCode(po.getAmOrderId());
+		detail.setShopOrderStatus(po.getAmOrderStatus());
+		detail.setEarliestDeliveryDate(po.getEarliestDeliveryDate());
+		detail.setEarliestShippingDate(po.getEarliestShippingDate());
+		detail.setLatestDeliveryDate(po.getLatestDeliveryDate());
+		detail.setLatestShipDate(po.getLatestShipDate());
+		detail.setShopType(ShopType.AMAZON.getVal());
+		detail.setStatus(OrderStatus.准备货物.getVal());
+		detail.setShopOrderDate(po.getPurchaseDate());
+		detail.setShopId(po.getShopId());
+		detail.setOrderCurrency(po.getOrderTotalCurrency());
+		detail.setSendGroupId(null);
+		detail.setOrderAmount(po.getOrderTotal());
+		detail.setFulfillmentChannel(po.getFulfillmentChannel());
+		detail.setShopShippingMethod(po.getShipmentServiceLevelCategory());
+		return detail;
+	}
+
+	private OrderProductAmazonPO convertOrderItem2PO(OrderItem orderItem) {
+		OrderProductAmazonPO po = new OrderProductAmazonPO();
+
+		po.setAsin(orderItem.getASIN());
+		po.setConditionId(orderItem.getConditionId());
+		po.setConditionSubtypeId(orderItem.getConditionSubtypeId());
+		
+		po.setItemPrice(orderItem.getItemPrice()==null?0:Double.valueOf(orderItem.getItemPrice().getAmount()));
+		po.setItemPriceCurrency(getCurrencyIdByCode(orderItem.getItemPrice().getCurrencyCode()));
+		po.setOrderItemId(orderItem.getOrderItemId());
+		po.setPromotionDiscount(orderItem.getPromotionDiscount()==null?0:Double.valueOf(orderItem.getPromotionDiscount().getAmount()));
+		po.setQuantityOrdered(orderItem.getQuantityOrdered());
+		po.setQuantityShipped(orderItem.getQuantityShipped() == null ? 0 : orderItem.getQuantityShipped());
+		po.setSellerSku(orderItem.getSellerSKU());
+		po.setShippingDiscount(orderItem.getShippingDiscount()==null?0:Double.valueOf(orderItem.getShippingDiscount().getAmount()));
+		po.setShippingPrice(orderItem.getShippingPrice()==null?0:Double.valueOf(orderItem.getShippingPrice().getAmount()));
+		po.setTitle(orderItem.getTitle());
+		return po;
+	}
+
+	private OrderAmazonPO convertOrderAmazon2PO(com.itecheasy.webservice.amazon.OrderAmazon order) {
+		OrderAmazonPO po = new OrderAmazonPO();
+		po.setAmOrderId(order.getAmazonOrderId());
+		po.setAmOrderStatus(order.getOrderStatus());
+		po.setBuyerEmail(order.getBuyerEmail());
+		po.setBuyerName(order.getBuyerName());
+		po.setEarliestDeliveryDate(DateUtils.getDateByXMLGregorianCalendar(order.getEarliestDeliveryDate()));
+		po.setEarliestShippingDate(DateUtils.getDateByXMLGregorianCalendar(order.getEarliestShipDate()));
+		po.setLatestDeliveryDate(DateUtils.getDateByXMLGregorianCalendar(order.getLatestDeliveryDate()));
+		po.setLatestShipDate(DateUtils.getDateByXMLGregorianCalendar(order.getLatestShipDate()));
+		po.setMarketplaceId(order.getMarketplaceId());
+		po.setSellerOrderId(order.getSellerOrderId());
+		po.setPurchaseDate(DateUtils.getDateByXMLGregorianCalendar(order.getPurchaseDate()));
+		if(order.getOrderTotal()!=null){
+			po.setOrderTotal(Double.valueOf(order.getOrderTotal().getAmount()));
+			po.setOrderTotalCurrency(getCurrencyIdByCode(order.getOrderTotal().getCurrencyCode()));
+		}
+		po.setCbaDisplayableShippingLabel(order.getCbaDisplayableShippingLabel());
+		po.setShipmentServiceLevelCategory(order.getShipmentServiceLevelCategory());
+		po.setFulfillmentChannel(order.getFulfillmentChannel());
+		return po;
+	}
+
+	@Override
+	public void addOrderByLog() {
+		String sql=" SELECT TOP 1 a.* FROM dbo.am_order_communication_log  a WITH(NOLOCK) where  a.status<>1 " +
+				" and create_time<?  order by a.dowm_count asc,a.create_time asc " ;
+//		List<ShopDevInfo> devs=systemService.getCacheShopDevInfos();
+//		String sql=" SELECT TOP 1 a.* FROM dbo.am_order_communication_log  a WITH(NOLOCK) " +
+//				" INNER JOIN dbo.shop WITH(NOLOCK) " +
+//				" ON shop.id=a.shop_id " +
+//				" WHERE shop_dev_info_id=? and a.status!=1 order by a.id asc";
+//		for (ShopDevInfo shopDevInfo : devs) {
+//			List<Object> params=new ArrayList<Object>();
+//			params.add(shopDevInfo.getId());
+//			List<AMOrderCommunicationLogPo> pos= amOrderCommunicationLogDao.findListBySql(sql, params);
+		List<Object> params=new ArrayList<Object>();
+		params.add(org.apache.commons.lang.time.DateUtils.addMinutes(new Date(), 
+				-Integer.valueOf(DeployProperties.getInstance().getProperty("Delay.to.download"))));
+			List<AMOrderCommunicationLogPo> pos= amOrderCommunicationLogDao.findListBySql(sql, params);
+			if(CollectionUtils.isNotEmpty(pos)){
+				AMOrderCommunicationLogPo po=pos.get(0);
+//				AMOrderCommunicationLogPo po=amOrderCommunicationLogDao.getObject(2093062);
+				String amOrderId = po.getAmazonOrderId();
+				
+				
+				try
+				{
+					//2017-02-04 状态自己更新，不再从amazon从新获取订单信息，减少请求被限制情况
+					String oredrStatus=null;
+					boolean isPlease=true;
+					if(po.getRemark().contains(ConstantUtils.FULFILLMENTCHANNELS_MFN)
+							){
+						if(po.getRemark().contains(AMAZON_STATUS_SHIPPED)){
+							oredrStatus=AMAZON_STATUS_SHIPPED;
+							isPlease=false;
+						}else if(po.getRemark().contains(AMAZON_STATUS_CANCELED)){
+							isPlease=false;
+							oredrStatus=AMAZON_STATUS_CANCELED;
+						}
+					}
+					
+					if (isPlease) {
+						List<String> amazonOrderIds= null;
+						LOGGER.info("开始下载订单:"+ amOrderId);
+						amazonOrderIds = new ArrayList<String>();
+						amazonOrderIds.add(amOrderId);	
+						
+						ShopInfo info =systemService.getCacheShopInfo(po.getShopId());
+						List<OrderAmazon> orders=AmazonClient.getOrder(po.getShopId(), amazonOrderIds);
+						if(CollectionUtils.isNotEmpty(orders)){
+							for (OrderAmazon orderAmazon : orders) {
+								//防止订单回变Pending，导致下载订单被阻塞
+								if("Pending".equalsIgnoreCase(orderAmazon.getOrderStatus())){
+									dowmloadError(po, amOrderId, orderAmazon.getOrderStatus()); 
+									return;
+								}
+							}
+							addOrderAmazon(po.getShopId(), info, orders);
+						}
+					}else{
+						Order o = getOrderByShopOrderCode(po.getAmazonOrderId(),
+								ShopType.AMAZON.getVal(),po.getShopId());
+						if(o==null){
+							dowmloadError(po, amOrderId, oredrStatus);
+							return;
+						}
+						else
+							updateMFNOrderStatus(oredrStatus, po.getAmazonOrderId(), o);
+					}
+					
+					po.setStatus(1);
+					po.setLastOperatorTime(new Date());
+					
+					LOGGER.info("下载订单成功:"+ amOrderId+"。是否自动处理："+!isPlease);
+				}
+				catch (NullPointerException e) {
+					po.setStatus(1);
+					po.setRemark(po.getRemark()+订单下载被取消_详情查看邮件_WHW);
+					StaticUtils.addEmail("下载订单失败:"+ amOrderId,
+							"NullPointerException:"+e.toString()); 
+				}
+				catch(Exception ex){
+					//Request is throttled
+					LOGGER.error("下载订单失败:"+ amOrderId,ex);
+					po.setStatus(2);
+					if(!ex.getMessage().contains("Request is throttled")){
+						po.setDowmCount(po.getDowmCount()+1);
+					}
+					po.setRemark(po.getRemark()+";下载订单失败:"+ amOrderId+ex.getMessage());
+//					continue;
+				}
+			}
+//		}
+	}
+
+	private void dowmloadError(AMOrderCommunicationLogPo po, String amOrderId, String shopOrderStatus) {
+		po.setStatus(1);
+		po.setRemark(po.getRemark()+订单下载被取消_详情查看邮件_WHW);
+		StaticUtils.addEmail("下载订单失败:"+ amOrderId,
+				"订单amazon状态已变成--->>" + shopOrderStatus+
+				"<br>防止下载订单被阻塞，取消该单的下载，请联系店铺客服处理。");
+	}
+	
+	@Override
+	public void addOrderCommunicationLog(int shopId, String amazonOrderCode,String remark,boolean delay) {
+		AMOrderCommunicationLogPo po=new AMOrderCommunicationLogPo();
+		po.setAmazonOrderId(amazonOrderCode);
+		po.setShopId(shopId);
+		po.setStatus(0);
+		po.setLastOperatorTime(new Date());
+		po.setRemark(remark);
+		po.setDowmCount(delay?2:0);
+		amOrderCommunicationLogDao.addObject(po);
+	}
+	
+	@Override
+	public void addOrderAmazon(List<OrderAmazon> amazon,String shopId) {
+		int shop=Integer.valueOf(shopId);
+		addOrderAmazon(shop, systemService.getShopInfo(shop), amazon);
+	}
+	
+	@Override
+	public void cancelOrderTest(String amId,int shopId) throws BussinessException {
+		OrderAmazon order=new OrderAmazon();
+		order.setAmazonOrderId(amId);
+		order.setFulfillmentChannel("MFN");
+		order.setOrderStatus(AMAZON_STATUS_CANCELED);
+
+		Order o=getOrderByShopOrderCode(amId, 1,shopId);
+
+
+		//订单取消，订单跟踪商品项未删除, 把商品的
+		// 取消订单,订单跟踪状态更新为 “已完成”，商品项状态为“已删除”并需要通知C3
+		String sql = "SELECT * FROM order_tracking o " +
+				"WHERE o.order_code=? ";
+		List<Object> params = new ArrayList<Object>();
+		//增加参数
+		params.add(o.getCode());    //orderCode
+		List<OrderTrackingPO> orderTrackingPOList = orderTrackingDao.findListBySql(sql, params);
+		for (OrderTrackingPO orderTrackingPO : orderTrackingPOList) { //cancel之后把改订单下所有的订单跟踪改为已完成
+			orderTrackingPO.setStatus(30);          //30 已完成
+		}
+		orderTrackingDao.updateObject(orderTrackingPOList);
+
+
+		//通过order_id把补货订单下order_productList给查询出来
+		String sql3 = "SELECT * FROM order_product o "
+				+ "WHERE o.order_id=? ";
+		List<Object> params3 = new ArrayList<Object>();
+		params3.add(o.getId());
+		List<OrderProductPO> itemList = orderProductDao.findListBySql(sql3,params3);
+
+		//如果订单中只有一个商品，就直接把订单给改为已完成
+//		if(itemList!=null && itemList.size()==1){
+//			for (OrderTrackingPO orderTrackingPO : orderTrackingPOList) { //cancel之后把改订单下所有的订单跟踪改为已完成
+//				orderTrackingPO.setStatus(30);          //30 已完成
+//			}
+//		}
+//		orderTrackingDao.updateObject(orderTrackingPOList);
+
+
+		//把ordertracking中的product的状态给变更为取消      相当于与ON op.cms_product_code=repItem.cms_product_code
+		String sql2 = "SELECT * FROM order_tracking_product op " +
+				"INNER JOIN " +
+				"(SELECT  * FROM order_tracking ) o " +
+				"ON op.order_tracking_id = o.id " +
+				"WHERE o.order_code=? and op.cms_product_code=? ";
+		if (itemList!= null && itemList.size()!=0) {
+			for (int i = 0; i < itemList.size(); i++) {
+
+				List<Object> params2 = new ArrayList<Object>();
+				params2.add(o.getCode());    //orderCode
+				params2.add(itemList.get(i).getCmsProductCode());   //productCode
+
+				List<OrderTrackingProductPO> orderTrackingProductPOList = orderTrackingProductDao.findListBySql(sql2, params2);
+
+				//update    //把查出来的订单跟踪下的每个item更新
+				if (orderTrackingProductPOList != null && orderTrackingProductPOList.size() != 0) {
+					for (OrderTrackingProductPO orderTrackingProductPO : orderTrackingProductPOList) {
+						orderTrackingProductPO.setDeleted(true);
+						orderTrackingProductDao.updateObject(orderTrackingProductPOList);
+					}
+				}
+			}
+		}
+
+		processOrderStatusChange(order, o);
+	}
+	
+	@Override
+	public void updateOrderStatusTest(String amId) throws BussinessException {
+		String hql = "SELECT * FROM dbo.[order] WITH(NOLOCK) WHERE shop_order_code=? AND  shop_type=? order by id desc";
+		List<Object> params = new ArrayList<Object>();
+		params.add(amId);
+		params.add(ShopType.AMAZON.getVal());
+		List<OrderPO> pos = orderDao.findListBySql(hql, params);
+		if (CollectionUtils.isNotEmpty(pos)) {
+			OrderPO o=pos.get(0);
+			o.setShopOrderStatus(AMAZON_STATUS_SHIPPED);
+		}
+	}
+	
+	@Override
+	public void processOrderShippingMethod(StringBuilder remark, OrderDetail detail, ConditionOfAddNewOrder condition) {
+		super.processOrderShippingMethod(remark, detail, condition);
+		 if (detail.getCountry()!=null&&detail.getCountry() == GERMANY) {
+				// dgm小语种转换
+				convertAddress4DGM(detail.getOrderAddress());
+		}
+	}
+	
+	/**
+	 * 	下载订单给默认货运方式后，货运方式为DGM(DHL GLOBA MAIL)的，
+	 * 货运信息中（收件人、国家、地址1、地址2、城市、右边、省、电话）包含了ö ä ü ß，
+	 * 自动转换为ö—oe，ä—ae，ü—ue，ß—ss
+	 * @param orderAddress
+	 */
+	private void convertAddress4DGM(OrderAddress orderAddress) {
+		Map<String, String> SpecialPhoneticMap=StaticUtils.getSpecialPhoneticMap();
+		orderAddress.setAddressLine1(replaceSpecialPhonetic(orderAddress.getAddressLine1(), SpecialPhoneticMap));
+		orderAddress.setAddressLine2(replaceSpecialPhonetic(orderAddress.getAddressLine2(), SpecialPhoneticMap));
+		orderAddress.setName(replaceSpecialPhonetic(orderAddress.getName(), SpecialPhoneticMap));
+		orderAddress.setCity(replaceSpecialPhonetic(orderAddress.getCity(), SpecialPhoneticMap));
+		orderAddress.setDistrict(replaceSpecialPhonetic(orderAddress.getDistrict(), SpecialPhoneticMap));
+		orderAddress.setStateOrRegion(replaceSpecialPhonetic(orderAddress.getStateOrRegion(), SpecialPhoneticMap));
+		orderAddress.setPhone(replaceSpecialPhonetic(orderAddress.getPhone(), SpecialPhoneticMap));
+		orderAddress.setPostalCode(replaceSpecialPhonetic(orderAddress.getPostalCode(), SpecialPhoneticMap));
+	}
+	
+	/**
+	 * 替换特殊字符
+	 * @param word
+	 * @return
+	 */
+	private String replaceSpecialPhonetic(String word,Map<String, String> SpecialPhoneticMap){
+		if(StringUtils.isEmpty(word))
+			return word;
+		
+		StringBuilder tmp=new StringBuilder();
+		String key="";
+		for (int i = 0; i < word.length(); i++) {
+			key=String.valueOf(word.charAt(i));
+			if(SpecialPhoneticMap.containsKey(key)){
+				tmp.append(SpecialPhoneticMap.get(key));
+			}else{
+				tmp.append(word.charAt(i));
+			}
+		}
+		return tmp.toString();
+	}
+	
+	@Override
+	public void autoCheckOrders() {
+		orderDao.execStoredProcedure("p_task_check_order", new ArrayList<Param>());
+	}
+}
+
