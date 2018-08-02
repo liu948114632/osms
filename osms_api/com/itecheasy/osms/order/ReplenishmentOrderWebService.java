@@ -92,8 +92,9 @@ public interface ReplenishmentOrderWebService {
 	 * @param operator
 	 */
 	void addAndUpdateOrderProductList(@WebParam(name="orderId")int orderId,
-									  @WebParam(name="orderProducts")List<UpdateOrderProductForm> orderProducts,
-									  @WebParam(name="operator")String operator)throws BussinessException;
+									  @WebParam(name="operator")int operator,
+									  @WebParam(name="orderProducts")List<UpdateOrderProductForm> orderProducts
+									  )throws BussinessException;
 
 
 

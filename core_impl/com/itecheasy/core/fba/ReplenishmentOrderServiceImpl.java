@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.itecheasy.common.util.*;
 import com.itecheasy.core.fba.FbaInboundService.FbaInboundPlanSubmitStatus;
 import com.itecheasy.core.fba.dao.*;
 import com.itecheasy.core.order.dao.OrderTrackingDao;
@@ -23,10 +24,6 @@ import com.itecheasy.common.attachment.AttachmentService;
 import com.itecheasy.common.dao.Criteria;
 import com.itecheasy.common.dao.Order.OrderType;
 import com.itecheasy.common.dao.Restriction;
-import com.itecheasy.common.util.BeanUtils;
-import com.itecheasy.common.util.CalcUtils;
-import com.itecheasy.common.util.CollectionUtils;
-import com.itecheasy.common.util.DeployProperties;
 import com.itecheasy.communication.order.Command2CMS;
 import com.itecheasy.communication.order.Command2SW;
 import com.itecheasy.communication.order.CommandReplenishmentOrderUtils;
@@ -1004,14 +1001,16 @@ public class ReplenishmentOrderServiceImpl extends BaseOrder implements Replenis
 		ReplenishmentOrderPO po = replenishmentOrderDao.getObject(orderId);
 		for (UpdateOrderProductForm form : orderProducts) {
 			if (form.getUpdateProductCode() != null) {
+				ShopProductRelated relatedBySku = fbaShopProductService.getRelatedBySku(form.getSku(), po.getShopId());
+//				ShopProductRelated relatedByOtherCode = fbaShopProductService.getRelatedByOtherCode(form.getUpdateProductCode(), po.getShopId());
+				if (relatedBySku==null){
+					throw new BussinessException("有不合法的cms_sku:"+form.getUpdateProductCode()+"shopId:"+po.getShopId());
+				}
 				if (form.getOrderProductId()==0) {
-					ShopProductRelated relatedByOtherCode = fbaShopProductService.getRelatedByOtherCode(form.getUpdateProductCode(), po.getShopId());
-					if (relatedByOtherCode==null){
-						throw new BussinessException("有不合法的cms_sku:"+form.getUpdateProductCode()+"shopId:"+po.getShopId());
-					}
-					form.setUnitQty(relatedByOtherCode.getUnitQuantity());
-					form.setSku(relatedByOtherCode.getSku());
-					form.setFbaShopProductId(relatedByOtherCode.getId());
+					form.setUnitQty(relatedBySku.getUnitQuantity());
+					form.setUpdateProductCode(relatedBySku.getCmsProductCode());
+//					form.setSku(relatedBySku.getSku());
+					form.setFbaShopProductId(relatedBySku.getId());
 				}
 			}
 		}

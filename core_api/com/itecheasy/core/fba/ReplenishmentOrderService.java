@@ -89,7 +89,7 @@ public interface ReplenishmentOrderService extends IBaseOrder{
 	void addOrderProducts(int orderId, List<UpdateOrderProductForm> orderProducts, String operator)
 			throws BussinessException;
 
-	public void addAndUpdateOrderProductList(int orderId, List<UpdateOrderProductForm> orderProducts, String operator);
+	 void addAndUpdateOrderProductList(int orderId, List<UpdateOrderProductForm> orderProducts, String operator);
 
 
 		/**

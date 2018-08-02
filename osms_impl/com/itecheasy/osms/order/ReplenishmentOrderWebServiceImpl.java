@@ -66,8 +66,11 @@ public class ReplenishmentOrderWebServiceImpl implements ReplenishmentOrderWebSe
 	}
 
 	@Override
-	public void addAndUpdateOrderProductList(int orderId, List<UpdateOrderProductForm> orderProducts, String operator) throws BussinessException{
-		replenishmentOrderService.addAndUpdateOrderProductList(orderId,orderProducts,operator);
+	public void addAndUpdateOrderProductList(int orderId, int operator,List<UpdateOrderProductForm> orderProducts) throws BussinessException{
+		if(CollectionUtils.isEmpty(orderProducts)) {
+			return;
+		}
+		replenishmentOrderService.addAndUpdateOrderProductList(orderId,orderProducts,profileService.getUserNameById(operator));
 	}
 
 	@Override
