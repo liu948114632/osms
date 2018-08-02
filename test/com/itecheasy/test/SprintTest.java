@@ -11,6 +11,8 @@ import com.itecheasy.core.order.dao.OrderTrackingProductDao;
 import com.itecheasy.core.product.ShopProductService;
 import com.itecheasy.core.task.AmozonUpdateReplenishmentShipment;
 import com.itecheasy.core.task.AmozonUpdateReplenishmentShipmentImpl;
+import com.itecheasy.webservice.amazon.InboundShipmentInfoVO;
+import com.itecheasy.webservice.amazon.ListInboundShipmentsResultVO;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -114,12 +116,27 @@ public class SprintTest extends AbstractDependencyInjectionSpringContextTests {
 	@Test
 	public  void test008(){
 		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-		AmozonUpdateReplenishmentShipmentImpl amozonUpdateReplenishmentShipment = (AmozonUpdateReplenishmentShipmentImpl)context.getBean("amozonUpdateReplenishmentShipment");
+		AmozonUpdateReplenishmentShipment amozonUpdateReplenishmentShipment = (AmozonUpdateReplenishmentShipment)context.getBean("amozonUpdateReplenishmentShipment");
 
 
+		ListInboundShipmentsResultVO resultVO = new ListInboundShipmentsResultVO();
+		List<InboundShipmentInfoVO> infoVOS = new ArrayList<InboundShipmentInfoVO>();
+		InboundShipmentInfoVO vo = new InboundShipmentInfoVO();
+		vo.setShipmentStatus("RECEIVING");
+		InboundShipmentInfoVO vo2 = new InboundShipmentInfoVO();
+		vo.setShipmentStatus("CLOSED");
+		infoVOS.add(vo);
+		infoVOS.add(vo2);
+
+		resultVO.setInboundShipmentInfoVOList(infoVOS);
 
 
-//		amozonUpdateReplenishmentShipment.updateAmazonOrderStatus();
+		boolean b = amozonUpdateReplenishmentShipment instanceof AmozonUpdateReplenishmentShipmentImpl;
+		System.out.println(b ? "ok":"no cast");
+
+
+//		AmozonUpdateReplenishmentShipmentImpl IMPL001 = (AmozonUpdateReplenishmentShipmentImpl) amozonUpdateReplenishmentShipment;
+//		amozonUpdateReplenishmentShipment.updateAmazonOrderStatus(resultVO,5);
 
 	}
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
   <display-name></display-name>
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
@@ -19,48 +19,42 @@
     <servlet-name>CXFServlet</servlet-name>
     <url-pattern>/webService/*</url-pattern>
   </servlet-mapping>
-  
   <servlet>
-		<servlet-name>PictureDown</servlet-name>
-		<servlet-class>com.itecheasy.picture.PictureDownServlet</servlet-class>
-	</servlet>
+    <servlet-name>PictureDown</servlet-name>
+    <servlet-class>com.itecheasy.picture.PictureDownServlet</servlet-class>
+  </servlet>
   <servlet>
     <description>This is the description of picture</description>
     <display-name>This is the picture</display-name>
     <servlet-name>picture</servlet-name>
     <servlet-class>com.itecheasy.picture.PictureServlet</servlet-class>
   </servlet>
-
-	<servlet-mapping>
-		<servlet-name>PictureDown</servlet-name>
-		<url-pattern>/pictureDown/*</url-pattern>
-	</servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PictureDown</servlet-name>
+    <url-pattern>/pictureDown/*</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>picture</servlet-name>
     <url-pattern>/picture/*</url-pattern>
   </servlet-mapping>
-  
-  <!-- 配置DWR前端控制器 -->
-   <servlet>
-        <servlet-name>dwrServlet</servlet-name>
-        <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
-        <!-- 指定配置文件 -->
-        <init-param>
-            <param-name>config</param-name>
-            <!-- 如果有多个用","分开 -->
-            <param-value>
+  <servlet>
+    <servlet-name>dwrServlet</servlet-name>
+    <servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>
+    <init-param>
+      <param-name>config</param-name>
+      <param-value>
                 /WEB-INF/classes/dwr.xml                
             </param-value>
-        </init-param>
-        <init-param>
-            <param-name>debug</param-name>
-            <param-value>false</param-value>
-        </init-param>
-         <init-param>   
-            <param-name>crossDomainSessionSecurity</param-name>   
-            <param-value>false</param-value>   
-        </init-param>
-    </servlet>
+    </init-param>
+    <init-param>
+      <param-name>debug</param-name>
+      <param-value>false</param-value>
+    </init-param>
+    <init-param>
+      <param-name>crossDomainSessionSecurity</param-name>
+      <param-value>false</param-value>
+    </init-param>
+  </servlet>
   <servlet>
     <description>This is the description of my J2EE component</description>
     <display-name>This is the display name of my J2EE component</display-name>
@@ -115,19 +109,10 @@
     <servlet-name>updateCache</servlet-name>
     <servlet-class>com.itecheasy.core.order.UpdateCache</servlet-class>
   </servlet>
-
-
-
-
-
-
-
-
-
-    <servlet-mapping>
-        <servlet-name>dwrServlet</servlet-name>
-        <url-pattern>/dwr/*</url-pattern>
-    </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>dwrServlet</servlet-name>
+    <url-pattern>/dwr/*</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>addOrder</servlet-name>
     <url-pattern>/addOrder</url-pattern>
@@ -163,5 +148,15 @@
   <servlet-mapping>
     <servlet-name>updateCache</servlet-name>
     <url-pattern>/updateCache</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>ResumeSeaTransData</display-name>
+    <servlet-name>ResumeSeaTransData</servlet-name>
+    <servlet-class>com.itecheasy.core.prepare.ResumeSeaTransData</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ResumeSeaTransData</servlet-name>
+    <url-pattern>/resumeSeaTransData</url-pattern>
   </servlet-mapping>
 </web-app>

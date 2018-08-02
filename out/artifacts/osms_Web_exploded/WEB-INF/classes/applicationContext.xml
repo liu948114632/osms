@@ -13,7 +13,7 @@
 		<!--class="com.itecheasy.common.util.EncryptPropertyPlaceholderConfigurer">-->
 		<!-- class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> -->
 	<bean id="propertyConfigurer"
-          class="com.itecheasy.common.util.EncryptPropertyPlaceholderConfigurer">
+		  class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath*:jdbc_sqlserver.properties</value>
@@ -23,7 +23,6 @@
 			</list>
 		</property>
 	</bean>
-
 
 	<!-- osms 客户端认证 -->
 	<bean id="wss4jInInterceptor" class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">      
@@ -85,27 +84,64 @@
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="autotask" />
 	</aop:config>
 
-	<bean id="serviceMethodInterceptor" class="com.itecheasy.printMethod.AccessPath"></bean>
-	<!-- 方法拦截器（拦截Service包中的所有的方法） MethodInterceptor -->
-	<aop:config>
-		<aop:pointcut id="serviceMethodPointcut" expression="execution(* com.itecheasy.osms..*.*(..))"/>
-		<aop:advisor advice-ref="serviceMethodInterceptor" pointcut-ref="serviceMethodPointcut" />
+	<bean id="serviceMethodInterceptor" class="com.itecheasy.printMethod.AccessPath"/>
+	<!--&lt;!&ndash; 方法拦截器（拦截Service包中的所有的方法） MethodInterceptor &ndash;&gt;-->
+	<aop:config >
+		<aop:pointcut id="serviceMethodPointcut"
+					  expression="execution(* com.itecheasy.osms..*.*(..))"/>
+		<aop:advisor advice-ref="serviceMethodInterceptor"
+					 pointcut-ref="serviceMethodPointcut" />
 	</aop:config>
+
+	<!--用于打印日志的参数和返回值-->
+	<!-- 方法拦截器   MethodInterceptor -->
+	<!--<bean id="printLoggerInterceptor" class="com.itecheasy.printMethod.PrintLogger"/>-->
+	<!--<aop:config>-->
+		<!--<aop:pointcut id="printLoggerPointcut" expression="execution(* com.itecheasy.core.fba.AmazonReportServiceImpl.*(..)) and-->
+		 	  <!--@annotation(com.itecheasy.printMethod.annotations.LoggerNameDescription)"/>-->
+		<!--<aop:advisor advice-ref="printLoggerInterceptor" pointcut-ref="printLoggerPointcut" />-->
+	<!--</aop:config>-->
+
+	<!-- 用于打印日志的参数和返回值 -->
+	<bean id="sysLogAspect" class="com.itecheasy.printMethod.LoggerNew"/>
+	<aop:config>
+		<aop:aspect ref="sysLogAspect">
+			<aop:pointcut expression="execution(* com.itecheasy..*.*(..)) and
+			 	@annotation(com.itecheasy.printMethod.annotations.LoggerNameDescription)" id="sysLogPointcut"/>
+			<aop:around method="aroundLogger" pointcut-ref="sysLogPointcut" />
+		</aop:aspect>
+	</aop:config>
+
+
+
+	<!--统一异常处理 proxy使用jdk-->
+	<!--proxy-target-class="true" 与proxy-target-class="false"的区别：
+        proxy-target-class属性值决定是基于接口的还是基于类的代理被创建。
+        如果proxy-target-class 属性值被设置为true，那么基于类的代理将起作用（这时需要cglib库）。
+        如果proxy-target-class属值被设置为false或者这个属性被省略，那么标准的JDK 基于接口的代理-->
+
+	<!--<bean id="exceptionHandler" class="com.itecheasy.printMethod.ChinoException" />-->
+	<!--<aop:config proxy-target-class="true">-->
+		<!--<aop:aspect  ref="exceptionHandler">-->
+			<!--<aop:pointcut id="exceptionService"  expression="execution(* com.itecheasy.core.order.*.*(..)) " />-->
+			<!--<aop:after-throwing pointcut-ref="exceptionService"  method="afterThrowing3" throwing="e" />-->
+		<!--</aop:aspect>-->
+	<!--</aop:config>-->
+
+
 
 
 <import resource="classpath:META-INF/cxf/cxf.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-extension-soap.xml" />
 	<import resource="classpath:META-INF/cxf/cxf-servlet.xml" />
-	
-	<import resource="classpath:service_core.xml"></import>
 
-	<import resource="classpath:webservice_bean.xml"></import>
-	<import resource="classpath:webservice_cxf.xml"></import>
-	
+	<import resource="classpath:webservice_bean.xml"/>
+	<import resource="classpath:webservice_cxf.xml"/>
 
-	<import resource="classpath:service_job.xml"></import>
-	<import resource="classpath:dwr_core.xml"></import>
-	
-	<import resource="classpath:communication_bean.xml"></import>
-	<import resource="classpath:communication_cxf.xml"></import>
+	<import resource="classpath:service_core.xml"/>
+	<import resource="classpath:service_job.xml"/>
+	<import resource="classpath:dwr_core.xml"/>
+
+	<import resource="classpath:communication_bean.xml"/>
+	<import resource="classpath:communication_cxf.xml"/>
 </beans>

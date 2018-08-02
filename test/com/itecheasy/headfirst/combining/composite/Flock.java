@@ -4,16 +4,16 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 public class Flock implements Quackable {
-	ArrayList quackers = new ArrayList();
+	ArrayList<Quackable> quackers = new ArrayList<Quackable>();
  
 	public void add(Quackable quacker) {
 		quackers.add(quacker);
 	}
  
 	public void quack() {
-		Iterator iterator = quackers.iterator();
+		Iterator<Quackable> iterator = quackers.iterator();
 		while (iterator.hasNext()) {
-			Quackable quacker = (Quackable)iterator.next();
+			Quackable quacker = iterator.next();
 			quacker.quack();
 		}
 	}

@@ -5,8 +5,8 @@ public class ChocolateBoiler {
 	private boolean boiled;
 	private static ChocolateBoiler uniqueInstance;
   
-	private ChocolateBoiler() {
-		empty = true;
+	private ChocolateBoiler() { //构造器私有就是不允许别人创建他
+		empty = true;	//但是实例化时会走这里面，也就是被getInstance调用时
 		boiled = false;
 	}
   

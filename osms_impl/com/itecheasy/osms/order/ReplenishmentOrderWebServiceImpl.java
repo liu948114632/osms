@@ -66,6 +66,11 @@ public class ReplenishmentOrderWebServiceImpl implements ReplenishmentOrderWebSe
 	}
 
 	@Override
+	public void addAndUpdateOrderProductList(int orderId, List<UpdateOrderProductForm> orderProducts, String operator) throws BussinessException{
+		replenishmentOrderService.addAndUpdateOrderProductList(orderId,orderProducts,operator);
+	}
+
+	@Override
 	public void setShippingList(int orderId, List<ReplenishmentOrderShippingList> shippingList, int operator) {
 		replenishmentOrderService.setShippingList(orderId, shippingList, profileService.getUserNameById(operator));
 	}

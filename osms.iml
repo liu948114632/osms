@@ -39,7 +39,7 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
-          <unit-entry name="sessionFactory" value="40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d" />
+          <unit-entry name="sessionFactory" value="b4d7e3e4-19c7-45ca-8d78-8c915f4716ca" />
         </datasource-map>
         <naming-strategy-map>
           <unit-entry name="sessionFactory" />
@@ -82,7 +82,9 @@
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/web_app" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/cfg" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/core_impl/com/itecheasy/webservice/client/baseInvoke" />
     </content>
+    <content url="file://$MODULE_DIR$/test/com/itecheasy/headfirst/composite/menu" />
     <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="alibaba-discard" level="project" />
@@ -96,5 +98,7 @@
     <orderEntry type="library" name="dbcp" level="project" />
     <orderEntry type="library" name="aspectj" level="project" />
     <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="src" level="project" />
+    <orderEntry type="library" name="cglib-2.2" level="project" />
   </component>
 </module>

@@ -1,0 +1,153 @@
+package com.itecheasy.core.prepare;
+
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.time.DateUtils;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.core.fba.FbaFromAddress;
+import com.itecheasy.core.fba.dao.FbaFromAddressDao;
+import com.itecheasy.core.fba.dao.FbaFromAddressSnapshotDao;
+import com.itecheasy.core.fba.dao.FbaReplenishmentPlanDao;
+import com.itecheasy.core.fba.dao.FbaReplenishmentPlanItemDao;
+import com.itecheasy.core.fba.dao.ReplenishmentOrderDao;
+import com.itecheasy.core.fba.dao.ReplenishmentOrderItemDao;
+import com.itecheasy.core.order.OrderService.OrderAmazonStatus;
+import com.itecheasy.core.order.OrderService.OrderProductStatus;
+import com.itecheasy.core.po.CountryPO;
+import com.itecheasy.core.po.FbaFromAddressSnapshotPO;
+import com.itecheasy.core.po.FbaReplenishmentPlanItemPO;
+import com.itecheasy.core.po.FbaReplenishmentPlanPO;
+import com.itecheasy.core.po.ReplenishmentOrderItemPO;
+import com.itecheasy.core.po.ReplenishmentOrderPO;
+import com.itecheasy.core.po.SeaTransportationPreparePlanItemPO;
+import com.itecheasy.core.po.SeaTransportationPreparePlanPO;
+import com.itecheasy.core.prepare.SeaTransportationPrepareService.SeaTransportationPrepareStatus;
+import com.itecheasy.core.prepare.SeaTransportationPrepareService.SeaTransportationPrepareType;
+import com.itecheasy.core.prepare.SeaTransportationPrepareService.SeaTransportationProductType;
+import com.itecheasy.core.prepare.dao.SeaTransportationPreparePlanDao;
+import com.itecheasy.core.prepare.dao.SeaTransportationPreparePlanItemDao;
+import com.itecheasy.core.system.Shop;
+import com.itecheasy.core.system.ShopService;
+import com.itecheasy.core.system.dao.CountryDao;
+
+/**
+ * Servlet implementation class ResumeSeaTransData
+ */
+public class ResumeSeaTransData extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public ResumeSeaTransData() {
+        super();
+    }
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		WebApplicationContext  ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		resumeData(ctx);
+		response.getWriter().append("success at: ").append(request.getContextPath());
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+	
+	public void resumeData(WebApplicationContext  ctx){
+		ReplenishmentOrderDao replenishmentOrderDao = (ReplenishmentOrderDao)ctx.getBean("replenishmentOrderDao");
+		ReplenishmentOrderItemDao replenishmentOrderItemDao = (ReplenishmentOrderItemDao)ctx.getBean("replenishmentOrderItemDao");
+		SeaTransportationPreparePlanDao seaTransportationPreparePlanDao = (SeaTransportationPreparePlanDao)ctx.getBean("seaTransportationPreparePlanDao");
+		SeaTransportationPreparePlanItemDao seaTransportationPreparePlanItemDao = (SeaTransportationPreparePlanItemDao)ctx.getBean("seaTransportationPreparePlanItemDao");
+		FbaReplenishmentPlanDao fbaReplenishmentPlanDao = (FbaReplenishmentPlanDao)ctx.getBean("fbaReplenishmentPlanDao");
+		FbaReplenishmentPlanItemDao fbaReplenishmentPlanItemDao = (FbaReplenishmentPlanItemDao)ctx.getBean("fbaReplenishmentPlanItemDao");
+		CountryDao countryDao = (CountryDao)ctx.getBean("countryDao");
+		FbaFromAddressSnapshotDao fbaFromAddressSnapshotDao = (FbaFromAddressSnapshotDao)ctx.getBean("fbaFromAddressSnapshotDao");
+		FbaFromAddressDao fbaFromAddressDao = (FbaFromAddressDao)ctx.getBean("fbaFromAddressDao");
+		ShopService shopService = (ShopService)ctx.getBean("shopService");
+		int shopId;
+		List<Shop> shops = shopService.getAvailableShops();
+		for (Shop shop : shops) {
+			shopId = shop.getId();
+			List<ReplenishmentOrderPO> orderList = replenishmentOrderDao.findListByHql("FROM ReplenishmentOrderPO WHERE shopId =? AND fbaReplenishmentPlanId IS NULL AND fbaShipmentMethod='ST' AND status<>132 ",shopId);
+			for (ReplenishmentOrderPO po : orderList) {
+				//给每个订单设置一个补货计划
+				//给每个计划设置一个备货计划
+				//先创建一个备货计划 拿到id
+				SeaTransportationPreparePlanPO beihuoPlan = new SeaTransportationPreparePlanPO();
+				beihuoPlan.setShopId(shopId);
+				beihuoPlan.setCreateTime(po.getAddOrderDate());
+				beihuoPlan.setShippingDate(po.getEarliestShippingDate());
+				beihuoPlan.setPlanName(po.getCode());
+				beihuoPlan.setPlanType(SeaTransportationPrepareType.建单.getVal());
+				beihuoPlan.setRemark("程序根据人工建fba补货单自动填充的备货计划");
+				beihuoPlan.setStatus(SeaTransportationPrepareStatus.已建单.getVal());
+				//beihuoPlan.setStockPeriod(1.5);
+				List<ReplenishmentOrderItemPO> orderItemList = replenishmentOrderItemDao.findListByHql("FROM ReplenishmentOrderItemPO WHERE replenishmentOrderId=? ", po.getId());
+				Integer beihuoPlanId = seaTransportationPreparePlanDao.addObject(beihuoPlan);
+				//再创建一个补货计划，把拿到的备货计划id放进去，拿到补货计划id
+				FbaReplenishmentPlanPO replenishmentPlanPO = new FbaReplenishmentPlanPO();
+				replenishmentPlanPO.setShopId(shopId);
+				replenishmentPlanPO.setSeaTransportationPreparePlanId(beihuoPlanId);
+				replenishmentPlanPO.setCreateTime(po.getAddOrderDate());
+				replenishmentPlanPO.setIsSubmitToAm(0);
+				replenishmentPlanPO.setPlanName(po.getCode());
+				replenishmentPlanPO.setShopId(shopId);
+				//replenishmentPlanPO.setSubmitStatus("1");
+				Integer buhuoplanId = fbaReplenishmentPlanDao.addObject(replenishmentPlanPO);
+				FbaFromAddress address = fbaFromAddressDao.findFbaFromAddressByShopId(shopId);
+				FbaFromAddressSnapshotPO addressSnapshotPO = new FbaFromAddressSnapshotPO();
+				BeanUtils.copyProperties(address, addressSnapshotPO);
+				addressSnapshotPO.setFbaReplenishmentPlanId(buhuoplanId);
+				fbaFromAddressSnapshotDao.addObject(addressSnapshotPO);
+				//在将补货计划id放到补货定单里面去
+				po.setFbaReplenishmentPlanId(buhuoplanId);
+				po.setOrderAmazonStatus(OrderAmazonStatus.WORKING.getStatusCode());
+				replenishmentOrderDao.updateObject(po);
+				//再给备货计划生成时间
+				beihuoPlan.setArriveDate(DateUtils.addDays(po.getEarliestDeliveryDate(), 50));
+				seaTransportationPreparePlanDao.updateObject(beihuoPlan);
+				int mskus = 0;
+				int amount = 0;
+				for (ReplenishmentOrderItemPO orderItem : orderItemList) {
+					
+					if(orderItem.getStatus()!=OrderProductStatus.取消.getVal()){
+						FbaReplenishmentPlanItemPO buhuoPlanItemPO = new FbaReplenishmentPlanItemPO();
+						buhuoPlanItemPO.setFbaReplenishmentPlanId(buhuoplanId);
+						buhuoPlanItemPO.setFbaShopProductId(orderItem.getFbaShopProductId());
+						buhuoPlanItemPO.setQuantity(new Double(orderItem.getOrderedQuantity()).intValue());
+						fbaReplenishmentPlanItemDao.addObject(buhuoPlanItemPO);
+						mskus+=1;
+						amount+=new Double(orderItem.getOrderedQuantity()).intValue();
+					}
+					SeaTransportationPreparePlanItemPO beihuoPlanItemPO = new SeaTransportationPreparePlanItemPO();
+					beihuoPlanItemPO.setActualQuantity(new Double(orderItem.getOrderedQuantity()).intValue());
+					beihuoPlanItemPO.setFbaShopProductId(orderItem.getFbaShopProductId());
+					beihuoPlanItemPO.setIsCanceled(orderItem.getStatus()==OrderProductStatus.取消.getVal()?1:0);
+					beihuoPlanItemPO.setPrepareQuantity(new Double(orderItem.getOrderedQuantity()).intValue());
+					beihuoPlanItemPO.setProductType(SeaTransportationProductType.已走过海运.getVal());
+					beihuoPlanItemPO.setSeaTransportationPreparePlanId(beihuoPlanId);
+					beihuoPlanItemPO.setTotalWeight(orderItem.getUnitWeight()*orderItem.getOrderedQuantity());
+					seaTransportationPreparePlanItemDao.addObject(beihuoPlanItemPO);
+				}
+				replenishmentPlanPO.setAmount(amount);
+				replenishmentPlanPO.setMskus(mskus);
+				replenishmentPlanPO.setShippingMethod("ST");
+				if(po.getCountry()!=null){
+					CountryPO countryPO = countryDao.getObject(po.getCountry());
+					replenishmentPlanPO.setShipToCountryCode(countryPO==null?null:countryPO.getCountryCode());
+				}
+				fbaReplenishmentPlanDao.updateObject(replenishmentPlanPO);
+			}
+		}
+		
+	}
+}

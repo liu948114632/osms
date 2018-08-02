@@ -1,7 +1,12 @@
 package com.itecheasy.headfirst.combining.composite;
 
 public class CountingDuckFactory extends AbstractDuckFactory {
-  
+
+	public Quackable createGooseAdapter() {
+		return new QuackCounter(new GooseAdapter(new Goose()));
+	}
+
+
 	public Quackable createMallardDuck() {
 		return new QuackCounter(new MallardDuck());
 	}

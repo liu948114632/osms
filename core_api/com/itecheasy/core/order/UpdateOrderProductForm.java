@@ -7,9 +7,11 @@ package com.itecheasy.core.order;
  * @version
  */
 public class UpdateOrderProductForm {
-	private int fbaShopProductId;
-	private int orderProductId;
-	private String updateProductCode;
+	private int fbaShopProductId;	//商品与fba的对应表
+
+	private int orderProductId;		//这个是商品的id
+	private String updateProductCode;	//cms product code
+
 	private double qty;
 	private int unitQty;
 	private String productRemark;

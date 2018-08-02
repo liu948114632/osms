@@ -1,0 +1,26 @@
+
+#测试
+#jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+#jdbc.url=bgy4+1teYET01wABSoHtaSO3Kz0ma1dgzlFs8slAntwXRCTln4YW6yMRTP7T6Y1hqJdGKP3xZatk0ml4ON8Ga2kleP3h3lN+GQMidL7Vbhs5rqtVfUWkjG4Z07cRsEJfpx1RioV0XZ1PaxvV/2rTwL47/TSOrxq51RYN0rBfzIk=
+#jdbc.username=g+G7kXmNbc9SRz5HV1FvyzbYoqyjmfpGheiXbd8PUopbzJK+gJH5S2CI4AzHVluIxmO8/i4HW8+bI4S3wEfFKw==
+#jdbc.password=BR32xSscoaimfL9+v1jhzNxtsZyqKXSFfnIztVXSyVU+yJ/ZcULgb89R5DHXR2i/jz0krQBQDti7X/PzhTN1Gw==
+
+#开发
+#jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+#jdbc.username=JOJoiq4ZCxFSiRYwZu9iKHdlkgBlhdH+BmBecY/lKEyMIXS9AgvhTPP6WFymkECp8+aGLA1yNug2ROTY2F4qEg==
+#jdbc.password=khREB1b+d7rQRNyXo6AFBJTdib9UdLaKnRYLxQTaEEv2CgnvnptF80OEwAjeQBtSwHvhFP6r7r8IP9eg5Fgp9g==
+#jdbc.url=oRrbytctyprq+8HdNMg0oVejULf/J1zFA6BSy03hfdcTPojLnCnY2MECUMg4VItXZCxy6nZ70kWGimzo86EmRoFERi4wsMorMdEbaO/NLbIGM2NnU1iPwbH53Yf0CNl1VQSlDR+ZOwLSIK9CtHFmgYUmTy2hm+k1g4DjWWsbTSQ=
+
+
+#new empolder dataBase
+jdbc.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+jdbc.username=test1
+jdbc.password=test12015
+jdbc.url=jdbc\:sqlserver\://192.168.111.78\:7720;databaseName\=osms_dev_180710
+
+
+
+jdbc.maxActive=100 
+jdbc.maxIdle=20
+jdbc.maxWait=5000 
+

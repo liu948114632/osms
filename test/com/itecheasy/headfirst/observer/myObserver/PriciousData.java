@@ -16,13 +16,9 @@ public class PriciousData implements Pricious {
     private boolean hasNext;
 
     //观察者的集合
-    private List<Look> personList;
+    private List<Look> personList = new ArrayList<Look>();
 
-    PriciousData(){
-        this.personList = new ArrayList<Look>();
-    }
-
-
+    //这个却是给observer调用的
     @Override
     public void addObserver(Look look) {
         if (look != null) {
@@ -30,13 +26,7 @@ public class PriciousData implements Pricious {
         }
     }
 
-    //只是通知观察者们
-    @Override
-    public void notifyPersonAll() {
-        for (Look person : personList) {
-            person.updateCondition( whatThis, nextPri, hasNext);
-        }
-    }
+
 
     @Override
     public void removePerson(Look person) {
@@ -52,13 +42,20 @@ public class PriciousData implements Pricious {
         this.personList.clear();
     }
 
-    //
+    //只改变全局变量
     public void setNewPricious(String whatThis,String nextPri,boolean hasNext){
         this.whatThis = whatThis;
         this.hasNext = hasNext;
         this.nextPri = nextPri;
         notifyPersonAll();
+    }
 
+    //只是通知观察者们，负责遍历
+    @Override
+    public void notifyPersonAll() {
+        for (Look person : personList) {
+            person.updateCondition( whatThis, nextPri, hasNext);
+        }
     }
 
     //只通知某一个观察者的方法

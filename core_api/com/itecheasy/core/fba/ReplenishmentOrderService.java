@@ -88,12 +88,15 @@ public interface ReplenishmentOrderService extends IBaseOrder{
 	 */
 	void addOrderProducts(int orderId, List<UpdateOrderProductForm> orderProducts, String operator)
 			throws BussinessException;
-	
-	/**
-	 * 上传货运单
-	 * @param orderId
-	 * @param shippingList
-	 */
+
+	public void addAndUpdateOrderProductList(int orderId, List<UpdateOrderProductForm> orderProducts, String operator);
+
+
+		/**
+         * 上传货运单
+         * @param orderId
+         * @param shippingList
+         */
 	void setShippingList(int orderId,List<ReplenishmentOrderShippingList> shippingList,String operator)throws BussinessException;
 	
 	/**

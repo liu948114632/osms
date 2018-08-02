@@ -44,6 +44,7 @@
 		<a href="downloadOrder.jsp">重新下载订单</a>
 		<a href="downloadSmtOrder.jsp">添加smt订单</a>
 		<a href="updateCache">更新店铺缓存</a>
+		<a href="resumeSeaTransData.jsp">补货订单生成补货计划以及备货计划</a>
 	</div>
 </body>
 </html>

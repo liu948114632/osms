@@ -2,6 +2,7 @@ package com.itecheasy.headfirst.composite.menuiterator;
 
 import java.util.*;
 
+//把它变为抽象类的好处是不需要强行要之类重写这些方法
 public abstract class MenuComponent {
    
 	public void add(MenuComponent menuComponent) {

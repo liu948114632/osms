@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="osms_" uuid="40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d">
+    <data-source source="LOCAL" name="osms_Encrypt" uuid="40b1e1e6-a7d2-4c07-beb6-9790c8aa2e4d">
       <driver-ref>sqlserver.ms</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
@@ -16,6 +16,25 @@
       <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
       <jdbc-url>jdbc:sqlserver://192.168.111.78:7720;database=osms_dev_180710</jdbc-url>
       <driver-properties>
+        <property name="applicationName" value="DataGrip" />
+      </driver-properties>
+    </data-source>
+    <data-source source="LOCAL" name="osms_test_180710" uuid="b4d7e3e4-19c7-45ca-8d78-8c915f4716ca">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://192.168.111.78:7720;database=osms_test_180717</jdbc-url>
+      <driver-properties>
+        <property name="applicationName" value="DataGrip" />
+      </driver-properties>
+    </data-source>
+    <data-source source="LOCAL" name="osms_test_180730" uuid="af5d3d54-65e8-4f33-a308-5d7d8d5090bf">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://192.168.111.78:7720</jdbc-url>
+      <driver-properties>
+        <property name="appName" value="DataGrip" />
         <property name="applicationName" value="DataGrip" />
       </driver-properties>
     </data-source>

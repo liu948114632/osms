@@ -8,7 +8,7 @@ import java.util.*;
 public class RemoteControl {
 	Command[] onCommands;
 	Command[] offCommands;
-	Command undoCommand;
+	Command undoCommand;	//记录上一个
  
 	public RemoteControl() {
 		onCommands = new Command[7];

@@ -1,5 +1,8 @@
+
+
 package com.itecheasy.core.po;
 
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -17,7 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "shop")
-public class ShopPo {
+public class ShopPo    {
 	private int id;
 	private String name;
 	private int type;
@@ -45,6 +48,9 @@ public class ShopPo {
 	 * 海运预计货运天数
 	 */
 	private Integer seaTransDays;
+
+
+
 
 	@Column(name="fba_from_address_id")
 	public Integer getFbaFromAddressId() {

@@ -1,7 +1,8 @@
 package com.itecheasy.headfirst.composite.menuiterator;
  
 import java.util.Iterator;
-  
+
+
 public class NullIterator implements Iterator {
    
 	public Object next() {

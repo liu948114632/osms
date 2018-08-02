@@ -1,5 +1,7 @@
 package com.itecheasy.core.fba;
 
+import java.util.List;
+
 /**
  * @Auther: liteng
  * @Date: 2018/6/21 14:30
@@ -13,14 +15,17 @@ public class PutTransportContentVO {
 //    private String ShipmentType; //SP
 //    private String CarrierName; //other
 
+
+
+    private String shipmentId;   //这个是update用到的
+
     private String orderTrackCode;
-    private String shipmentId;
-
     private int replenishmentOrderId;
-
     private String replenishmentOrderCode;
-    private int shopId;
 
+
+
+    private int shopId;
     private int operatorId;
 
     public int getReplenishmentOrderId() {

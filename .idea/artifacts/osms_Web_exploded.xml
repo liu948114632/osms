@@ -12,12 +12,13 @@
           <element id="library" level="project" name="alibaba-discard" />
           <element id="library" level="project" name="cxf" />
           <element id="library" level="project" name="ebay" />
-          <element id="library" level="project" name="hibernate" />
           <element id="library" level="project" name="hibernate-annotations" />
           <element id="library" level="project" name="lib1" />
           <element id="library" level="project" name="spring" />
           <element id="library" level="project" name="dbcp" />
           <element id="library" level="project" name="aspectj" />
+          <element id="library" level="project" name="cglib-2.2" />
+          <element id="library" level="project" name="hibernate" />
         </element>
       </element>
     </root>

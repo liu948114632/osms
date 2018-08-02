@@ -21,7 +21,7 @@ public class SoldState implements State {
 	}
  
 	public void dispense() {
-		gumballMachine.releaseBall();
+		gumballMachine.releaseBall(); //分发糖果
 		if (gumballMachine.getCount() > 0) {
 			gumballMachine.setState(gumballMachine.getNoQuarterState());
 		} else {

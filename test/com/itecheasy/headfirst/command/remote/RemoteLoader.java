@@ -34,7 +34,8 @@ public class RemoteLoader {
 				new StereoOnWithCDCommand(stereo);
 		StereoOffCommand  stereoOff =
 				new StereoOffCommand(stereo);
- 
+
+		//设置到remote上
 		remoteControl.setCommand(0, livingRoomLightOn, livingRoomLightOff);
 		remoteControl.setCommand(1, kitchenLightOn, kitchenLightOff);
 		remoteControl.setCommand(2, ceilingFanOn, ceilingFanOff);

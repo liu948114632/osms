@@ -5,12 +5,17 @@ import com.itecheasy.common.util.DateUtils;
 import com.itecheasy.core.fba.AmazonReportService;
 import com.itecheasy.core.fba.dao.AmazonStockReportDao;
 import com.itecheasy.core.po.AmazonStockReportPO;
+import com.itecheasy.core.po.OrderPO;
 import com.itecheasy.webservice.amazon.AmazonStockReportVO;
+import com.itecheasy.webservice.amazon.InboundShipmentInfoVO;
+import com.itecheasy.webservice.amazon.ListInboundShipmentsResultVO;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -22,6 +27,61 @@ import java.util.*;
 public class AmazonStockReport {
 
     Thread thread;
+
+
+    public static void main(String[] args) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, ClassNotFoundException {
+        List<OrderPO> a = new ArrayList<OrderPO>();
+        List b = new ArrayList();
+        List c = new ArrayList();
+
+        Number n = 2.0;
+
+        Class<?> sss = Class.forName("sss");
+        Object o = sss.getConstructor().newInstance();
+
+        Constructor<OrderPO> constructor1 = OrderPO.class.getConstructor();
+        constructor1.newInstance();
+        OrderPO orderPO = new OrderPO();
+
+        Class<?> aClass = orderPO.getClass();
+        Constructor<?> constructor = aClass.getConstructor();
+        constructor.newInstance();
+        OrderPO orderPO1 = OrderPO.class.newInstance();
+
+
+        a.add(orderPO);
+        System.out.println("a = " + a.get(0).getStatus());
+        orderPO.setStatus(33);
+
+        System.out.println(orderPO.getStatus());
+        System.out.println(a.get(0).getStatus());
+
+    }
+
+    @Test
+    public void testCase007() throws InterruptedException {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        AmozonUpdateReplenishmentShipment amozonUpdateReplenishmentShipment = (AmozonUpdateReplenishmentShipment) context.getBean("amozonUpdateReplenishmentShipment");
+        ListInboundShipmentsResultVO listInboundShipmentsResultVO = new ListInboundShipmentsResultVO();
+
+        ArrayList<InboundShipmentInfoVO> listasda = new ArrayList<InboundShipmentInfoVO>();
+        InboundShipmentInfoVO vo = new InboundShipmentInfoVO();
+        for (int i = 0; i < 10; i++) {
+            vo.setShipmentStatus("RECEIVING");
+            vo.setShipmentId("FBA4KV7RDQ");
+            if (i<3){
+                vo.setShipmentStatus(" RECEIVING ");
+                vo.setShipmentId("FBA4KV7RDQ");
+            }
+            listasda.add(vo);
+        }
+        listInboundShipmentsResultVO.setInboundShipmentInfoVOList(listasda);
+        Integer shopId = 1;
+        
+
+//        amozonUpdateReplenishmentShipment.updateAmazonOrderStatus3(listInboundShipmentsResultVO,shopId);
+
+    }
 
     @Test
     public void testCase() throws InterruptedException {
@@ -55,7 +115,7 @@ public class AmazonStockReport {
 
         List<AmazonStockReportPO> reportFormList = new ArrayList<AmazonStockReportPO>(); //所有的报告
 //        File filename = new File("D\\:\\osms_am\\backup\\");
-        String path = "C:\\Users\\Administrator\\Desktop\\AMAZON_REPORT.txt";
+        String path = "C:\\Users\\Administrator\\Desktop\\mock.txt";
         File filename = new File(path);
 
         InputStreamReader reader = new InputStreamReader(new FileInputStream(filename)); // 建立一个输入流对象reader

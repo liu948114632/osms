@@ -10,11 +10,7 @@ public class MenuItem extends MenuComponent {
 	boolean vegetarian;
 	double price;
     
-	public MenuItem(String name, 
-	                String description, 
-	                boolean vegetarian, 
-	                double price) 
-	{ 
+	public MenuItem(String name, String description, boolean vegetarian, double price) {
 		this.name = name;
 		this.description = description;
 		this.vegetarian = vegetarian;
@@ -36,6 +32,9 @@ public class MenuItem extends MenuComponent {
 	public boolean isVegetarian() {
 		return vegetarian;
 	}
+
+
+
 
 	public Iterator createIterator() {
 		return new NullIterator();

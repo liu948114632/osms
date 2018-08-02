@@ -1,0 +1,250 @@
+package com.itecheasy.core.prepare;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.core.BussinessException;
+
+/**
+ * @author taozihao
+ * @date 2018年7月2日 上午10:59:39
+ * @description 海运备货计划
+ */
+public interface SeaTransportationPrepareService {
+
+	/**
+	 * 根据条件查询海运备货计划列表
+	 * 
+	 * @param planSearchVO
+	 * @return
+	 * 
+	 */
+	public PageList<SeaTransportationPlanVO> getSeaTransportationPlanList(PreparePlanSearchVO planSearchVO,int operatorId);
+
+	/**
+	 * 根据店铺id和计划到货日期和预期库存周期推荐备货计划商品项<br>
+	 * 同时生成备货计划以及商品项，保存
+	 * @param seaTransportationPlanVO
+	 * @param operatorId
+	 * @return
+	 */
+	public SeaTransportationPlanDetailVO saveAndGetRecommendProductList(SeaTransportationPlanVO seaTransportationPlanVO,
+			int operatorId) throws BussinessException;
+
+	/**
+	 * 新增海运备货计划(拆分的时候需要)
+	 * 
+	 * @param seaTransportationPlanDetail
+	 * @param operatorId
+	 */
+	public void addSeaTransportationPlan(SeaTransportationPlanDetailVO seaTransportationPlanDetail,
+			int operatorId)throws BussinessException;
+
+	/**
+	 * 修改海运备货计划
+	 * 
+	 * @param seaTransportationPlan
+	 * @param operatorId
+	 */
+	public void updateSeaTransportationPlan(SeaTransportationPlanVO seaTransportationPlanVO, int operatorId) throws BussinessException;
+
+	/**
+	 * 手动增加的sku
+	 * 
+	 * @param skus
+	 * @param planId
+	 * @param operatorId
+	 * @return
+	 */
+	public void addProduct(List<String> skus, int planId, int operatorId) throws BussinessException;
+
+	/**
+	 * 根据海运计划id查询计划详情，注意商品项要按照商品推荐类型排序
+	 * 
+	 * @param planId
+	 * @return
+	 * 
+	 */
+	public SeaTransportationPlanDetailVO getSeaTransportationPlanDetailByPlanId(int planId);
+
+	/**
+	 * 取消计划商品
+	 * 
+	 * @param planId
+	 * @param skus
+	 * @param operatorId
+	 * @throws BussinessException
+	 */
+	public void cancelProducts(int planId, List<String> skus, int operatorId) throws BussinessException;
+
+	/**
+	 * 更新商品实际批量
+	 * 
+	 * @param planId
+	 * @param sku
+	 * @param actualQuantity
+	 * @param operatorId
+	 */
+	public double updateProductActualQuantity(int planId, String sku, int actualQuantity, int operatorId);
+
+	/**
+	 * 根据计划id修改审核状态
+	 * 
+	 * @param planId
+	 * @param operatorId
+	 * @param status
+	 * 
+	 */
+	public void updateCheckStatus(int planId, int operatorId, int status);
+
+	/**
+	 * 获取海运补货计划日志
+	 * 
+	 * @param planId
+	 * 
+	 */
+	public List<SeaTransportationPlanOperateLogVO> getSeaTransportationPlanOperateLogs(int planId);
+
+	/**
+	 * 双向增加日志记录
+	 * 
+	 * @param seaTransPlanId
+	 * @param inboundPlanId
+	 * @param operatorId
+	 * 
+	 */
+	public void addSeaTransToInboundPlanLog(int seaTransPlanId, int inboundPlanId, int operatorId);
+
+	
+	
+	
+	/**
+	 * 海运计划审核状态<br>
+	 * 推荐、待审核、已审核、不通过、已建单、删除
+	 */
+	public enum SeaTransportationPrepareStatus {
+		推荐(0), 待审核(1), 已审核(2), 不通过(3), 已建单(4), 删除(5);
+
+		private static final Map<Integer, SeaTransportationPrepareStatus> intToEnum = new HashMap<Integer, SeaTransportationPrepareStatus>();
+
+		static {
+			for (SeaTransportationPrepareStatus type : values()) {
+				intToEnum.put(type.getVal(), type);
+			}
+		}
+
+		public static String getName(int val) {
+			if (intToEnum.get(val) != null) {
+				return intToEnum.get(val).toString();
+			}
+			return null;
+		}
+
+		private int val;
+
+		SeaTransportationPrepareStatus(int val) {
+			this.val = val;
+		}
+
+		public int getVal() {
+			return val;
+		}
+	}
+
+	/**
+	 * 海运计划商品类型<br>
+	 * 已走过海运、程序推荐海运、人工加入海运
+	 */
+	public enum SeaTransportationProductType {
+		已走过海运(0), 程序推荐海运(1), 人工加入海运(2);
+
+		private static final Map<Integer, SeaTransportationProductType> intToEnum = new HashMap<Integer, SeaTransportationProductType>();
+
+		static {
+			for (SeaTransportationProductType type : values()) {
+				intToEnum.put(type.getVal(), type);
+			}
+		}
+
+		public static String getName(int val) {
+			if (intToEnum.get(val) != null) {
+				return intToEnum.get(val).toString();
+			}
+			return null;
+		}
+
+		private int val;
+
+		SeaTransportationProductType(int val) {
+			this.val = val;
+		}
+
+		public int getVal() {
+			return val;
+		}
+	}
+
+	/**
+	 * 计划的备货类型<br>
+	 * C3备货、建单
+	 */
+	public enum SeaTransportationPrepareType {
+		C3备货(0), 建单(1);
+
+		private static final Map<Integer, SeaTransportationPrepareType> intToEnum = new HashMap<Integer, SeaTransportationPrepareType>();
+
+		static {
+			for (SeaTransportationPrepareType type : values()) {
+				intToEnum.put(type.getVal(), type);
+			}
+		}
+
+		private int val;
+
+		SeaTransportationPrepareType(int val) {
+			this.val = val;
+		}
+
+		public int getVal() {
+			return val;
+		}
+
+		public static String getName(int val) {
+			if (intToEnum.get(val) != null) {
+				return intToEnum.get(val).toString();
+			}
+			return null;
+		}
+	}
+	
+	public enum SeaTransPrepareItemIsCanceled{
+		未取消(0), 取消(1);
+		
+		private static final Map<Integer, SeaTransPrepareItemIsCanceled> intToEnum = new HashMap<Integer, SeaTransPrepareItemIsCanceled>();
+
+		static {
+			for (SeaTransPrepareItemIsCanceled type : values()) {
+				intToEnum.put(type.getVal(), type);
+			}
+		}
+
+		private int val;
+
+		SeaTransPrepareItemIsCanceled(int val) {
+			this.val = val;
+		}
+
+		public int getVal() {
+			return val;
+		}
+
+		public static String getName(int val) {
+			if (intToEnum.get(val) != null) {
+				return intToEnum.get(val).toString();
+			}
+			return null;
+		}
+	}
+}

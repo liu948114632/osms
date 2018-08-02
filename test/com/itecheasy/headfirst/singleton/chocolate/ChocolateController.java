@@ -8,6 +8,6 @@ public class ChocolateController {
 		boiler.drain();
 
 		// will return the existing instance
-		ChocolateBoiler boiler2 = ChocolateBoiler.getInstance();
+		ChocolateBoiler boiler2 = ChocolateBoiler.getInstance();	//还是原来的那一个
 	}
 }

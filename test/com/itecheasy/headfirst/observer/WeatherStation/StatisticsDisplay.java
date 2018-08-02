@@ -1,7 +1,7 @@
 package com.itecheasy.headfirst.observer.WeatherStation;
 
 import java.util.*;
-import java.util.Observer;
+
 
 public class StatisticsDisplay implements Observer, DisplayElement {
 	private float maxTemp = 0.0f;

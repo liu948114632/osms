@@ -2,26 +2,18 @@ package com.itecheasy.core.fba;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
-import com.itecheasy.core.order.OrderTracking;
-import com.itecheasy.core.order.dao.OrderTrackingDao;
 import com.itecheasy.core.po.*;
-import com.itecheasy.printMethod.AccessPath;
+import com.itecheasy.printMethod.annotations.LoggerNameDescription;
 import com.itecheasy.webservice.amazon.*;
 import org.apache.commons.lang.time.DateUtils;
 
 import com.itecheasy.common.PageList;
 import com.itecheasy.common.Param;
 import com.itecheasy.common.util.BeanUtils;
-import com.itecheasy.common.util.CalcUtils;
-import com.itecheasy.common.util.CollectionUtils;
 import com.itecheasy.common.util.StringUtils;
 import com.itecheasy.core.BussinessException;
-import com.itecheasy.core.fba.FbaInboundService.FbaInboundPlanSubmitStatus;
 import com.itecheasy.core.fba.dao.FbaFromAddressDao;
 import com.itecheasy.core.fba.dao.FbaFromAddressSnapshotDao;
 import com.itecheasy.core.fba.dao.FbaReplenishmentPlanDao;
@@ -48,6 +40,7 @@ import com.itecheasy.core.util.DictUtils;
 import com.itecheasy.webservice.client.AmazonClient;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @author taozihao
@@ -59,7 +52,6 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 	public static final Logger logger = Logger.getLogger(FbaInboundServiceImpl.class);
 
 	private FbaFromAddressDao fbaFromAddressDao;
-	//private FbaToAddressDao fbaToAddressDao;
 	private FbaShopProductDao fbaShopProductDao;
 	private ShopProductCmsInfoDao shopProductCmsInfoDao;
 	private FbaReplenishmentPlanDao fbaReplenishmentPlanDao;
@@ -75,11 +67,6 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 	private ReplenishmentOrderRepositoryDao replenishmentOrderRepositoryDao;
 	private ReplenishmentOrderOperateLogDao replenishmentOrderOperateLogDao;
 	private DepartmentDAO departmentDAO;
-	private OrderTrackingDao orderTrackingDao;
-
-	public void setOrderTrackingDao(OrderTrackingDao orderTrackingDao) {
-		this.orderTrackingDao = orderTrackingDao;
-	}
 
 	public void setDepartmentDAO(DepartmentDAO departmentDAO) {
 		this.departmentDAO = departmentDAO;
@@ -150,26 +137,27 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 	}
 
 	@Override
-	public String checkExcel(int shopId ,List<String> skus) {
-		StringBuffer buffer = new StringBuffer();
-		//首先对fba商品和cms里面联合查询。判断sku是否可用,判断是否有条形码名称和条形码以及状态是否为可用 
-		for (String sku : skus) {
-			FbaShopProductPO productPO = fbaShopProductDao.findByHql("FROM FbaShopProductPO WHERE fbaBarcodeName is not null AND fbaBarcodeSku is not null AND status='1' AND shopId = ? AND sku = ?",new Object[]{shopId,sku});
-			if(productPO==null){
-				buffer.append(sku);
-				//每个问题sku中间采用英文逗号分隔
-				buffer.append(",");
-			}else{
-				if(productPO.getFbaBarcodeName().trim().equals("")||productPO.getFbaBarcodeSku().trim().equals("")){
-					buffer.append(sku);
-					buffer.append(",");
-				}
+	public List<String> checkExcel(int shopId ,List<String> skus) {
+		
+		StringBuilder builder = new StringBuilder();
+		builder.append("(");
+		for (int i = 0; i < skus.size(); i++) {
+			builder.append("'");
+			builder.append(skus.get(i));
+			builder.append("'");
+			if(i!=skus.size()-1){
+				builder.append(",");
 			}
 		}
-		if(buffer.toString().trim().equals("")){
-			return null;
+		builder.append(")");
+		String hql = "FROM FbaShopProductPO WHERE fbaBarcodeName is not null AND LTRIM(RTRIM(fbaBarcodeName))<>'' AND fbaBarcodeSku is not null AND LTRIM(RTRIM(fbaBarcodeSku))<>''  AND status='1' AND shopId = ? AND sku in "+builder.toString();
+		List<FbaShopProductPO> list = fbaShopProductDao.findListByHql(hql, shopId);
+		for (FbaShopProductPO fbaShopProductPO : list) {
+			if(skus.contains(fbaShopProductPO.getSku())){
+				skus.remove(fbaShopProductPO.getSku());
+			}
 		}
-		return buffer.toString();
+		return skus;
 	}
 
 
@@ -178,6 +166,7 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 		List<FbaInboundPlanItemExcelResult> list = new ArrayList<FbaInboundPlanItemExcelResult>();
 		for (InboundPlanProductItem item : items) {
 			ShopProductCmsInfoPO cmsInfoPO = shopProductCmsInfoDao.findByHql("SELECT p FROM ShopProductCmsInfoPO p, FbaShopProductPO s WHERE p.cmsProductId = s.cmsProductId AND s.shopId = ? AND s.sku = ?",new Object[]{shopId,item.getSku()});
+			FbaShopProductPO fbaShopProductPO = fbaShopProductDao.findByHql("FROM FbaShopProductPO WHERE cmsProductId=? ", cmsInfoPO.getCmsProductId());
 			FbaInboundPlanItemExcelResult excelResult = new FbaInboundPlanItemExcelResult();
 			excelResult.setCmsProductCode(cmsInfoPO.getCmsProductCode());
 			excelResult.setOrderedQuantity(item.getQuantity());
@@ -185,6 +174,10 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 			excelResult.setPrimaryPictureCode(cmsInfoPO.getPrimaryPictureCode());
 			excelResult.setUnit(cmsInfoPO.getUnit());
 			excelResult.setUnitQuantity(cmsInfoPO.getUnitQuantity());
+			excelResult.setCmsProductId(cmsInfoPO.getCmsProductId());
+			excelResult.setCostPrice(cmsInfoPO.getCostPrice());
+			excelResult.setFbaBarcodeSku(fbaShopProductPO.getFbaBarcodeSku());
+			excelResult.setFbaShopProductId(fbaShopProductPO.getId());
 			list.add(excelResult);
 		}
 		return list;
@@ -192,7 +185,7 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 
 	@Override
 	public int createFbaInboundPlan(int shopId, String planName, String shipToCountryCode,
-			String shippingMethod, List<InboundPlanProductItem> items,int isSubmitToAm,int operatorId) throws BussinessException{
+			String shippingMethod, List<InboundPlanProductItem> items,int isSubmitToAm,int preparePlanId,int operatorId) throws BussinessException{
 		
 		//由于店铺绑定了默认的退货地址，直接去查
 		FbaFromAddress address = fbaFromAddressDao.findFbaFromAddressByShopId(shopId);
@@ -208,6 +201,11 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 		}
 		
 		FbaReplenishmentPlanPO planPO = new FbaReplenishmentPlanPO();
+		if(preparePlanId>0){
+			if(shippingMethod.trim().equalsIgnoreCase("ST")){
+				planPO.setSeaTransportationPreparePlanId(preparePlanId);
+			}
+		}
 		planPO.setIsSubmitToAm(isSubmitToAm);
 		planPO.setAmount(amount);
 		planPO.setCreateTime(new Date());
@@ -325,8 +323,11 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 		//查询计划，
 		FbaReplenishmentPlanPO planPO = fbaReplenishmentPlanDao.findByHql("FROM FbaReplenishmentPlanPO WHERE shopId=? AND id=?", new Object[]{shopId,planId});
 		//为了防止重复提交亚马逊，如果发现状态不对就抛出异常
-		if(!planPO.getSubmitStatus().equals(FbaInboundPlanSubmitStatus.未提交.getVal())){
+		if(planPO.getSubmitStatus()==null||!planPO.getSubmitStatus().equals(FbaInboundPlanSubmitStatus.未提交.getVal())){
 			throw new BussinessException("计划:"+planPO.getPlanName()+"已经提交或者删除");
+		}
+		if(planPO.getIsSubmitToAm()==null||planPO.getIsSubmitToAm()==0){
+			throw new BussinessException("计划:"+planPO.getPlanName()+"已设置为不对接亚马逊，所以不能提交亚马逊");
 		}
 		
 		List<InboundItemVO> list = new ArrayList<InboundItemVO>();
@@ -350,12 +351,9 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 		if(!planPO.getShipToCountryCode().equalsIgnoreCase("AU")&&!planPO.getShipToCountryCode().equalsIgnoreCase("JP")){
 			shipToCountryCode=planPO.getShipToCountryCode();
 		}
+		List<InboundShipmentVO> resultList = null;
 		//调用中间服务客户端
-		List<InboundShipmentVO> resultList = AmazonClient.createInboundShipmentPlan(shopId, list, shipFromAddress,shipToCountryCode );
-		//将中间服务返回的结果进行封装入库
-		if(CollectionUtils.isEmpty(resultList)){
-			throw new BussinessException("提交补货计划操作未成功，计划名："+planPO.getPlanName());
-		}
+		resultList = AmazonClient.createInboundShipmentPlan(shopId, list, shipFromAddress,shipToCountryCode );
 		//同时进行封装返回给前端
 		List<FbaPreInboundOrderVO> resultVO = new ArrayList<FbaPreInboundOrderVO>();
 		UserPO userPO = userDAO.getObject(operatorId);
@@ -601,13 +599,13 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 	public PageList<FbaInboundPlanVO> getFbaInboundPlanList(int shopId, int page, int pageSize, String sku,String productCode,int operatorId) {
 		//根据店铺id ， sku,productCode查询出该店铺的补货计划
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("SELECT distinct a FROM FbaReplenishmentPlanPO a,FbaReplenishmentPlanItemPO b,FbaShopProductPO c WHERE a.id=b.fbaReplenishmentPlanId AND b.fbaShopProductId = c.id ");
+		buffer.append("FROM FbaReplenishmentPlanPO WHERE ");
 		List<Object> o = new ArrayList<Object>();
 		if(shopId!=-1){
-			buffer.append("AND a.shopId = ? ");
+			buffer.append("shopId = ? ");
 			o.add(shopId);
 		}else{
-			buffer.append("AND a.shopId in ( ");
+			buffer.append("shopId in ( ");
 			List<Shop> shops = systemService.getShopsByUserId(operatorId);
 			for (int i = 0; i < shops.size(); i++) {
 				if(i==shops.size()-1){
@@ -617,40 +615,7 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 				}
 			}
 		}
-		
-		if(sku!=null&&!sku.trim().equals("")){
-			String[] skus = sku.split(";");
-			if(skus.length==1){
-				buffer.append("AND c.sku = ? ");
-				o.add(sku.trim());
-			}else{
-				buffer.append("AND c.sku in ( ");
-				for (int i = 0; i < skus.length; i++) {
-					if(i==skus.length-1){
-						buffer.append("'"+skus[i].trim()+"' )");
-					}else{
-						buffer.append("'"+skus[i].trim()+"',");
-					}
-				}
-			}
-		}
-		if(productCode!=null&&!productCode.trim().equals("")){
-			String[] codes = productCode.split(";");
-			if(codes.length==1){
-				buffer.append("AND c.cmsProductCode = ? ");
-				o.add(productCode.trim());
-			}else{
-				buffer.append("AND c.cmsProductCode in ( ");
-				for (int i = 0; i < codes.length; i++) {
-					if(i==codes.length-1){
-						buffer.append("'"+codes[i].trim()+"' )");
-					}else{
-						buffer.append("'"+codes[i].trim()+"',");
-					}
-				}
-			}
-		}
-		buffer.append(" ORDER BY a.createTime DESC");
+		buffer.append(" ORDER BY createTime DESC");
 		//System.out.println(buffer.toString());
 		//查询分页信息
 		PageList<FbaReplenishmentPlanPO> pageList = fbaReplenishmentPlanDao.findPageListByHql(page,pageSize,buffer.toString(), o.toArray());
@@ -664,7 +629,7 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 			planVO.setLastUpdateTime(fbaReplenishmentPlanPO.getLastUpdateTime());
 			planVO.setPlanName(fbaReplenishmentPlanPO.getPlanName());
 			planVO.setMskus(fbaReplenishmentPlanPO.getMskus());
-			planVO.setSubmitStatus(Integer.parseInt(fbaReplenishmentPlanPO.getSubmitStatus()));
+			planVO.setSubmitStatus(Integer.parseInt(fbaReplenishmentPlanPO.getSubmitStatus()==null?"0":fbaReplenishmentPlanPO.getSubmitStatus()));
 			planVO.setIsSubmitToAm(fbaReplenishmentPlanPO.getIsSubmitToAm()==null?0:fbaReplenishmentPlanPO.getIsSubmitToAm());
 			resultList.add(planVO);
 		}
@@ -706,16 +671,25 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 			excelResult.setPrimaryPictureCode(cmsInfoPO.getPrimaryPictureCode());
 			excelResult.setUnit(cmsInfoPO.getUnit());
 			excelResult.setUnitQuantity(cmsInfoPO.getUnitQuantity());
+			excelResult.setCmsProductId(cmsInfoPO.getCmsProductId());
+			excelResult.setCostPrice(cmsInfoPO.getCostPrice());
+			excelResult.setFbaBarcodeSku(shopProductPO.getFbaBarcodeSku());
+			excelResult.setFbaShopProductId(shopProductPO.getId());
 			items.add(excelResult);
 		}
-		planSearchVO.setSubmitStatus(Integer.parseInt(planPO.getSubmitStatus()));
+		planSearchVO.setSubmitStatus(Integer.parseInt(planPO.getSubmitStatus()==null?"0":planPO.getSubmitStatus()));
 		planSearchVO.setItems(items);
 		planSearchVO.setMskus(planPO.getMskus());
 		planSearchVO.setPlanName(planPO.getPlanName());
 		planSearchVO.setShippingMethod(planPO.getShippingMethod());
 		planSearchVO.setShipToCountryCode(planPO.getShipToCountryCode());
 		planSearchVO.setShopId(planPO.getShopId());
-		
+		planSearchVO.setSeaTransportationPreparePlanId(planPO.getSeaTransportationPreparePlanId());
+		if(planPO.getIsSubmitToAm()==null||planPO.getIsSubmitToAm()==0){
+			planSearchVO.setUpdatable(false);
+		}else{
+			planSearchVO.setUpdatable(true);
+		}
 		//如果该计划已经提交，那么需要将订单对象查询出来
 		List<ReplenishmentOrderPO> orderList = replenishmentOrderDao.findListByHql("FROM ReplenishmentOrderPO WHERE fbaReplenishmentPlanId = ?", planId);
 		if(orderList!=null){
@@ -800,7 +774,7 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 			FbaInboundPlanOperateLog vo = new FbaInboundPlanOperateLog();
 			vo.setDate(po.getOperateTime());
 			UserPO userPO = userDAO.getObject(po.getOperatorId());
-			vo.setOperator(userPO.getName());
+			vo.setOperator(userPO==null?"未知用户":userPO.getName());
 			vo.setComment(po.getComment());
 			voList.add(vo);
 		}
@@ -808,78 +782,75 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 		return voList;
 	}
 
+	public void updateFbaInboundOrder() {
 
-	/**
-	 *
-	 *用于自动任务的和手动任务的   因为涉及到老单，而且老单查不到退货地址，所以更新给亚马逊是空，所以不允许手动建立的订单更新
-	 *
-	 * @param replenishmentOrder
-	 * @param ShipmentStatus
-	 * @param areCasesRequired
-	 */
+	}
+
+		/**
+         *
+         *用于自动任务的和手动任务的   因为涉及到老单，而且老单查不到退货地址，所以更新给亚马逊是空，所以不允许手动建立的订单更新
+         *
+         * @param replenishmentOrder
+         * @param ShipmentStatus
+         * @param areCasesRequired
+         */
 	@Override
 	public void updateFbaInboundOrder(ReplenishmentOrderPO replenishmentOrder, String ShipmentStatus,boolean areCasesRequired) {
+		try {
 //		int shopId = replenishmentOrder.getShopId();
 //		String shipmentID = replenishmentOrder.getShipmentID();
-		//先通过shipmenId将亚马逊需要的信息查找出来
+			//先通过shipmenId将亚马逊需要的信息查找出来
 //		ReplenishmentOrderPO orderPO = replenishmentOrderDao.
 //				findByHql("FROM ReplenishmentOrderPO WHERE shopId = ? AND shipmentID = ? ", new Object[]{shopId,shipmentID});
 
-        //通过查出来的订单将订单商品项查出来
-		List<ReplenishmentOrderItemPO> itemList = replenishmentOrderItemDao.
-				findListByHql("FROM ReplenishmentOrderItemPO WHERE replenishmentOrderId = ?", replenishmentOrder.getId());
-		//封装给亚马逊
-		InboundShipmentVO vo = new InboundShipmentVO();
-		vo.setDestinationFulfillmentCenterId(replenishmentOrder.getDestinationFulfillmentCenterId());
-		vo.setLabelPrepType("SELLER_LABEL");
-		vo.setShipmentId(replenishmentOrder.getShipmentID());
-		vo.setShipmentName(replenishmentOrder.getShipmentName());
-		vo.setShipmentStatus(ShipmentStatus);
+			//通过查出来的订单将订单商品项查出来
+			List<ReplenishmentOrderItemPO> itemList = replenishmentOrderItemDao.
+					findListByHql("FROM ReplenishmentOrderItemPO WHERE replenishmentOrderId = ?", replenishmentOrder.getId());
+			//封装给亚马逊
+			InboundShipmentVO vo = new InboundShipmentVO();
+			vo.setDestinationFulfillmentCenterId(replenishmentOrder.getDestinationFulfillmentCenterId());
+			vo.setLabelPrepType("SELLER_LABEL");
+			vo.setShipmentId(replenishmentOrder.getShipmentID());
+			vo.setShipmentName(replenishmentOrder.getShipmentName());
+			vo.setShipmentStatus(ShipmentStatus);
 
-		//AreCasesRequired false
+			//AreCasesRequired false
 
-		//通过补货计划id查询退货地址
-		FbaFromAddressSnapshotPO snapshotPO = fbaFromAddressSnapshotDao
-				.findByHql("FROM FbaFromAddressSnapshotPO WHERE fbaReplenishmentPlanId = ?", replenishmentOrder.getFbaReplenishmentPlanId());
+			//通过补货计划id查询退货地址
+			FbaFromAddressSnapshotPO snapshotPO = fbaFromAddressSnapshotDao
+					.findByHql("FROM FbaFromAddressSnapshotPO WHERE fbaReplenishmentPlanId = ?", replenishmentOrder.getFbaReplenishmentPlanId());
 
 //		ReplenishmentOrderRepositoryPO repositoryPO = replenishmentOrderRepositoryDao.
 //				findByHql("FROM ReplenishmentOrderRepositoryPO WHERE id = ?", replenishmentOrder.getRepositoryId());
 
-		//添加退货地址
-		vo.setShipFromAddress(BeanUtils.copyProperties(snapshotPO, AddressVO.class));
+			//添加退货地址
+			vo.setShipFromAddress(BeanUtils.copyProperties(snapshotPO, AddressVO.class));
 
-		//添加商品项 只有sku和数量
-		List<InboundItemVO> inboundItemVOList = new ArrayList<InboundItemVO>();
-		for (ReplenishmentOrderItemPO orderItem : itemList) {
-			InboundItemVO itemVO = new InboundItemVO();
-			itemVO.setSellerSKU(orderItem.getSku());
+			//添加商品项 只有sku和数量
+			List<InboundItemVO> inboundItemVOList = new ArrayList<InboundItemVO>();
+			for (ReplenishmentOrderItemPO orderItem : itemList) {
+				InboundItemVO itemVO = new InboundItemVO();
+				itemVO.setSellerSKU(orderItem.getSku());
 
-			if (orderItem.getAmQuantity()!=null) {
-				itemVO.setQuantity(orderItem.getAmQuantity().intValue());	//数据库中的数据类型为double
-			}else {
-				itemVO.setQuantity((int)orderItem.getOrderedQuantity());
-			}
+//			if (orderItem.getAmQuantity()!=null) {
+//				itemVO.setQuantity(orderItem.getAmQuantity().intValue());	//数据库中的数据类型为double
+//			}else {
+				itemVO.setQuantity((int) orderItem.getOrderedQuantity());
+//			}
 //			itemVO.setQuantity(orderItem.getAmQuantity().intValue());	//数据库中的数据类型为double
-			inboundItemVOList.add(itemVO);
+				inboundItemVOList.add(itemVO);
+			}
+			vo.setItems(inboundItemVOList);
+			//通讯osms_am
+
+			String returnShipmentId = AmazonClient.updateInboundShipment(replenishmentOrder.getShopId(), vo);
+//			if (StringUtils.isEmpty(returnShipmentId)) {
+//				throw new BussinessException("更新补货订单号操作不成功，订单编号:" + replenishmentOrder.getCode() + "shipmentId:" + replenishmentOrder.getShipmentID());
+//			}
+		}catch (RuntimeException e){
+			logger.error("更新补货订单号操作不成功，订单编号:" + replenishmentOrder.getCode() + "shipmentId:" + replenishmentOrder.getShipmentID(),e);
+			e.printStackTrace();
 		}
-		vo.setItems(inboundItemVOList);
-		//通讯osms_am
-		String returnShipmentId = AmazonClient.updateInboundShipment(replenishmentOrder.getShopId(),vo);
-
-
-
-//		if(StringUtils.isEmpty(returnShipmentId)){
-//			throw new BussinessException("补货订单更新失败,订单编号："+replenishmentOrder.getCode());
-//		}
-
-		//创建补货订单成功后需要修改订单状态为已提交亚马逊，注意异常的处理
-//		orderPO.setSubmitStatus(FbaInboundOrderSubmitStatus.已提交.getVal());
-//		orderPO.setAddUser(-3);
-		//save order
-//		replenishmentOrderDao.updateObject(orderPO);
-
-		//add log
-//		addOrderOperateLog("将补货订单更新提交给了亚马逊，订单编号："+orderPO.getCode(), userDAO.getObject(operatorId).getName(), orderPO.getId());
 	}
 
 
@@ -959,7 +930,7 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 		for (ReplenishmentOrderItemPO orderItem : itemList) {
 			InboundItemVO itemVO = new InboundItemVO();
 			itemVO.setSellerSKU(orderItem.getSku());
-			itemVO.setQuantity(orderItem.getAmQuantity().intValue());	//数据库中的数据类型为double
+			itemVO.setQuantity((int)orderItem.getOrderedQuantity());	//数据库中的数据类型为double
 			inboundItemVOList.add(itemVO);
 		}
 		vo.setItems(inboundItemVOList);
@@ -986,9 +957,10 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 
 	}
 
+
 	@Override
 	public void createFbaInboundOrder(List<ShipmenIdAndNameVO> shipmenIdAndNameVO, int shopId, int planId,
-			int operatorId) {
+			int operatorId) throws BussinessException{
 		for (ShipmenIdAndNameVO vo : shipmenIdAndNameVO) {
 			createFbaInboundOrder(shopId, vo.getShipmentId(),vo.getShipmentName(),planId,operatorId);
 			//System.out.println(order);
@@ -999,15 +971,68 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 		fbaReplenishmentPlanDao.updateObject(planPO);
 	}
 
+	//不需要的数据尽量不要传输
+	// TODO: 2018/7/31  enhance performance
+	//
+	@Override
+	public String putTransportContent(List<PutTransportContentVO3> putTransportContentVOList) {
+		//把每一个补货单信息给封装
+		if(CollectionUtils.isEmpty(putTransportContentVOList)){
+			//抛出异常
+		}
 
+
+
+		//shop one for all
+		for (PutTransportContentVO3 putTransportContentVO : putTransportContentVOList) {
+			TransportContentVO transportContentVO = new TransportContentVO();
+			//这其中有容易变化的地方,最容易变化的部分应该放入到controller中，应该选择从controller传入，为了这个类以后的复用
+			transportContentVO.setPartnered(putTransportContentVO.isPartnered());
+			transportContentVO.setShipmentType(putTransportContentVO.getShipmentType());
+			transportContentVO.setCarrierName(putTransportContentVO.getCarrierName());
+
+			transportContentVO.setShipmentId(putTransportContentVO.getShipmentId());
+			//跟踪号list
+			List<TransportDetailInputVO> transportDetailInputVO = new ArrayList<TransportDetailInputVO>();
+
+			TransportDetailInputVO _transportDetailInputVO = new TransportDetailInputVO();
+//			_transportDetailInputVO.setTrackingId(putTransportContentVO.getOrderTrackCode());
+			transportDetailInputVO.add(_transportDetailInputVO);
+			transportContentVO.setTransportDetailInputVO(transportDetailInputVO);
+		}
+
+
+
+		//设置通讯亚马逊的目的是改为真通讯还是替换为mock通讯
+		//只负责通讯，不要static，初始化不应该写在里面，工厂方法来返回初始化对象
+		//初始化对象没必要改为全局的，每一个client都应该自己来初始化一个client出来
+		//应该返回json串，这样一旦返回值变更之后就没有必要改动封装
+		//可以理解为这里就是调用dao
+
+		//要根据不同的shopID来走不同的中间服务，根据店铺来传的
+//		String transportResult = AmazonClient.putTransportContent(putTransportContentVO.getShopId(),transportContentVO);
+
+
+		return null;
+	}
+
+
+	//用于自动任务和手动任务
+    //class 用于逻辑 和封装vo   异常全部在这里抛出，不要自己处理，统一到controller处理
 	@Override
 	public String putTransportContent(PutTransportContentVO putTransportContentVO) {
 
-		ReplenishmentOrderPO replenishmentOrderPO = replenishmentOrderDao.findByHql("from ReplenishmentOrderPO where code=? ",new Object[]{putTransportContentVO.getReplenishmentOrderCode()});
+	    //以后一旦传入产生的要求发生了改变，这个类就会被改动
+		ReplenishmentOrderPO replenishmentOrderPO = replenishmentOrderDao.findByHql
+				("from ReplenishmentOrderPO where code=? ",new Object[]{putTransportContentVO.getReplenishmentOrderCode()});
 		putTransportContentVO.setReplenishmentOrderId(replenishmentOrderPO.getId());
 
+
+		//forEach
 		TransportContentVO transportContentVO = new TransportContentVO();
+
 		transportContentVO.setShipmentId(putTransportContentVO.getShipmentId());
+		//这其中有容易变化的地方,最容易变化的部分应该放入到controller中，应该选择从controller传入，为了这个类以后的复用
 		transportContentVO.setPartnered(false);
 		transportContentVO.setShipmentType("SP");
 		transportContentVO.setCarrierName("OTHER");
@@ -1016,25 +1041,36 @@ public class FbaInboundServiceImpl implements FbaInboundService {
         TransportDetailInputVO _transportDetailInputVO = new TransportDetailInputVO();
 		_transportDetailInputVO.setTrackingId(putTransportContentVO.getOrderTrackCode());
         transportDetailInputVO.add(_transportDetailInputVO);
-
 		transportContentVO.setTransportDetailInputVO(transportDetailInputVO);
 
-//        AmazonClient amazonClient = new AmazonClient();
+
+		//设置通讯亚马逊的目的是改为真通讯还是替换为mock通讯
+        //只负责通讯，不要static，初始化不应该写在里面，工厂方法来返回初始化对象
+        //初始化对象没必要改为全局的，每一个client都应该自己来初始化一个client出来
+        //应该返回json串，这样一旦返回值变更之后就没有必要改动封装
+		//可以理解为这里就是调用dao
 		String transportResult = AmazonClient.putTransportContent(putTransportContentVO.getShopId(),transportContentVO);
 
-//		if (transportResult==null){
-//			throw new BussinessException("更新货运单号至亚马逊失败,补货订单编号："+putTransportContentVO.getReplenishmentOrderCode());
-//		}
+
+
+
+		if (transportResult==null){
+			throw new BussinessException("更新货运单号至亚马逊失败,补货订单编号："+putTransportContentVO.getReplenishmentOrderCode());
+		}
 
 		//add log 人来建单才有操作日志记录
 		if(putTransportContentVO.getOperatorId() > 0){
 			addOrderOperateLog("将补货订单更新提交给了亚马逊，订单编号："+putTransportContentVO.getReplenishmentOrderCode(), userDAO.getObject(putTransportContentVO.getOperatorId()).getName(),putTransportContentVO.getReplenishmentOrderId());
 		}
 
+		//调用更新，不应该写在这里，都应该被一个controller或者webservice调用
 		updateFbaInboundOrder(replenishmentOrderPO,"SHIPPED",false);
+
+
 
 		return transportResult;
 	}
+
 
 	@Override
 	public ListInboundShipmentsResultVO listInboundShipments(AmazonShipmentStatusListVO amazonShipmentStatusListVO,Integer shopId) {
@@ -1044,9 +1080,9 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 
         //如果返回值为空，抛异常
 
-//        if(resultVO==null){
-//            throw new BussinessException("更新货运单号至亚马逊失败,shipmentId："+amazonShipmentStatusListVO.getShipmentIdList());
-//		}
+        if(resultVO==null){
+            throw new BussinessException("更新货运单号至亚马逊失败,shipmentId："+amazonShipmentStatusListVO.getShipmentIdList());
+		}
         return resultVO;
 	}
 
@@ -1059,9 +1095,9 @@ public class FbaInboundServiceImpl implements FbaInboundService {
 //        AmazonClient amazonClient = new AmazonClient();
         ListInboundShipmentsResultVO resultVO = AmazonClient.listInboundShipmentsByNextToken(shopId,amazonShipmentStatusListVO);
 
-//        if(resultVO==null){
-//            throw new BussinessException("更新货运单号至亚马逊失败,shipmentId："+amazonShipmentStatusListVO.getShipmentIdList());
-//        }
+        if(resultVO==null){
+            throw new BussinessException("更新货运单号至亚马逊失败,shipmentId："+amazonShipmentStatusListVO.getShipmentIdList());
+        }
 
         return resultVO;
 	}

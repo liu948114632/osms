@@ -5,7 +5,9 @@ public class Singleton {
  
 	// other useful instance variables here
  
-	protected Singleton() {}
+	protected Singleton() {
+
+	}
  
 	public static synchronized Singleton getInstance() {
 		if (uniqueInstance == null) {

@@ -6,4 +6,13 @@ package com.itecheasy.headfirst.observer.myObserver;
  * @Description:
  */
 public class Cocoa implements Look,Show {
+    @Override
+    public void updateCondition(String whatThis, String nextPri, boolean hasNext) {
+
+    }
+
+    @Override
+    public void showMyPricious() {
+
+    }
 }

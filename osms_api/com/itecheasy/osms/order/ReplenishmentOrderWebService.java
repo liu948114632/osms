@@ -83,8 +83,20 @@ public interface ReplenishmentOrderWebService {
 			@WebParam(name="orderProducts")List<UpdateOrderProductForm> orderProducts, 
 			@WebParam(name="operator")int operator)
 			throws BussinessException;
-	
-	
+
+
+	/**
+	 * 新增的订单就添加这个商品，原有的订单就修改
+	 * @param orderId
+	 * @param orderProducts
+	 * @param operator
+	 */
+	void addAndUpdateOrderProductList(@WebParam(name="orderId")int orderId,
+									  @WebParam(name="orderProducts")List<UpdateOrderProductForm> orderProducts,
+									  @WebParam(name="operator")String operator)throws BussinessException;
+
+
+
 	/**
 	 * 上传货运单
 	 * @param orderId

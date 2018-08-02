@@ -6,4 +6,6 @@ package com.itecheasy.headfirst.observer.myObserver;
  * @Description:
  */
 public interface Show {
+
+    void showMyPricious();
 }

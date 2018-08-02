@@ -558,21 +558,62 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	
-	<bean id="statisticFbaShopProductService_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<!-- 统计月销量  日期往前推两天-->
+	<bean id="statisticFbaShopProductMonthSales_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail">
-			<ref bean="statisticFbaShopProductService_job" />
+			<ref bean="statisticFbaShopProductMonthSales_job" />
 		</property>
 		<property name="cronExpression">
 			<value>${statisticFbaShopProductService.timer}</value>
 		</property>
 	</bean>
-	<bean id="statisticFbaShopProductService_job"
+	<bean id="statisticFbaShopProductMonthSales_job"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
 			<ref bean="statisticFbaShopProductService" />
 		</property>
 		<property name="targetMethod">
 			<value>autoStatisticFbaShopProductMonthSales</value>
+		</property>
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<!-- 统计连续3个月月销量均大于50且没走过海运的  日期往前推两天-->
+	<bean id="statisticThreeMonth_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="statisticThreeMonth_job" />
+		</property>
+		<property name="cronExpression">
+			<value>${statisticThreeMonth.timer}</value>
+		</property>
+	</bean>
+	<bean id="statisticThreeMonth_job"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="statisticFbaShopProductService" />
+		</property>
+		<property name="targetMethod">
+			<value>autoStatisticThreeMonth</value>
+		</property>
+		<property name="concurrent" value="false" />
+	</bean>
+	
+	<!-- 统计是否走过海运的 -->
+	<bean id="updateHasSeaTransported_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="updateHasSeaTransported_job" />
+		</property>
+		<property name="cronExpression">
+			<value>${updateHasSeaTransported.timer}</value>
+		</property>
+	</bean>
+	<bean id="updateHasSeaTransported_job"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="statisticFbaShopProductService" />
+		</property>
+		<property name="targetMethod">
+			<value>autoUpdateHasSeaTransported</value>
 		</property>
 		<property name="concurrent" value="false" />
 	</bean>
@@ -614,7 +655,9 @@
 				<ref bean="amazon_code_submit_cron"></ref>
 				<ref bean="sync_amazon_shipment_status_cron"></ref>
 
-				<ref bean ="statisticFbaShopProductService_cron"/>
+				<ref bean="statisticFbaShopProductMonthSales_cron"/>
+				<ref bean="updateHasSeaTransported_cron" />
+				<ref bean="statisticThreeMonth_cron" />
 			</list>
 		</property>
 		<property name="autoStartup">

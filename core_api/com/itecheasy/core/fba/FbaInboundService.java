@@ -20,11 +20,11 @@ public interface FbaInboundService {
 	
 	/**
 	 * 检查excel文件里面的商品项是否都有对应的   fba条码和条码名称 以及状态
-	 * 如果没有则给出错误项，每个错误sku之间采用英文逗号分开，如果都通过，则返回null
+	 * 如果没有则给出错误项
 	 * @param items
 	 * @return
 	 */
-	public String checkExcel(int shopId ,List<String> skus);
+	public List<String> checkExcel(int shopId ,List<String> skus);
 	
 	/**
 	 * 如果导入的文件判断为全部通过后接着调用此方法，将商品的信息返回给前端
@@ -37,7 +37,7 @@ public interface FbaInboundService {
 	 * 创建fba补货计划，放在本地，还未提交
 	 * @return
 	 */
-	public int createFbaInboundPlan(int shopId,String planName, String shipToCountryCode,String shippingMethod,List<InboundPlanProductItem> items,int isSubmitToAm,int operatorId)throws BussinessException;
+	public int createFbaInboundPlan(int shopId,String planName, String shipToCountryCode,String shippingMethod,List<InboundPlanProductItem> items,int isSubmitToAm,int preparePlanId,int operatorId)throws BussinessException;
 
 	/**
 	 * 查询补货计划
@@ -138,17 +138,20 @@ public interface FbaInboundService {
 	 * @param shopId
 	 * @param planId
 	 * @param operatorId
+	 * @throws
 	 */
-	public void createFbaInboundOrder(List<ShipmenIdAndNameVO> shipmenIdAndNameVO, int shopId, int planId,int operatorId);
+	public void createFbaInboundOrder(List<ShipmenIdAndNameVO> shipmenIdAndNameVO, int shopId, int planId,int operatorId) throws BussinessException;
 
 	/**
 	 *
 	 * 配送入库货件的承运人。
-	 * @param shopId
-	 * @param operatorId
+	 * @param putTransportContentVO
 	 * @return
 	 */
 	public String putTransportContent(PutTransportContentVO putTransportContentVO);
+
+
+	public String putTransportContent(List<PutTransportContentVO3> putTransportContentVOList);
 
 
 	/**

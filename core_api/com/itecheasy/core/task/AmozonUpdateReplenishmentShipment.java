@@ -1,5 +1,7 @@
 package com.itecheasy.core.task;
 
+import com.itecheasy.webservice.amazon.ListInboundShipmentsResultVO;
+
 /**
  * @Auther: liteng
  * @Date: 2018/6/28 08:52
@@ -13,6 +15,10 @@ public interface AmozonUpdateReplenishmentShipment {
      */
     void autoUploadOrderCode();
 
+    /**
+     *
+     */
+    void autoUploadOrderCode3();
 
     /**
      *
@@ -21,4 +27,7 @@ public interface AmozonUpdateReplenishmentShipment {
      *
      */
     void autoSyncInboundShipments();
+
+//     void updateAmazonOrderStatus3(ListInboundShipmentsResultVO listInboundShipmentsResultVO, Integer shopId);
+
 }

@@ -18,9 +18,13 @@ public class AmozonUpdateReplenishmentShipmentImplTest {
     public void autoSyncInboundShipments() {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        AmozonUpdateReplenishmentShipment messageTaskService = (AmozonUpdateReplenishmentShipment) context.getBean("amozonUpdateReplenishmentShipment");
+        AmozonUpdateReplenishmentShipment messageTaskService =
+                (AmozonUpdateReplenishmentShipment) context.getBean("amozonUpdateReplenishmentShipment");
 
         messageTaskService.autoSyncInboundShipments();
 
     }
+
+
+
 }

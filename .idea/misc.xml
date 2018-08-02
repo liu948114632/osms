@@ -2,6 +2,7 @@
 <project version="4">
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$/out/artifacts/osms_Web_exploded/WEB-INF/web.xml" />
+    <file type="web" url="file://E:/osms_am/out/artifacts/osms_am_Web_exploded/WEB-INF/web.xml" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="false" project-jdk-name="1.6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
@@ -13,6 +14,13 @@
           <value>
             <SvnBranchConfiguration>
               <option name="trunkUrl" value="https://192.168.111.216/svn/osms/source/osms" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+        <entry key="E:/osms_am">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="trunkUrl" value="https://192.168.111.216/svn/osms/source/osms_am" />
             </SvnBranchConfiguration>
           </value>
         </entry>

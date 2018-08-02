@@ -10,7 +10,7 @@ public class Chino implements Look,Show {
     private String nextPri; //上一个
     private boolean hasNext;
 
-    private Pricious pricious;
+    private Pricious pricious;   //把observerable记录下来的用处就是利于删除方便
 
 
     public Chino(Pricious pricious){
@@ -18,6 +18,7 @@ public class Chino implements Look,Show {
         pricious.addObserver(this);
     }
 
+    //
     public void remove(Pricious pricious){
         pricious.removePerson(this);
     }
@@ -37,5 +38,10 @@ public class Chino implements Look,Show {
 
     public String getNextPri() {
         return nextPri;
+    }
+
+    @Override
+    public void showMyPricious() {
+
     }
 }

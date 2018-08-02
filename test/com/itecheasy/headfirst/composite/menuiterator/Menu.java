@@ -34,9 +34,11 @@ public class Menu extends MenuComponent {
 		return description;
 	}
 
-  
+
+	//
 	public Iterator createIterator() {
-		return new CompositeIterator(menuComponents.iterator());
+		Iterator compositeIterator = new CompositeIterator(menuComponents.iterator()); //把自己的所有节点转换为一个迭代器
+		return compositeIterator;
 	}
  
  
@@ -47,8 +49,7 @@ public class Menu extends MenuComponent {
   
 		Iterator iterator = menuComponents.iterator();
 		while (iterator.hasNext()) {
-			MenuComponent menuComponent = 
-				(MenuComponent)iterator.next();
+			MenuComponent menuComponent = (MenuComponent)iterator.next();
 			menuComponent.print();
 		}
 	}
