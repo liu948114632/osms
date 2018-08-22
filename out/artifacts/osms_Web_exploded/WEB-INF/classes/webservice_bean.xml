@@ -27,7 +27,7 @@
 	<bean id="fbaFromAddressWebService" class="com.itecheasy.osms.system.FbaFromAddressWebServiceImpl" />
 	<bean id="fbaInboundWebService" class="com.itecheasy.osms.order.FbaInboundWebServiceImpl" />
 	<bean id="seaTransportationPrepareWebService" class="com.itecheasy.osms.prepare.SeaTransportationPrepareWebServiceImpl" />
-	<bean id="amazonReportWebService" class="com.itecheasy.osms.order.AmazonReportWebServiceImpl" />
+	<bean id="amazonReportWebService" class="com.itecheasy.osms.prepare.AmazonReportWebServiceImpl" />
 
 	<bean id="agingReportInstanceWebService" class="com.itecheasy.osms.operation.AgingReportInstanceWebserviceImpl" />
 

@@ -43,13 +43,12 @@ public class AmazonReportServiceImpl implements AmazonReportService {
     private AmazonStockReportHistoryDao amazonStockReportHistoryDao;
     private ReplenishmentOrderItemDao replenishmentOrderItemDao;
     private AmazonInventoryAgedReportDao amazonInventoryAgedReportDao;
+
+    //库龄历史表
     private AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao;
 
-    private AmazonLogisticsForecastCostReportDao amazonLogisticsForecastCostReportDao;
+    public static void main(String[] args) {
 
-
-    public void setAmazonLogisticsForecastCostReportDao(AmazonLogisticsForecastCostReportDao amazonLogisticsForecastCostReportDao) {
-        this.amazonLogisticsForecastCostReportDao = amazonLogisticsForecastCostReportDao;
     }
 
     public void setAmazonInventoryAgedReportHistoryDao(AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao) {
@@ -149,8 +148,8 @@ public class AmazonReportServiceImpl implements AmazonReportService {
     /**
      * 封装传给亚马逊的vo
      *
-     * @param enableShop    商店
-     * @param reportType    报告类型
+     * @param enableShop
+     * @param reportType
      * @return
      * @throws ParseException
      */
@@ -171,33 +170,7 @@ public class AmazonReportServiceImpl implements AmazonReportService {
         return requestReportVO;
     }
 
-
-
-    @LoggerNameDescription(methodNameDescription = "syncAmazonLogisticsForecastCostReport亚马逊物流预计费用报告 方法")
-    public void syncAmazonLogisticsForecastCostReport(Shop enableShop, String reportType) throws Exception {
-
-        String startDateProperty = DeployProperties.getInstance().getProperty("amazon.Aged.item.report.start.date", "2018-03-03 09:15:12");
-        String endDateProperty = DeployProperties.getInstance().getProperty("amazon.Aged.item.report.end.date", null);
-
-        RequestReportVO requestReportVO = setTimeAndOtherParam(enableShop, reportType, startDateProperty, endDateProperty);
-
-        //调用中间服务
-
-
-        //写入dao
-//        amazonLogisticsForecastCostReportDao
-    }
-
-
-
-
-
-
-
-
-
-
-        //注意spring事务管理
+    //注意spring事务管理
     //责任，把库存从亚马逊跑回来，根据店铺来跑，根据服务器的url来跑
     //把数据同步过来并且计算之后写入到数据库
     @LoggerNameDescription(methodNameDescription = "syncAmazonAgedItemReport方法")

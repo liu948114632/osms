@@ -19,21 +19,6 @@ import java.util.Map;
  */
 public interface AmazonReportService {
 
-    public enum GetReportType{
-        获取亚马逊商品库存报告(0,"_GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA_"),
-        获取亚马逊库龄报告(1,"_GET_FBA_INVENTORY_AGED_DATA_"),
-
-        亚马逊物流预计费用报告(2,"_GET_FBA_ESTIMATED_FBA_FEES_TXT_DATA_");
-
-        int code;
-        String enumType;
-
-        GetReportType(int code, String enumType) {
-            this.code = code;
-            this.enumType = enumType;
-        }
-    }
-
     //手动查询
 
     /**

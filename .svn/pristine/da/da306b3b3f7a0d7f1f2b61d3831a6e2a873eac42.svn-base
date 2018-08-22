@@ -79,7 +79,7 @@ public class SyncAmazonAgedItemReportTaskImpl implements SyncAmazonAgedItemRepor
         enableShops = shopList;
     }
 
-    
+
     //每10秒执行一次 支持并发
     @Override
     public void syncAmazonAgedItemReport() {

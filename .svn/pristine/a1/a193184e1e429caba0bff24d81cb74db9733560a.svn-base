@@ -20,6 +20,7 @@ import com.itecheasy.webservice.amazon.AmazonStockReportVO;
 import com.itecheasy.webservice.amazon.RequestReportVO;
 import com.itecheasy.webservice.client.AmazonClient;
 import org.apache.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.springframework.context.ApplicationContext;
@@ -43,14 +44,10 @@ public class AmazonReportServiceImpl implements AmazonReportService {
     private AmazonStockReportHistoryDao amazonStockReportHistoryDao;
     private ReplenishmentOrderItemDao replenishmentOrderItemDao;
     private AmazonInventoryAgedReportDao amazonInventoryAgedReportDao;
+
+    //库龄历史表
     private AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao;
 
-    private AmazonLogisticsForecastCostReportDao amazonLogisticsForecastCostReportDao;
-
-
-    public void setAmazonLogisticsForecastCostReportDao(AmazonLogisticsForecastCostReportDao amazonLogisticsForecastCostReportDao) {
-        this.amazonLogisticsForecastCostReportDao = amazonLogisticsForecastCostReportDao;
-    }
 
     public void setAmazonInventoryAgedReportHistoryDao(AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao) {
         this.amazonInventoryAgedReportHistoryDao = amazonInventoryAgedReportHistoryDao;
@@ -82,6 +79,12 @@ public class AmazonReportServiceImpl implements AmazonReportService {
         return null;
     }
 
+    public PageList<AmazonStockReport> getAmazonStocksAll(AmazonStockReportSearchForm form) {
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        byte[] bytes = workbook.getBytes();
+
+        return null;
+    }
 
     @Override
     public PageList<AmazonStockReport> getAmazonStocks(AmazonStockReportSearchForm form) {
@@ -149,8 +152,8 @@ public class AmazonReportServiceImpl implements AmazonReportService {
     /**
      * 封装传给亚马逊的vo
      *
-     * @param enableShop    商店
-     * @param reportType    报告类型
+     * @param enableShop
+     * @param reportType
      * @return
      * @throws ParseException
      */
@@ -172,32 +175,12 @@ public class AmazonReportServiceImpl implements AmazonReportService {
     }
 
 
+    public static void main(String[] args) {
 
-    @LoggerNameDescription(methodNameDescription = "syncAmazonLogisticsForecastCostReport亚马逊物流预计费用报告 方法")
-    public void syncAmazonLogisticsForecastCostReport(Shop enableShop, String reportType) throws Exception {
-
-        String startDateProperty = DeployProperties.getInstance().getProperty("amazon.Aged.item.report.start.date", "2018-03-03 09:15:12");
-        String endDateProperty = DeployProperties.getInstance().getProperty("amazon.Aged.item.report.end.date", null);
-
-        RequestReportVO requestReportVO = setTimeAndOtherParam(enableShop, reportType, startDateProperty, endDateProperty);
-
-        //调用中间服务
-
-
-        //写入dao
-//        amazonLogisticsForecastCostReportDao
     }
 
 
-
-
-
-
-
-
-
-
-        //注意spring事务管理
+    //注意spring事务管理
     //责任，把库存从亚马逊跑回来，根据店铺来跑，根据服务器的url来跑
     //把数据同步过来并且计算之后写入到数据库
     @LoggerNameDescription(methodNameDescription = "syncAmazonAgedItemReport方法")
@@ -223,18 +206,19 @@ public class AmazonReportServiceImpl implements AmazonReportService {
         amazonInventoryAgedReportHistoryDao.flush();
 
         Date date = new Date();
-
+;
         List<AmazonInventoryAgedReportPO> updateDateList = new ArrayList<AmazonInventoryAgedReportPO>();
         List<AmazonInventoryAgedReportPO> dataBase = amazonInventoryAgedReportDao.findListByShopId(enableShop.getId());
-        if (CollectionUtils.isNotEmpty(dataBase)) {
+        if (CollectionUtils.isNotEmpty(dataBase)){
             List<AmazonInventoryAgedReportPO> amazonInventoryAgedReportPOS1 = CalculateContentUtils.calculateUpdate(amazonInventoryAgedReportPOS, dataBase);
             updateDateList.addAll(amazonInventoryAgedReportPOS1);
-        } else {
+        }else{
             for (AmazonInventoryAgedReportPO amazonInventoryAgedReportPO : amazonInventoryAgedReportPOS) {
                 amazonInventoryAgedReportPO.setSyncLast(date);
             }
             updateDateList.addAll(amazonInventoryAgedReportPOS);
         }
+
 
 
         ThreadLocal<Integer> shopIdThreadLocal = new ThreadLocal<Integer>();
@@ -295,8 +279,7 @@ public class AmazonReportServiceImpl implements AmazonReportService {
      * auto task
      */
     @Override
-    public Map<Integer,Boolean> syncAmazonStockReportFromAmazon(List<Shop> shopList) {
-        Map<Integer,Boolean> isSuccessSyncAmazonStock = new HashMap<Integer, Boolean>();
+    public void syncAmazonStockReportFromAmazon(List<Shop> shopList) {
         for (Shop enableShop : shopList) {   //只有一个shopId
             RequestReportVO requestReportVO = new RequestReportVO();
             requestReportVO.setReportType("_GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA_");
@@ -328,9 +311,10 @@ public class AmazonReportServiceImpl implements AmazonReportService {
             LOGGER.error("getAmazonStockReport step 1 ,店铺ID为：" + enableShop.getId());
             LOGGER.error("getAmazonStockReport step 1 amazonStockReport size " + amazonStockReport == null ? 0 : amazonStockReport.size());
 
-            //把商店信息设置回来
-            for (AmazonStockReportVO amazonStockReportVO : amazonStockReport) {
-                amazonStockReportVO.setShopId(enableShop.getId());
+            if (amazonStockReport != null) { //把商店信息设置回来
+                for (AmazonStockReportVO amazonStockReportVO : amazonStockReport) {
+                    amazonStockReportVO.setShopId(enableShop.getId());
+                }
             }
 
             if (CollectionUtils.isNotEmpty(amazonStockReport)) {
@@ -342,12 +326,6 @@ public class AmazonReportServiceImpl implements AmazonReportService {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
-
-            if (CollectionUtils.isEmpty(amazonStockReport)){
-                isSuccessSyncAmazonStock.put(enableShop.getId(),false);
-            }else {
-                isSuccessSyncAmazonStock.put(enableShop.getId(),true);
             }
 
             synchronized (this.getClass()) {
@@ -376,26 +354,26 @@ public class AmazonReportServiceImpl implements AmazonReportService {
                     amazonStockReportDao.flush();
                     LOGGER.error("getAmazonStockReport step 6 ,店铺ID为：" + enableShop.getId());
 
+                    //同步成功，发送邮件
                 }
                 LOGGER.error("getAmazonStockReport step 7 ,店铺ID为：" + enableShop.getId());
-//                if (CollectionUtils.isEmpty(amazonStockReport)) {
-//                    StaticUtils.addEmail("OSMS系统:同步库存报告出错", "\r\n" + "shopId：" + enableShop.getId());
-//                }
+                if (CollectionUtils.isEmpty(amazonStockReport)) {
+                    StaticUtils.addEmail("OSMS系统:同步库存报告出错", "\r\n" + "shopId：" + enableShop.getId());
+                }
                 LOGGER.error("getAmazonStockReport step 8 ,店铺ID为：" + enableShop.getId());
             }
         }
-        return isSuccessSyncAmazonStock;
     }
 
     //读取数据库
-    private List<AmazonStockReportPO> findFromDao(List<AmazonStockReportVO> amazonStockReport, Integer shopId) {
+    public List<AmazonStockReportPO> findFromDao(List<AmazonStockReportVO> amazonStockReport, Integer shopId) {
         String hql = "FROM AmazonStockReportPO WHERE shopId=? ";
 
         return amazonStockReportDao.findListByHql(hql, new Object[]{shopId});
     }
 
     //返回的多个报告对象里，如果是旧的报告，则不跟新创建时间
-    private List<AmazonStockReportVO> updateData(List<AmazonStockReportVO> amazonStockReport, List<AmazonStockReportPO> daoStockReportList) {
+    public List<AmazonStockReportVO> updateData(List<AmazonStockReportVO> amazonStockReport, List<AmazonStockReportPO> daoStockReportList) {
         for (AmazonStockReportVO amazonStockReportVO : amazonStockReport) { //new
             for (AmazonStockReportPO daoStockReport : daoStockReportList) {     //old
                 if (amazonStockReportVO.getShopId().equals(daoStockReport.getShopId()) &&
@@ -408,7 +386,7 @@ public class AmazonReportServiceImpl implements AmazonReportService {
         return amazonStockReport;
     }
 
-    private List<AmazonStockReportPO> encapsulationToAmazonStockReportPo(List<AmazonStockReportVO> amazonStockReport) {
+    public List<AmazonStockReportPO> encapsulationToAmazonStockReportPo(List<AmazonStockReportVO> amazonStockReport) {
         List<AmazonStockReportPO> po = new ArrayList<AmazonStockReportPO>();
         for (AmazonStockReportVO reportVO : amazonStockReport) {
             AmazonStockReportPO _po = new AmazonStockReportPO();

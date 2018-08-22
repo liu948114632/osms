@@ -66,6 +66,9 @@
 
 			<tx:method name="syncAmazonAgedItemReport" propagation="REQUIRES_NEW" />
 
+			<!--<tx:method name="syncAmozonStackReportTask" propagation="NOT_SUPPORTED" />-->
+			<!--<tx:method name="syncAmazonStockReportFromAmazon" propagation="REQUIRES_NEW" />-->
+
 			<!-- <tx:method name="addOrderSimple" propagation="REQUIRES_NEW" /> -->
 			<tx:method name="autoSyncInboundShipments" propagation="NOT_SUPPORTED" />
 			<tx:method name="*" propagation="REQUIRED" />
