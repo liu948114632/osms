@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="osms_test_180710">
-  <database-model serializer="dbm" rdbms="MSSQL" format-version="4.9">
+  <database-model serializer="dbm" rdbms="MSSQL" format-version="4.10">
     <root id="1">
       <ServerVersion>12.0.423</ServerVersion>
       <ServerType>standalone</ServerType>
@@ -1013,11 +1013,13 @@
     </table>
     <view id="205" parent="38" name="current_currency_exchange_rate">
       <ObjectId>948198428</ObjectId>
+      <SourceTextLength>199</SourceTextLength>
       <CreatedTimestamp>2017-09-12.02:00:57.290</CreatedTimestamp>
       <ModifiedTimestamp>2017-09-12.02:00:57.290</ModifiedTimestamp>
     </view>
     <view id="206" parent="38" name="order_product_total_unit">
       <ObjectId>414624520</ObjectId>
+      <SourceTextLength>164</SourceTextLength>
       <CreatedTimestamp>2016-03-10.02:29:09.070</CreatedTimestamp>
       <ModifiedTimestamp>2016-03-10.02:29:09.070</ModifiedTimestamp>
     </view>
@@ -1028,81 +1030,97 @@
     </view>
     <view id="208" parent="38" name="v_current_change_usd_currency">
       <ObjectId>462624691</ObjectId>
+      <SourceTextLength>252</SourceTextLength>
       <CreatedTimestamp>2016-03-15.16:53:39.210</CreatedTimestamp>
       <ModifiedTimestamp>2016-03-15.16:53:39.210</ModifiedTimestamp>
     </view>
     <view id="209" parent="38" name="v_current_currency">
       <ObjectId>430624577</ObjectId>
+      <SourceTextLength>240</SourceTextLength>
       <CreatedTimestamp>2016-03-15.16:48:22.493</CreatedTimestamp>
       <ModifiedTimestamp>2016-03-15.16:52:51.990</ModifiedTimestamp>
     </view>
     <view id="210" parent="38" name="v_current_currency_us">
       <ObjectId>244195920</ObjectId>
+      <SourceTextLength>157</SourceTextLength>
       <CreatedTimestamp>2017-09-11.19:56:03.313</CreatedTimestamp>
       <ModifiedTimestamp>2017-09-11.19:56:03.313</ModifiedTimestamp>
     </view>
     <view id="211" parent="38" name="v_fba_repository">
       <ObjectId>1035150733</ObjectId>
+      <SourceTextLength>571</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.340</CreatedTimestamp>
       <ModifiedTimestamp>2017-12-16.16:14:53.163</ModifiedTimestamp>
     </view>
     <view id="212" parent="38" name="v_modify_record_order">
       <ObjectId>1611152785</ObjectId>
+      <SourceTextLength>471</SourceTextLength>
       <CreatedTimestamp>2017-01-18.21:45:52.810</CreatedTimestamp>
       <ModifiedTimestamp>2017-01-18.21:45:52.810</ModifiedTimestamp>
     </view>
     <view id="213" parent="38" name="v_order">
       <ObjectId>1170103209</ObjectId>
+      <SourceTextLength>1168</SourceTextLength>
       <CreatedTimestamp>2015-07-09.03:46:25.413</CreatedTimestamp>
       <ModifiedTimestamp>2018-02-23.01:47:40.673</ModifiedTimestamp>
     </view>
     <view id="214" parent="38" name="v_order_all">
       <ObjectId>1211151360</ObjectId>
+      <SourceTextLength>213</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.447</CreatedTimestamp>
       <ModifiedTimestamp>2017-02-11.19:14:25.887</ModifiedTimestamp>
     </view>
     <view id="215" parent="38" name="v_order_all_common">
       <ObjectId>1243151474</ObjectId>
+      <SourceTextLength>2639</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.560</CreatedTimestamp>
       <ModifiedTimestamp>2016-12-28.01:59:23.560</ModifiedTimestamp>
     </view>
     <view id="216" parent="38" name="v_order_all_detail">
       <ObjectId>1227151417</ObjectId>
+      <SourceTextLength>245</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.500</CreatedTimestamp>
       <ModifiedTimestamp>2016-12-28.01:59:23.500</ModifiedTimestamp>
     </view>
     <view id="217" parent="38" name="v_order_payment_report_total">
       <ObjectId>94623380</ObjectId>
+      <SourceTextLength>186</SourceTextLength>
       <CreatedTimestamp>2016-03-10.02:24:48.757</CreatedTimestamp>
       <ModifiedTimestamp>2016-03-10.02:24:48.757</ModifiedTimestamp>
     </view>
     <view id="218" parent="38" name="v_package_problem">
       <ObjectId>366624349</ObjectId>
+      <SourceTextLength>460</SourceTextLength>
       <CreatedTimestamp>2016-03-10.02:26:37.480</CreatedTimestamp>
       <ModifiedTimestamp>2016-12-28.01:59:23.577</ModifiedTimestamp>
     </view>
     <view id="219" parent="38" name="v_product_develop">
       <ObjectId>340196262</ObjectId>
+      <SourceTextLength>235</SourceTextLength>
       <CreatedTimestamp>2017-09-12.01:57:58.237</CreatedTimestamp>
       <ModifiedTimestamp>2017-11-21.01:59:28.380</ModifiedTimestamp>
     </view>
     <view id="220" parent="38" name="v_product_develop_sale">
       <ObjectId>324196205</ObjectId>
+      <SourceTextLength>465</SourceTextLength>
       <CreatedTimestamp>2017-09-12.01:57:58.203</CreatedTimestamp>
       <ModifiedTimestamp>2017-09-12.02:01:35.903</ModifiedTimestamp>
     </view>
     <view id="221" parent="38" name="v_replenishment_order_">
       <ObjectId>1099150961</ObjectId>
+      <SourceTextLength>1189</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.400</CreatedTimestamp>
       <ModifiedTimestamp>2018-06-22.02:08:27.003</ModifiedTimestamp>
     </view>
     <view id="222" parent="38" name="v_shop_product_info">
       <ObjectId>1317579732</ObjectId>
+      <SourceTextLength>1280</SourceTextLength>
       <CreatedTimestamp>2015-05-08.22:04:48.160</CreatedTimestamp>
       <ModifiedTimestamp>2017-03-30.01:53:05.297</ModifiedTimestamp>
     </view>
     <view id="223" parent="38" name="v_shop_upload_log">
       <ObjectId>1301579675</ObjectId>
+      <SourceTextLength>444</SourceTextLength>
       <CreatedTimestamp>2015-05-08.22:04:47.890</CreatedTimestamp>
       <ModifiedTimestamp>2015-06-23.02:01:13.663</ModifiedTimestamp>
     </view>
@@ -1164,6 +1182,7 @@
     </routine>
     <routine id="232" parent="38" name="calc_order_info_cms_product">
       <ObjectId>404196490</ObjectId>
+      <SourceTextLength>790</SourceTextLength>
       <CreatedTimestamp>2017-09-12.01:57:58.473</CreatedTimestamp>
       <ModifiedTimestamp>2017-09-12.01:57:58.473</ModifiedTimestamp>
       <RoutineKind>function</RoutineKind>
@@ -1171,6 +1190,7 @@
     </routine>
     <routine id="233" parent="38" name="calc_product_develop_sales">
       <ObjectId>804197915</ObjectId>
+      <SourceTextLength>924</SourceTextLength>
       <CreatedTimestamp>2017-09-12.01:59:17.773</CreatedTimestamp>
       <ModifiedTimestamp>2017-11-21.01:59:52.830</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1192,6 +1212,7 @@
     </routine>
     <routine id="236" parent="38" name="p_cms_replenishment_product">
       <ObjectId>1131151075</ObjectId>
+      <SourceTextLength>4303</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.413</CreatedTimestamp>
       <ModifiedTimestamp>2017-09-12.01:58:51.893</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1199,6 +1220,7 @@
     </routine>
     <routine id="237" parent="38" name="p_currency_change_history">
       <ObjectId>1364199910</ObjectId>
+      <SourceTextLength>2576</SourceTextLength>
       <CreatedTimestamp>2018-01-19.18:43:52.940</CreatedTimestamp>
       <ModifiedTimestamp>2018-01-19.18:54:07.847</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1206,6 +1228,7 @@
     </routine>
     <routine id="238" parent="38" name="p_fba_shop_product">
       <ObjectId>448720651</ObjectId>
+      <SourceTextLength>3933</SourceTextLength>
       <CreatedTimestamp>2018-07-17.18:57:25.373</CreatedTimestamp>
       <ModifiedTimestamp>2018-07-17.18:57:25.373</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1213,6 +1236,7 @@
     </routine>
     <routine id="239" parent="38" name="p_fba_shop_product_inventory">
       <ObjectId>1067150847</ObjectId>
+      <SourceTextLength>4959</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.373</CreatedTimestamp>
       <ModifiedTimestamp>2016-12-28.01:59:23.373</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1220,6 +1244,7 @@
     </routine>
     <routine id="240" parent="38" name="p_statistic_all_order_sales_info">
       <ObjectId>1179151246</ObjectId>
+      <SourceTextLength>1152</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.433</CreatedTimestamp>
       <ModifiedTimestamp>2017-03-30.01:53:05.327</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1227,6 +1252,7 @@
     </routine>
     <routine id="241" parent="38" name="p_statistic_all_order_sales_info2">
       <ObjectId>1223675407</ObjectId>
+      <SourceTextLength>858</SourceTextLength>
       <CreatedTimestamp>2017-03-30.01:53:05.353</CreatedTimestamp>
       <ModifiedTimestamp>2017-03-30.01:53:05.353</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1234,6 +1260,7 @@
     </routine>
     <routine id="242" parent="38" name="p_statistic_fba_order_sales_info">
       <ObjectId>1195151303</ObjectId>
+      <SourceTextLength>884</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.443</CreatedTimestamp>
       <ModifiedTimestamp>2016-12-28.01:59:23.547</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1241,6 +1268,7 @@
     </routine>
     <routine id="243" parent="38" name="p_statistic_fba_shop_product_month_sales">
       <ObjectId>432720594</ObjectId>
+      <SourceTextLength>784</SourceTextLength>
       <CreatedTimestamp>2018-07-17.18:55:08.040</CreatedTimestamp>
       <ModifiedTimestamp>2018-07-17.18:55:08.040</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1248,6 +1276,7 @@
     </routine>
     <routine id="244" parent="38" name="p_statistic_product_freeze_stock_and_no_sales">
       <ObjectId>1207675350</ObjectId>
+      <SourceTextLength>718</SourceTextLength>
       <CreatedTimestamp>2017-03-30.01:53:05.213</CreatedTimestamp>
       <ModifiedTimestamp>2017-03-30.01:53:05.213</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1255,6 +1284,7 @@
     </routine>
     <routine id="245" parent="38" name="p_task_check_order">
       <ObjectId>1735677231</ObjectId>
+      <SourceTextLength>402</SourceTextLength>
       <CreatedTimestamp>2017-05-23.02:35:03.850</CreatedTimestamp>
       <ModifiedTimestamp>2017-05-23.02:35:03.850</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1262,6 +1292,7 @@
     </routine>
     <routine id="246" parent="38" name="p_update_fba_the_replenishment_num">
       <ObjectId>1163151189</ObjectId>
+      <SourceTextLength>1232</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.427</CreatedTimestamp>
       <ModifiedTimestamp>2016-12-28.01:59:23.490</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1269,6 +1300,7 @@
     </routine>
     <routine id="247" parent="38" name="p_update_the_replenishment_num">
       <ObjectId>1147151132</ObjectId>
+      <SourceTextLength>966</SourceTextLength>
       <CreatedTimestamp>2016-12-28.01:59:23.420</CreatedTimestamp>
       <ModifiedTimestamp>2016-12-28.01:59:23.493</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1276,6 +1308,7 @@
     </routine>
     <routine id="248" parent="38" name="proc_order_count_report">
       <ObjectId>110623437</ObjectId>
+      <SourceTextLength>6034</SourceTextLength>
       <CreatedTimestamp>2016-03-10.02:24:59.580</CreatedTimestamp>
       <ModifiedTimestamp>2016-09-01.02:35:19.500</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1283,6 +1316,7 @@
     </routine>
     <routine id="249" parent="38" name="proc_order_count_report2">
       <ObjectId>686625489</ObjectId>
+      <SourceTextLength>1589</SourceTextLength>
       <CreatedTimestamp>2016-04-12.02:39:41.320</CreatedTimestamp>
       <ModifiedTimestamp>2016-08-03.01:49:33.190</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>
@@ -1297,6 +1331,7 @@
     </routine>
     <routine id="251" parent="38" name="update_cms_await_replenishment">
       <ObjectId>420196547</ObjectId>
+      <SourceTextLength>330</SourceTextLength>
       <CreatedTimestamp>2017-09-12.01:57:58.547</CreatedTimestamp>
       <ModifiedTimestamp>2017-09-12.02:01:09.020</ModifiedTimestamp>
       <RoutineKind>procedure</RoutineKind>

@@ -1,0 +1,121 @@
+package com.itecheasy.core.fba.AgedItemReportCalculateUtil;
+
+import com.itecheasy.common.util.DateUtils;
+import com.itecheasy.core.fba.dao.AmazonInventoryAgedReportDao;
+import com.itecheasy.core.po.AmazonInventoryAgedReportPO;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ *
+ */
+public class IsExistAgedTableFilterComponent extends CountAgedItemReportComponent {
+
+    private AmazonInventoryAgedReportDao amazonInventoryAgedReportDao;
+
+    private ThreadLocal<Integer> shopId;
+
+    private CountAgedItemReportComponent countAgedItemReportComponent;
+
+    public IsExistAgedTableFilterComponent(CountAgedItemReportComponent component, ThreadLocal<Integer> shopId) {
+        this.shopId = shopId;
+        this.countAgedItemReportComponent = component;
+    }
+
+    public IsExistAgedTableFilterComponent(CountAgedItemReportComponent component) {
+        this.countAgedItemReportComponent = component;
+    }
+
+
+    public void setAmazonInventoryAgedReportDao(AmazonInventoryAgedReportDao amazonInventoryAgedReportDao) {
+        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
+    }
+
+    /**
+     * isHasHistoryRecord
+     * 把不存在resultTable的记录新增
+     *
+     * @param newAgedItemList 传入刚刚同步的报告
+     *                        oldAgedItemList 数据库中的报告
+     *                        <p>
+     *                        不存在的直接新增
+     * @return 存在的则返回, 用于下一步判断
+     */
+    @Override
+    public List<AmazonInventoryAgedReportPO> cost(List<AmazonInventoryAgedReportPO> newAgedItemList) {
+        //查询库龄报告表   result_table
+        List<AmazonInventoryAgedReportPO> dataBaseResultAgedItems =
+                amazonInventoryAgedReportDao.
+                        findListByHql("FROM AmazonInventoryAgedReportPO where shopId = ? ",
+                                new Object[]{this.shopId});
+
+
+        List<AmazonInventoryAgedReportPO> existItems = new ArrayList<AmazonInventoryAgedReportPO>();
+
+        List<AmazonInventoryAgedReportPO> directnessToDataBaseItems = new ArrayList<AmazonInventoryAgedReportPO>();
+        for (Iterator<AmazonInventoryAgedReportPO> it = newAgedItemList.iterator(); it.hasNext(); ) {
+            AmazonInventoryAgedReportPO ageItem = it.next();
+
+            for (AmazonInventoryAgedReportPO resultTablePO : dataBaseResultAgedItems) {
+                if (ageItem.getSku().equals(resultTablePO.getSku())) {
+                    //存在    返回
+
+                    existItems.add(ageItem);
+                } else {
+                    //save以前不存在的记录
+                    //不存在 情况
+                    directnessToDataBaseItems.add(ageItem);
+                }
+            }
+        }
+
+        Date date = new Date();
+        for (AmazonInventoryAgedReportPO directnessToDataBaseItem : directnessToDataBaseItems) {
+            //不存在报告中
+            directnessToDataBaseItem.setStartDate(date);    //设置起始时间
+            //首次同步时间和最后同步时间为一个
+            directnessToDataBaseItem.setSyncFirst(date);    //设置首次同步时间
+            directnessToDataBaseItem.setSyncLast(date); //设置更新时间
+        }
+
+        //各种计算之后的结果
+        List<AmazonInventoryAgedReportPO> calculateContentAfter = calculateContent(directnessToDataBaseItems);
+
+        //把一些数据给整理出来和计算出来  再新增
+        amazonInventoryAgedReportDao.addObject(calculateContentAfter);
+
+//        返回的就是不在库龄报表中的
+        return this.countAgedItemReportComponent.cost(existItems);
+    }
+
+
+    /**
+     *
+     * @param pos
+     * @return
+     */
+    private List<AmazonInventoryAgedReportPO> calculateContent(List<AmazonInventoryAgedReportPO> pos) {
+
+        List<AmazonInventoryAgedReportPO> calculateNextClearPoint =
+                CalculateContentUtils.calculateNextClearPoint(pos);
+
+        List<AmazonInventoryAgedReportPO> calculateTerminationDate =
+                CalculateContentUtils.calculateTerminationDate(calculateNextClearPoint);
+
+        List<AmazonInventoryAgedReportPO> calculatePlanStockToZeroDate =
+                CalculateContentUtils.calculatePlanStockToZeroDate(calculateTerminationDate);
+
+        List<AmazonInventoryAgedReportPO> calculateSellOutDate =
+                CalculateContentUtils.calculateSellOutDate(calculatePlanStockToZeroDate);
+
+        List<AmazonInventoryAgedReportPO> calculateSellOutStatus
+                = CalculateContentUtils.calculateSellOutStatus(calculateSellOutDate);
+
+        return calculateSellOutStatus;
+    }
+
+}

@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.task;
+
+import com.itecheasy.core.fba.AmazonReportService;
+import com.itecheasy.core.system.Shop;
+import com.itecheasy.core.system.SystemService;
+import com.itecheasy.core.system.dao.ShopDao;
+import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/10 16:00
+ * @Description:
+ */
+public class SyncAmazonAgedItemReportTaskImpl implements SyncAmazonAgedItemReportTask {
+
+    private static Logger LOGGER = Logger.getLogger(SyncAmozonStackReportTaskImpl.class.getName());
+
+    private ShopDao shopDao;
+
+    private SystemService systemService;
+
+    private AmazonReportService amazonReportService;
+
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
+    }
+
+    public void setAmazonReportService(AmazonReportService amazonReportService) {
+        this.amazonReportService = amazonReportService;
+    }
+
+    public void setShopDao(ShopDao shopDao) {
+        this.shopDao = shopDao;
+    }
+
+    @Override
+    public void syncAmazonAgedItemReport() {
+        //currency='usd'
+        String reportType = "_GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA_";
+        //只要美国的店铺
+        List<Shop> usAmazonShops = systemService.getUsAmazonShops();
+
+        for (Shop enableShop : usAmazonShops) {
+            try {
+                amazonReportService.syncAmazonAgedItemReport(enableShop, reportType);
+            } catch (ParseException e) {
+                LOGGER.error("date convert error 时间转换错误,请在配置文件deploy_config.properties中重新配置正确的时间格式 “yyyy-MM-dd HH:mm:ss” ");
+                LOGGER.error(e.getMessage(), e);
+            } catch (IOException e) {
+                LOGGER.error("json 格式转换错误");
+                LOGGER.error(e.getMessage(), e);
+                e.printStackTrace();
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
+
+
+    }
+}

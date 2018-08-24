@@ -18,6 +18,9 @@ public class AmazonReportWebServiceImpl implements AmazonReportWebService{
         this.amazonReportService = amazonReportService;
     }
 
+
+
+
     @Override
     public PageList<AmazonStockReport> showAmazonStocks(AmazonStockReportSearchForm form) {
         return amazonReportService.getAmazonStocks(form);

@@ -1,0 +1,832 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan. 
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna. 
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus. 
+ * Vestibulum commodo. Ut rhoncus gravida arcu. 
+ */
+
+package com.itecheasy.core.po;
+
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/11 16:22
+ * @Description:
+ */
+@Entity
+@Table(name = "amazon_inventory_aged_report", schema = "dbo")
+public class AmazonInventoryAgedReportPO {
+    private int id;
+    private Integer shopId;
+
+    private String sku;
+    //考虑是否要把cmsCode也加上
+
+    private Date syncFirst; //这个记录上一次在resultReportTable中存在的日期
+    private Date syncLast;  //更新日期
+
+    private Date snapshotDate;  //亚马逊给的同步日期
+
+    private Boolean isClearanceItem;    //是否需清仓
+
+
+    /**
+     * 进入90~180天的时间（对于老商品，不知道什么时候进入90-180天。上线时，记当天即可）
+     *
+     * 这个值，一般不会改。唯一修改的情况是，判断更新日期不是前一天
+     */
+    private Date startDate;         //起始日期
+
+    /**
+     * 1.	值=下一清算点-8
+     * 2.	唯一修改的情况不更新，是，判断更新日期不是前一天
+     */
+    private Date terminationDate;   //终止日期
+
+    /**
+     * 1.值=当前日期+可售库存/30天销量*30（进1法）
+     * 2.如果30天销量为0，则2050-1-1（日期比较远，一看就卖不完）
+     */
+    private Date planStockToZeroDate;   //预计库存清零日期
+
+    /**
+     * 1.	意思是，还需要用多少天才能卖完
+     * 2.	值=（可用库存/30天销量）*30（小数）
+     * 3.	如果30天销量为0，则取值99999
+     */
+    private BigDecimal sellOutDate; //售完时间
+
+    /**
+     * 1.	终止日期=<预计库存清0日期，则无法售完
+     * 2.	终止日期>预计库存清0日期，则可以售完
+     */
+    private Integer sellOutStatus;  //售完状态  0不能售完   1可以售完
+
+    /**
+     * 1.这个值，跟起始日期是成对出现的。而且需要在起始日期有更新，它才更新。
+     * 2.计算起始日期 +90
+     * 如果值<=15号，则取“【起始日期】+90” 这个结果对应的月的15号
+     * 如果值>15号，则取下一个月的15号 也就是在90的基础上再增加30
+     */
+    private Date nextClearingPoint; //下一清算点
+
+
+
+    //下面这些都是从亚马逊同步过来的商品信息
+
+    /**
+     * 1.读当天库存历史报告。
+     * 2.唯一修改的情况不更新，是，判断更新日期不是前一天
+     */
+    private BigDecimal avaliableQuantitySellable;   //可售库存
+
+    /**
+     * 从同步过来的近30天的销量
+     */
+    private BigDecimal unitsShippedLast30Days;
+
+    private BigDecimal invAge0To90Days;
+    private BigDecimal invAge91To180Days;
+    private BigDecimal invAge181To270Days;
+    private BigDecimal invAge271To365Days;
+    private BigDecimal invAge365PlusDays;
+
+    //其他暂时不重要信息
+    private String backlogAlertWarning; //积压预警  给业务导出库龄报表用,这边是空着的
+    private Boolean isDoingClearance;   //是否在清仓   给业务导出库龄报表用,这边是空着的
+
+    private String fnsku;
+    private String asin;
+    private String productName;
+    private String condition;
+    private BigDecimal qtyWithRemovalsInProgress;
+    private String currency;
+    private BigDecimal qtyToBeChargedLtsf6Mo;
+    private BigDecimal projectedLtsf6Mo;
+    private BigDecimal qtyToBeChargedLtsf12Mo;
+    private BigDecimal projectedLtsf12Mo;
+    private BigDecimal unitsShippedLast7Days;
+
+    private BigDecimal unitsShippedLast60Days;
+    private BigDecimal unitsShippedLast90Days;
+    private String alert;
+    private BigDecimal yourPrice;
+    private BigDecimal salesPrice;
+    private BigDecimal lowestPriceNew;
+    private BigDecimal lowestPriceUsed;
+    private String recommendedAction;
+    private BigDecimal healthyInventoryLevel;
+    private BigDecimal recommendedSalesPrice;
+    private BigDecimal recommendedSaleDurationDays;
+    private BigDecimal recommendedRemovalvQuantity;
+    private BigDecimal estimatedCostSavingsOfRemoval;
+    private BigDecimal sellThrough;
+    private BigDecimal cubicFeet;
+    private String storageType;
+
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Basic
+    @Column(name = "shopId", nullable = true)
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    @Basic
+    @Column(name = "sync_first", nullable = true)
+    public Date getSyncFirst() {
+        return syncFirst;
+    }
+
+    public void setSyncFirst(Date syncFirst) {
+        this.syncFirst = syncFirst;
+    }
+
+    @Basic
+    @Column(name = "sync_last", nullable = true)
+    public Date getSyncLast() {
+        return syncLast;
+    }
+
+    public void setSyncLast(Date syncLast) {
+        this.syncLast = syncLast;
+    }
+
+    @Basic
+    @Column(name = "snapshot_date", nullable = true)
+    public Date getSnapshotDate() {
+        return snapshotDate;
+    }
+
+    public void setSnapshotDate(Date snapshotDate) {
+        this.snapshotDate = snapshotDate;
+    }
+
+    @Basic
+    @Column(name = "sku", nullable = true, length = 100)
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    @Basic
+    @Column(name = "start_date", nullable = true)
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+//    @Basic
+//    @Column(name = "is_clearance_item", nullable = true)
+//    public Boolean getClearanceItem() {
+//        return isClearanceItem;
+//    }
+//
+//    public void setClearanceItem(Boolean clearanceItem) {
+//        isClearanceItem = clearanceItem;
+//    }
+
+    @Basic
+    @Column(name = "is_clearance_item", nullable = true)
+    public Boolean getClearanceItem() {
+        return isClearanceItem;
+    }
+
+    public void setClearanceItem(Boolean clearanceItem) {
+        isClearanceItem = clearanceItem;
+    }
+
+    @Basic
+    @Column(name = "termination_date", nullable = true)
+    public Date getTerminationDate() {
+        return terminationDate;
+    }
+
+    public void setTerminationDate(Date terminationDate) {
+        this.terminationDate = terminationDate;
+    }
+
+    @Basic
+    @Column(name = "plan_stock_to_zero_date", nullable = true)
+    public Date getPlanStockToZeroDate() {
+        return planStockToZeroDate;
+    }
+
+    public void setPlanStockToZeroDate(Date planStockToZeroDate) {
+        this.planStockToZeroDate = planStockToZeroDate;
+    }
+
+    @Basic
+    @Column(name = "sell_out_date", nullable = true, precision = 3)
+    public BigDecimal getSellOutDate() {
+        return sellOutDate;
+    }
+
+    public void setSellOutDate(BigDecimal sellOutDate) {
+        this.sellOutDate = sellOutDate;
+    }
+
+    @Basic
+    @Column(name = "sell_out_status", nullable = true)
+    public Integer getSellOutStatus() {
+        return sellOutStatus;
+    }
+
+    public void setSellOutStatus(Integer sellOutStatus) {
+        this.sellOutStatus = sellOutStatus;
+    }
+
+    @Basic
+    @Column(name = "backlog_alert_warning", nullable = true, length = 300)
+    public String getBacklogAlertWarning() {
+        return backlogAlertWarning;
+    }
+
+    public void setBacklogAlertWarning(String backlogAlertWarning) {
+        this.backlogAlertWarning = backlogAlertWarning;
+    }
+
+    @Basic
+    @Column(name = "is_doing_clearance", nullable = true)
+    public Boolean getDoingClearance() {
+        return isDoingClearance;
+    }
+
+    public void setDoingClearance(Boolean doingClearance) {
+        isDoingClearance = doingClearance;
+    }
+
+    @Basic
+    @Column(name = "next_clearing_point", nullable = true)
+    public Date getNextClearingPoint() {
+        return nextClearingPoint;
+    }
+
+    public void setNextClearingPoint(Date nextClearingPoint) {
+        this.nextClearingPoint = nextClearingPoint;
+    }
+
+    @Basic
+    @Column(name = "avaliable_quantity_sellable", nullable = true, precision = 2)
+    public BigDecimal getAvaliableQuantitySellable() {
+        return avaliableQuantitySellable;
+    }
+
+    public void setAvaliableQuantitySellable(BigDecimal avaliableQuantitySellable) {
+        this.avaliableQuantitySellable = avaliableQuantitySellable;
+    }
+
+    @Basic
+    @Column(name = "fnsku", nullable = true, length = 100)
+    public String getFnsku() {
+        return fnsku;
+    }
+
+    public void setFnsku(String fnsku) {
+        this.fnsku = fnsku;
+    }
+
+    @Basic
+    @Column(name = "asin", nullable = true, length = 100)
+    public String getAsin() {
+        return asin;
+    }
+
+    public void setAsin(String asin) {
+        this.asin = asin;
+    }
+
+    @Basic
+    @Column(name = "product_name", nullable = true, length = 300)
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    @Basic
+    @Column(name = "condition", nullable = true, length = 100)
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
+    @Basic
+    @Column(name = "qty_with_removals_in_progress", nullable = true, precision = 2)
+    public BigDecimal getQtyWithRemovalsInProgress() {
+        return qtyWithRemovalsInProgress;
+    }
+
+    public void setQtyWithRemovalsInProgress(BigDecimal qtyWithRemovalsInProgress) {
+        this.qtyWithRemovalsInProgress = qtyWithRemovalsInProgress;
+    }
+
+    @Basic
+    @Column(name = "inv_age_0_to_90_days", nullable = true, precision = 2)
+    public BigDecimal getInvAge0To90Days() {
+        return invAge0To90Days;
+    }
+
+    public void setInvAge0To90Days(BigDecimal invAge0To90Days) {
+        this.invAge0To90Days = invAge0To90Days;
+    }
+
+    @Basic
+    @Column(name = "inv_age_91_to_180_days", nullable = true, precision = 2)
+    public BigDecimal getInvAge91To180Days() {
+        return invAge91To180Days;
+    }
+
+    public void setInvAge91To180Days(BigDecimal invAge91To180Days) {
+        this.invAge91To180Days = invAge91To180Days;
+    }
+
+    @Basic
+    @Column(name = "inv_age_181_to_270_days", nullable = true, precision = 2)
+    public BigDecimal getInvAge181To270Days() {
+        return invAge181To270Days;
+    }
+
+    public void setInvAge181To270Days(BigDecimal invAge181To270Days) {
+        this.invAge181To270Days = invAge181To270Days;
+    }
+
+    @Basic
+    @Column(name = "inv_age_271_to_365_days", nullable = true, precision = 2)
+    public BigDecimal getInvAge271To365Days() {
+        return invAge271To365Days;
+    }
+
+    public void setInvAge271To365Days(BigDecimal invAge271To365Days) {
+        this.invAge271To365Days = invAge271To365Days;
+    }
+
+    @Basic
+    @Column(name = "inv_age_365_plus_days", nullable = true, precision = 2)
+    public BigDecimal getInvAge365PlusDays() {
+        return invAge365PlusDays;
+    }
+
+    public void setInvAge365PlusDays(BigDecimal invAge365PlusDays) {
+        this.invAge365PlusDays = invAge365PlusDays;
+    }
+
+    @Basic
+    @Column(name = "currency", nullable = true, length = 100)
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    @Basic
+    @Column(name = "qty_to_be_charged_ltsf_6_mo", nullable = true, precision = 2)
+    public BigDecimal getQtyToBeChargedLtsf6Mo() {
+        return qtyToBeChargedLtsf6Mo;
+    }
+
+    public void setQtyToBeChargedLtsf6Mo(BigDecimal qtyToBeChargedLtsf6Mo) {
+        this.qtyToBeChargedLtsf6Mo = qtyToBeChargedLtsf6Mo;
+    }
+
+    @Basic
+    @Column(name = "projected_ltsf_6_mo", nullable = true, precision = 2)
+    public BigDecimal getProjectedLtsf6Mo() {
+        return projectedLtsf6Mo;
+    }
+
+    public void setProjectedLtsf6Mo(BigDecimal projectedLtsf6Mo) {
+        this.projectedLtsf6Mo = projectedLtsf6Mo;
+    }
+
+    @Basic
+    @Column(name = "qty_to_be_charged_ltsf_12_mo", nullable = true, precision = 2)
+    public BigDecimal getQtyToBeChargedLtsf12Mo() {
+        return qtyToBeChargedLtsf12Mo;
+    }
+
+    public void setQtyToBeChargedLtsf12Mo(BigDecimal qtyToBeChargedLtsf12Mo) {
+        this.qtyToBeChargedLtsf12Mo = qtyToBeChargedLtsf12Mo;
+    }
+
+    @Basic
+    @Column(name = "projected_ltsf_12_mo", nullable = true, precision = 2)
+    public BigDecimal getProjectedLtsf12Mo() {
+        return projectedLtsf12Mo;
+    }
+
+    public void setProjectedLtsf12Mo(BigDecimal projectedLtsf12Mo) {
+        this.projectedLtsf12Mo = projectedLtsf12Mo;
+    }
+
+    @Basic
+    @Column(name = "units_shipped_last_7_days", nullable = true, precision = 2)
+    public BigDecimal getUnitsShippedLast7Days() {
+        return unitsShippedLast7Days;
+    }
+
+    public void setUnitsShippedLast7Days(BigDecimal unitsShippedLast7Days) {
+        this.unitsShippedLast7Days = unitsShippedLast7Days;
+    }
+
+    @Basic
+    @Column(name = "units_shipped_last_30_days", nullable = true, precision = 2)
+    public BigDecimal getUnitsShippedLast30Days() {
+        return unitsShippedLast30Days;
+    }
+
+    public void setUnitsShippedLast30Days(BigDecimal unitsShippedLast30Days) {
+        this.unitsShippedLast30Days = unitsShippedLast30Days;
+    }
+
+    @Basic
+    @Column(name = "units_shipped_last_60_days", nullable = true, precision = 2)
+    public BigDecimal getUnitsShippedLast60Days() {
+        return unitsShippedLast60Days;
+    }
+
+    public void setUnitsShippedLast60Days(BigDecimal unitsShippedLast60Days) {
+        this.unitsShippedLast60Days = unitsShippedLast60Days;
+    }
+
+    @Basic
+    @Column(name = "units_shipped_last_90_days", nullable = true, precision = 2)
+    public BigDecimal getUnitsShippedLast90Days() {
+        return unitsShippedLast90Days;
+    }
+
+    public void setUnitsShippedLast90Days(BigDecimal unitsShippedLast90Days) {
+        this.unitsShippedLast90Days = unitsShippedLast90Days;
+    }
+
+    @Basic
+    @Column(name = "alert", nullable = true, length = 100)
+    public String getAlert() {
+        return alert;
+    }
+
+    public void setAlert(String alert) {
+        this.alert = alert;
+    }
+
+    @Basic
+    @Column(name = "your_price", nullable = true, precision = 2)
+    public BigDecimal getYourPrice() {
+        return yourPrice;
+    }
+
+    public void setYourPrice(BigDecimal yourPrice) {
+        this.yourPrice = yourPrice;
+    }
+
+    @Basic
+    @Column(name = "sales_price", nullable = true, precision = 2)
+    public BigDecimal getSalesPrice() {
+        return salesPrice;
+    }
+
+    public void setSalesPrice(BigDecimal salesPrice) {
+        this.salesPrice = salesPrice;
+    }
+
+    @Basic
+    @Column(name = "lowest_price_new", nullable = true, precision = 2)
+    public BigDecimal getLowestPriceNew() {
+        return lowestPriceNew;
+    }
+
+    public void setLowestPriceNew(BigDecimal lowestPriceNew) {
+        this.lowestPriceNew = lowestPriceNew;
+    }
+
+    @Basic
+    @Column(name = "lowest_price_used", nullable = true, precision = 2)
+    public BigDecimal getLowestPriceUsed() {
+        return lowestPriceUsed;
+    }
+
+    public void setLowestPriceUsed(BigDecimal lowestPriceUsed) {
+        this.lowestPriceUsed = lowestPriceUsed;
+    }
+
+    @Basic
+    @Column(name = "Recommended_action", nullable = true, length = 100)
+    public String getRecommendedAction() {
+        return recommendedAction;
+    }
+
+    public void setRecommendedAction(String recommendedAction) {
+        this.recommendedAction = recommendedAction;
+    }
+
+    @Basic
+    @Column(name = "Healthy_Inventory_Level", nullable = true, precision = 2)
+    public BigDecimal getHealthyInventoryLevel() {
+        return healthyInventoryLevel;
+    }
+
+    public void setHealthyInventoryLevel(BigDecimal healthyInventoryLevel) {
+        this.healthyInventoryLevel = healthyInventoryLevel;
+    }
+
+    @Basic
+    @Column(name = "Recommended_sales_price", nullable = true, precision = 2)
+    public BigDecimal getRecommendedSalesPrice() {
+        return recommendedSalesPrice;
+    }
+
+    public void setRecommendedSalesPrice(BigDecimal recommendedSalesPrice) {
+        this.recommendedSalesPrice = recommendedSalesPrice;
+    }
+
+    @Basic
+    @Column(name = "Recommended_sale_duration_days", nullable = true, precision = 2)
+    public BigDecimal getRecommendedSaleDurationDays() {
+        return recommendedSaleDurationDays;
+    }
+
+    public void setRecommendedSaleDurationDays(BigDecimal recommendedSaleDurationDays) {
+        this.recommendedSaleDurationDays = recommendedSaleDurationDays;
+    }
+
+    @Basic
+    @Column(name = "Recommended_RemovalvQuantity", nullable = true, precision = 2)
+    public BigDecimal getRecommendedRemovalvQuantity() {
+        return recommendedRemovalvQuantity;
+    }
+
+    public void setRecommendedRemovalvQuantity(BigDecimal recommendedRemovalvQuantity) {
+        this.recommendedRemovalvQuantity = recommendedRemovalvQuantity;
+    }
+
+    @Basic
+    @Column(name = "Estimated_cost_savings_of_removal", nullable = true, precision = 2)
+    public BigDecimal getEstimatedCostSavingsOfRemoval() {
+        return estimatedCostSavingsOfRemoval;
+    }
+
+    public void setEstimatedCostSavingsOfRemoval(BigDecimal estimatedCostSavingsOfRemoval) {
+        this.estimatedCostSavingsOfRemoval = estimatedCostSavingsOfRemoval;
+    }
+
+    @Basic
+    @Column(name = "sell_through", nullable = true, precision = 2)
+    public BigDecimal getSellThrough() {
+        return sellThrough;
+    }
+
+    public void setSellThrough(BigDecimal sellThrough) {
+        this.sellThrough = sellThrough;
+    }
+
+    @Basic
+    @Column(name = "cubic_feet", nullable = true, precision = 10)
+    public BigDecimal getCubicFeet() {
+        return cubicFeet;
+    }
+
+    public void setCubicFeet(BigDecimal cubicFeet) {
+        this.cubicFeet = cubicFeet;
+    }
+
+    @Basic
+    @Column(name = "storage_type", nullable = true, length = 100)
+    public String getStorageType() {
+        return storageType;
+    }
+
+    public void setStorageType(String storageType) {
+        this.storageType = storageType;
+    }
+
+    @Override
+    public String toString() {
+        return "AmazonInventoryAgedReportPO{" +
+                "id=" + id +
+                ", shopId=" + shopId +
+                ", sku='" + sku + '\'' +
+                ", syncFirst=" + syncFirst +
+                ", syncLast=" + syncLast +
+                ", snapshotDate=" + snapshotDate +
+                ", isClearanceItem=" + isClearanceItem +
+                ", startDate=" + startDate +
+                ", terminationDate=" + terminationDate +
+                ", planStockToZeroDate=" + planStockToZeroDate +
+                ", sellOutDate=" + sellOutDate +
+                ", sellOutStatus=" + sellOutStatus +
+                ", nextClearingPoint=" + nextClearingPoint +
+                ", avaliableQuantitySellable=" + avaliableQuantitySellable +
+                ", unitsShippedLast30Days=" + unitsShippedLast30Days +
+                ", invAge0To90Days=" + invAge0To90Days +
+                ", invAge91To180Days=" + invAge91To180Days +
+                ", invAge181To270Days=" + invAge181To270Days +
+                ", invAge271To365Days=" + invAge271To365Days +
+                ", invAge365PlusDays=" + invAge365PlusDays +
+                ", backlogAlertWarning='" + backlogAlertWarning + '\'' +
+                ", isDoingClearance=" + isDoingClearance +
+                ", fnsku='" + fnsku + '\'' +
+                ", asin='" + asin + '\'' +
+                ", productName='" + productName + '\'' +
+                ", condition='" + condition + '\'' +
+                ", qtyWithRemovalsInProgress=" + qtyWithRemovalsInProgress +
+                ", currency='" + currency + '\'' +
+                ", qtyToBeChargedLtsf6Mo=" + qtyToBeChargedLtsf6Mo +
+                ", projectedLtsf6Mo=" + projectedLtsf6Mo +
+                ", qtyToBeChargedLtsf12Mo=" + qtyToBeChargedLtsf12Mo +
+                ", projectedLtsf12Mo=" + projectedLtsf12Mo +
+                ", unitsShippedLast7Days=" + unitsShippedLast7Days +
+                ", unitsShippedLast60Days=" + unitsShippedLast60Days +
+                ", unitsShippedLast90Days=" + unitsShippedLast90Days +
+                ", alert='" + alert + '\'' +
+                ", yourPrice=" + yourPrice +
+                ", salesPrice=" + salesPrice +
+                ", lowestPriceNew=" + lowestPriceNew +
+                ", lowestPriceUsed=" + lowestPriceUsed +
+                ", recommendedAction='" + recommendedAction + '\'' +
+                ", healthyInventoryLevel=" + healthyInventoryLevel +
+                ", recommendedSalesPrice=" + recommendedSalesPrice +
+                ", recommendedSaleDurationDays=" + recommendedSaleDurationDays +
+                ", recommendedRemovalvQuantity=" + recommendedRemovalvQuantity +
+                ", estimatedCostSavingsOfRemoval=" + estimatedCostSavingsOfRemoval +
+                ", sellThrough=" + sellThrough +
+                ", cubicFeet=" + cubicFeet +
+                ", storageType='" + storageType + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AmazonInventoryAgedReportPO po = (AmazonInventoryAgedReportPO) o;
+
+        if (id != po.id) return false;
+        if (shopId != null ? !shopId.equals(po.shopId) : po.shopId != null) return false;
+        if (syncFirst != null ? !syncFirst.equals(po.syncFirst) : po.syncFirst != null) return false;
+        if (syncLast != null ? !syncLast.equals(po.syncLast) : po.syncLast != null) return false;
+        if (snapshotDate != null ? !snapshotDate.equals(po.snapshotDate) : po.snapshotDate != null) return false;
+        if (sku != null ? !sku.equals(po.sku) : po.sku != null) return false;
+        if (startDate != null ? !startDate.equals(po.startDate) : po.startDate != null) return false;
+        if (isClearanceItem != null ? !isClearanceItem.equals(po.isClearanceItem) : po.isClearanceItem != null)
+            return false;
+        if (terminationDate != null ? !terminationDate.equals(po.terminationDate) : po.terminationDate != null)
+            return false;
+        if (planStockToZeroDate != null ? !planStockToZeroDate.equals(po.planStockToZeroDate) : po.planStockToZeroDate != null)
+            return false;
+        if (sellOutDate != null ? !sellOutDate.equals(po.sellOutDate) : po.sellOutDate != null) return false;
+        if (sellOutStatus != null ? !sellOutStatus.equals(po.sellOutStatus) : po.sellOutStatus != null) return false;
+        if (backlogAlertWarning != null ? !backlogAlertWarning.equals(po.backlogAlertWarning) : po.backlogAlertWarning != null)
+            return false;
+        if (isDoingClearance != null ? !isDoingClearance.equals(po.isDoingClearance) : po.isDoingClearance != null)
+            return false;
+        if (nextClearingPoint != null ? !nextClearingPoint.equals(po.nextClearingPoint) : po.nextClearingPoint != null)
+            return false;
+        if (avaliableQuantitySellable != null ? !avaliableQuantitySellable.equals(po.avaliableQuantitySellable) : po.avaliableQuantitySellable != null)
+            return false;
+        if (fnsku != null ? !fnsku.equals(po.fnsku) : po.fnsku != null) return false;
+        if (asin != null ? !asin.equals(po.asin) : po.asin != null) return false;
+        if (productName != null ? !productName.equals(po.productName) : po.productName != null) return false;
+        if (condition != null ? !condition.equals(po.condition) : po.condition != null) return false;
+        if (qtyWithRemovalsInProgress != null ? !qtyWithRemovalsInProgress.equals(po.qtyWithRemovalsInProgress) : po.qtyWithRemovalsInProgress != null)
+            return false;
+        if (invAge0To90Days != null ? !invAge0To90Days.equals(po.invAge0To90Days) : po.invAge0To90Days != null)
+            return false;
+        if (invAge91To180Days != null ? !invAge91To180Days.equals(po.invAge91To180Days) : po.invAge91To180Days != null)
+            return false;
+        if (invAge181To270Days != null ? !invAge181To270Days.equals(po.invAge181To270Days) : po.invAge181To270Days != null)
+            return false;
+        if (invAge271To365Days != null ? !invAge271To365Days.equals(po.invAge271To365Days) : po.invAge271To365Days != null)
+            return false;
+        if (invAge365PlusDays != null ? !invAge365PlusDays.equals(po.invAge365PlusDays) : po.invAge365PlusDays != null)
+            return false;
+        if (currency != null ? !currency.equals(po.currency) : po.currency != null) return false;
+        if (qtyToBeChargedLtsf6Mo != null ? !qtyToBeChargedLtsf6Mo.equals(po.qtyToBeChargedLtsf6Mo) : po.qtyToBeChargedLtsf6Mo != null)
+            return false;
+        if (projectedLtsf6Mo != null ? !projectedLtsf6Mo.equals(po.projectedLtsf6Mo) : po.projectedLtsf6Mo != null)
+            return false;
+        if (qtyToBeChargedLtsf12Mo != null ? !qtyToBeChargedLtsf12Mo.equals(po.qtyToBeChargedLtsf12Mo) : po.qtyToBeChargedLtsf12Mo != null)
+            return false;
+        if (projectedLtsf12Mo != null ? !projectedLtsf12Mo.equals(po.projectedLtsf12Mo) : po.projectedLtsf12Mo != null)
+            return false;
+        if (unitsShippedLast7Days != null ? !unitsShippedLast7Days.equals(po.unitsShippedLast7Days) : po.unitsShippedLast7Days != null)
+            return false;
+        if (unitsShippedLast30Days != null ? !unitsShippedLast30Days.equals(po.unitsShippedLast30Days) : po.unitsShippedLast30Days != null)
+            return false;
+        if (unitsShippedLast60Days != null ? !unitsShippedLast60Days.equals(po.unitsShippedLast60Days) : po.unitsShippedLast60Days != null)
+            return false;
+        if (unitsShippedLast90Days != null ? !unitsShippedLast90Days.equals(po.unitsShippedLast90Days) : po.unitsShippedLast90Days != null)
+            return false;
+        if (alert != null ? !alert.equals(po.alert) : po.alert != null) return false;
+        if (yourPrice != null ? !yourPrice.equals(po.yourPrice) : po.yourPrice != null) return false;
+        if (salesPrice != null ? !salesPrice.equals(po.salesPrice) : po.salesPrice != null) return false;
+        if (lowestPriceNew != null ? !lowestPriceNew.equals(po.lowestPriceNew) : po.lowestPriceNew != null)
+            return false;
+        if (lowestPriceUsed != null ? !lowestPriceUsed.equals(po.lowestPriceUsed) : po.lowestPriceUsed != null)
+            return false;
+        if (recommendedAction != null ? !recommendedAction.equals(po.recommendedAction) : po.recommendedAction != null)
+            return false;
+        if (healthyInventoryLevel != null ? !healthyInventoryLevel.equals(po.healthyInventoryLevel) : po.healthyInventoryLevel != null)
+            return false;
+        if (recommendedSalesPrice != null ? !recommendedSalesPrice.equals(po.recommendedSalesPrice) : po.recommendedSalesPrice != null)
+            return false;
+        if (recommendedSaleDurationDays != null ? !recommendedSaleDurationDays.equals(po.recommendedSaleDurationDays) : po.recommendedSaleDurationDays != null)
+            return false;
+        if (recommendedRemovalvQuantity != null ? !recommendedRemovalvQuantity.equals(po.recommendedRemovalvQuantity) : po.recommendedRemovalvQuantity != null)
+            return false;
+        if (estimatedCostSavingsOfRemoval != null ? !estimatedCostSavingsOfRemoval.equals(po.estimatedCostSavingsOfRemoval) : po.estimatedCostSavingsOfRemoval != null)
+            return false;
+        if (sellThrough != null ? !sellThrough.equals(po.sellThrough) : po.sellThrough != null) return false;
+        if (cubicFeet != null ? !cubicFeet.equals(po.cubicFeet) : po.cubicFeet != null) return false;
+        if (storageType != null ? !storageType.equals(po.storageType) : po.storageType != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (shopId != null ? shopId.hashCode() : 0);
+        result = 31 * result + (syncFirst != null ? syncFirst.hashCode() : 0);
+        result = 31 * result + (syncLast != null ? syncLast.hashCode() : 0);
+        result = 31 * result + (snapshotDate != null ? snapshotDate.hashCode() : 0);
+        result = 31 * result + (sku != null ? sku.hashCode() : 0);
+        result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
+        result = 31 * result + (isClearanceItem != null ? isClearanceItem.hashCode() : 0);
+        result = 31 * result + (terminationDate != null ? terminationDate.hashCode() : 0);
+        result = 31 * result + (planStockToZeroDate != null ? planStockToZeroDate.hashCode() : 0);
+        result = 31 * result + (sellOutDate != null ? sellOutDate.hashCode() : 0);
+        result = 31 * result + (sellOutStatus != null ? sellOutStatus.hashCode() : 0);
+        result = 31 * result + (backlogAlertWarning != null ? backlogAlertWarning.hashCode() : 0);
+        result = 31 * result + (isDoingClearance != null ? isDoingClearance.hashCode() : 0);
+        result = 31 * result + (nextClearingPoint != null ? nextClearingPoint.hashCode() : 0);
+        result = 31 * result + (avaliableQuantitySellable != null ? avaliableQuantitySellable.hashCode() : 0);
+        result = 31 * result + (fnsku != null ? fnsku.hashCode() : 0);
+        result = 31 * result + (asin != null ? asin.hashCode() : 0);
+        result = 31 * result + (productName != null ? productName.hashCode() : 0);
+        result = 31 * result + (condition != null ? condition.hashCode() : 0);
+        result = 31 * result + (qtyWithRemovalsInProgress != null ? qtyWithRemovalsInProgress.hashCode() : 0);
+        result = 31 * result + (invAge0To90Days != null ? invAge0To90Days.hashCode() : 0);
+        result = 31 * result + (invAge91To180Days != null ? invAge91To180Days.hashCode() : 0);
+        result = 31 * result + (invAge181To270Days != null ? invAge181To270Days.hashCode() : 0);
+        result = 31 * result + (invAge271To365Days != null ? invAge271To365Days.hashCode() : 0);
+        result = 31 * result + (invAge365PlusDays != null ? invAge365PlusDays.hashCode() : 0);
+        result = 31 * result + (currency != null ? currency.hashCode() : 0);
+        result = 31 * result + (qtyToBeChargedLtsf6Mo != null ? qtyToBeChargedLtsf6Mo.hashCode() : 0);
+        result = 31 * result + (projectedLtsf6Mo != null ? projectedLtsf6Mo.hashCode() : 0);
+        result = 31 * result + (qtyToBeChargedLtsf12Mo != null ? qtyToBeChargedLtsf12Mo.hashCode() : 0);
+        result = 31 * result + (projectedLtsf12Mo != null ? projectedLtsf12Mo.hashCode() : 0);
+        result = 31 * result + (unitsShippedLast7Days != null ? unitsShippedLast7Days.hashCode() : 0);
+        result = 31 * result + (unitsShippedLast30Days != null ? unitsShippedLast30Days.hashCode() : 0);
+        result = 31 * result + (unitsShippedLast60Days != null ? unitsShippedLast60Days.hashCode() : 0);
+        result = 31 * result + (unitsShippedLast90Days != null ? unitsShippedLast90Days.hashCode() : 0);
+        result = 31 * result + (alert != null ? alert.hashCode() : 0);
+        result = 31 * result + (yourPrice != null ? yourPrice.hashCode() : 0);
+        result = 31 * result + (salesPrice != null ? salesPrice.hashCode() : 0);
+        result = 31 * result + (lowestPriceNew != null ? lowestPriceNew.hashCode() : 0);
+        result = 31 * result + (lowestPriceUsed != null ? lowestPriceUsed.hashCode() : 0);
+        result = 31 * result + (recommendedAction != null ? recommendedAction.hashCode() : 0);
+        result = 31 * result + (healthyInventoryLevel != null ? healthyInventoryLevel.hashCode() : 0);
+        result = 31 * result + (recommendedSalesPrice != null ? recommendedSalesPrice.hashCode() : 0);
+        result = 31 * result + (recommendedSaleDurationDays != null ? recommendedSaleDurationDays.hashCode() : 0);
+        result = 31 * result + (recommendedRemovalvQuantity != null ? recommendedRemovalvQuantity.hashCode() : 0);
+        result = 31 * result + (estimatedCostSavingsOfRemoval != null ? estimatedCostSavingsOfRemoval.hashCode() : 0);
+        result = 31 * result + (sellThrough != null ? sellThrough.hashCode() : 0);
+        result = 31 * result + (cubicFeet != null ? cubicFeet.hashCode() : 0);
+        result = 31 * result + (storageType != null ? storageType.hashCode() : 0);
+        return result;
+    }
+}

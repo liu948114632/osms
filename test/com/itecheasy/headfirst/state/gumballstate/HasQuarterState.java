@@ -8,6 +8,9 @@ public class HasQuarterState implements State {
 	public HasQuarterState(GumballMachine gumballMachine) {
 		this.gumballMachine = gumballMachine;
 	}
+
+
+
   
 	public void insertQuarter() {
 		System.out.println("You can't insert another quarter");
@@ -26,6 +29,9 @@ public class HasQuarterState implements State {
     public void dispense() {
         System.out.println("No gumball dispensed");
     }
+
+
+
  
 	public String toString() {
 		return "waiting for turn of crank";

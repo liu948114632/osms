@@ -1,0 +1,100 @@
+#amazon自动增加订单服务时间
+listOrder.timer=0 1/3 * 1 12 ?
+
+#amazon错误订单重新增加服务时间
+errorOrder.timer=0 * 0 * 1 ?
+
+#获取DMS消息时间
+dms.messeage.timer=0 * 0 * 12 ?
+
+
+#获取亚马逊库龄报告的时间
+sync.amazon.age.item.report = 0 * 2,3,4 * * ?
+
+sync.amazon.age.item.report.reset = 0 * 2,3,4 * * ?
+
+#同步跟踪单号到amazon，并修改货建状态
+amozon.updateReplenishment.shipment=0 15 23 * * ?
+
+#根据shipmentId，同步回亚马逊的补货订单状态,之后更新时间
+sync.amazon.shipment.status=0 0 23 * * ?
+
+# s m h d m w y
+#amazonReport 设置为每天凌晨两点三点和四点钟每60秒发动一次，每次从集合中获取一个店铺，之后把获取的店铺给删除掉
+amazon.stock.report=0 * 2,3,4 * * ?
+#每天的某时把amazon.stock.report的集合给重置    每天晚上的一点执行一次
+amazon.stock.report.reset=0 0 1 * * ?
+
+#邮件发送
+asynEmail.timer=0 0 0 1 12 ?
+
+
+
+
+#获取CMS消息时间
+cms.messeage.timer=0/10 * * 1 * ?
+
+#ftp上传时间
+ftp.timer=0 * 1 1 12 ?
+
+#自动处理商品上传到Amazon
+upload.file.timer=0 * 0 1 12 ?
+
+
+#自动处理发货到amaozn
+upload.delivery.timer=0/5 * 1 * 12 ?
+
+#fba订单销售统计（每天凌晨2点统计前一天）
+report.fba.sales.timer=0 0 02 * 12 ?
+
+#ebay同步订单
+ebay.sync.order=1 * 1 * 12 ?
+
+#同步主动备库存任务
+syncReplenishmentTask.timer=0 0 7,16 * 12 ?
+
+#amazon订单销量统计
+autoStatisticOrder.timer=0 07 * * 12 ?
+
+#同步cms信息
+syncCmsProductInfo.timer=0 0 8,13,15 * 12 ?
+
+#同步fba库存
+syncFbaRepositoryStock.timer=0 57 1 * 12 ?
+
+#订单变更单同步
+cms.modify.timer=30 * 1 * 12 ?
+
+#自动取消没有销量的商品的冻结库存
+cancelFreezeStock.timer=1 1 1 1 12 ?
+
+#自动设置总警戒库存
+autoSetSumInventorySercurityLine.timer=2 2 02 ? 12 mon
+
+#自动检查订单
+checkOrder.timer=00 00 07,13 ? * sat,sun
+#checkOrder.timer=00 09 9 * * ?
+
+#smt订单同步
+smt.list.order=30 03 1 * 12 ?
+
+#smt订单下载
+smt.download.order=5 * 1 * 1 ?
+
+#smt重新授权
+again.auth.timer=15 15 05 01,15 1 ?
+
+#统计cms待补货量
+statisticsCmsAwaitReplenishment.timer=0 10 07,13 * 1 ?
+
+#同步订单跟踪
+orderTrackingMessageService.timer=0 * 1 * 1 ?
+
+#自动统计两天前的自卖订单以及fba月销量
+statisticFbaShopProductService.timer=0 0 1 * 1 ?
+
+#统计fba店铺商品是否走过海运的
+updateHasSeaTransported.timer=0 0 1 * 1 ?
+
+#统计连续3个月月销量均大于50且没走过海运的商品  日期往前推两天
+statisticThreeMonth.timer=0 0 1 * 1 ?

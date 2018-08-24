@@ -1,0 +1,45 @@
+package com.itecheasy.core.fba.AgedItemReportCalculateUtil;
+
+import com.itecheasy.core.fba.dao.AmazonInventoryAgedReportDao;
+import com.itecheasy.core.fba.dao.AmazonInventoryAgedReportHistoryDao;
+import com.itecheasy.core.po.AmazonInventoryAgedReportPO;
+
+import java.util.List;
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/2 14:05
+ * @Description:
+ */
+public abstract class CountAgedItemReportComponent {
+
+    private AmazonInventoryAgedReportDao amazonInventoryAgedReportDao;
+
+    private AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao;
+
+    public AmazonInventoryAgedReportHistoryDao getAmazonInventoryAgedReportHistoryDao() {
+        return amazonInventoryAgedReportHistoryDao;
+    }
+
+    public void setAmazonInventoryAgedReportHistoryDao(AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao) {
+        this.amazonInventoryAgedReportHistoryDao = amazonInventoryAgedReportHistoryDao;
+    }
+
+    public AmazonInventoryAgedReportDao getAmazonInventoryAgedReportDao() {
+        return amazonInventoryAgedReportDao;
+    }
+
+    public void setAmazonInventoryAgedReportDao(AmazonInventoryAgedReportDao amazonInventoryAgedReportDao) {
+        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
+    }
+
+    public abstract List<AmazonInventoryAgedReportPO> cost(List<AmazonInventoryAgedReportPO> item);
+
+
+    public  List<AmazonInventoryAgedReportPO> isEntrust(List<AmazonInventoryAgedReportPO> items,CountAgedItemReportComponent component){
+        if (component!=null){
+            component.cost(items);
+        }
+        return items;
+    }
+
+}

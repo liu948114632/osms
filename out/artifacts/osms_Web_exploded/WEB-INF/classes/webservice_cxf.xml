@@ -105,8 +105,17 @@
 			<ref bean="saajInInterceptor" />
 		</jaxws:inInterceptors>
 	</jaxws:endpoint>
+
 	<jaxws:endpoint id="seaTransportationPrepareWebServiceWS" implementor="#seaTransportationPrepareWebService"
 		address="/seaTransportationPrepareWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+
+	<jaxws:endpoint id="agingReportInstanceWS" implementor="#agingReportInstanceWebService"
+					address="/agingReportInstanceWebService">
 		<jaxws:inInterceptors>
 			<ref bean="wss4jInInterceptor" />
 			<ref bean="saajInInterceptor" />

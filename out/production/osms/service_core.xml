@@ -185,6 +185,9 @@
 	<!--new task amozon-->
 	<bean id="amozonUpdateReplenishmentShipment" class="com.itecheasy.core.task.AmozonUpdateReplenishmentShipmentImpl" />
 
+
+	<bean id="syncAmazonAgedItemReportTaskImpl" class="com.itecheasy.core.task.SyncAmazonAgedItemReportTaskImpl" />
+
 	<!-- email -->
 	<bean id="emailService" class="com.itecheasy.core.email.EmailServiceImpl" />
 	<bean id="ul" class="com.itecheasy.core.util.StaticUtils"
@@ -249,4 +252,55 @@
 
 	<bean id="amazonStockReportHistoryDao" class="com.itecheasy.core.fba.dao.AmazonStockReportHistoryDaoImpl" />
 	<bean id="syncAmozonStackReportTask" class="com.itecheasy.core.task.SyncAmozonStackReportTaskImpl" />
+
+
+
+	<bean id="amazonInventoryAgedReportDao" class="com.itecheasy.core.fba.dao.AmazonInventoryAgedReportDaoImpl" />
+
+	<bean id="syncAmazonAgedItemReportTask" class="com.itecheasy.core.task.SyncAmazonAgedItemReportTaskImpl"/>
+
+
+	<bean id="showAmazonAgedReport" class="com.itecheasy.core.operation.ShowAmazonAgedReportImpl"/>
+
+
+	<!--<bean id="doneSyncState" class="com.itecheasy.core.task.syncState.DoneSyncState"/>-->
+	<!--<bean id="doingSyncState" class="com.itecheasy.core.task.syncState.DoingSyncState"/>-->
+	<!--<bean id="startSyncState" class="com.itecheasy.core.task.syncState.StartSyncState"/>-->
+	<!--<bean id="newSyncAmozonStackReportTask" class="com.itecheasy.core.task.syncState.NewSyncAmozonStackReportTaskImpl"-->
+		  <!--init-method="springInitMethod" parent="syncAmazon"/>-->
+	<!--<bean id="syncAmazon" class="com.itecheasy.core.task.syncState.SyncAmazon" abstract="true"/>-->
+
+	<!--<bean id="isExistAgedTableFilterComponent" class="com.itecheasy.core.fba.AgedItemReportCalculateUtil.IsExistAgedTableFilterComponent">-->
+		<!--<property name="amazonInventoryAgedReportDao" ref="amazonInventoryAgedReportDao"></property>-->
+		<!---->
+	<!--</bean>-->
+
+
+	<bean id="amazonInventoryAgedReportHistoryDao" class="com.itecheasy.core.fba.dao.AmazonInventoryAgedReportHistoryDaoImpl"/>
+
+
+
+
+
+	<!--<bean id="countAgedItemReportComponent" class="com.itecheasy.core.fba.report.CountAgedItemReportComponent"-->
+		  <!--abstract="true" >-->
+		<!--<property name="amazonInventoryAgedReportDao" ref="amazonInventoryAgedReportDao"></property>-->
+		<!--<property name="amazonInventoryAgedReportHistoryDao" ref="amazonInventoryAgedReportHistoryDao"></property>-->
+	<!--</bean>-->
+
+	<bean id="isExistAgedTableFilterComponent" class="com.itecheasy.core.fba.report.IsExistAgedTableFilterComponent"
+				/>
+
+	<bean id="onlySaveThan90DayAgedItemFilterComponent" class="com.itecheasy.core.fba.report.OnlySaveThan90DayAgedItemFilterComponent"
+		 	/>
+
+	<bean id="isYesterdayUpdateFilterComponent" class="com.itecheasy.core.fba.report.IsYesterdayUpdateFilterComponent"
+		 	/>
+
+	<bean id="onlyThan180DayAgedItemFilterComponent" class="com.itecheasy.core.fba.report.OnlyThan180DayAgedItemFilterComponent"
+		/>
+
+	<bean id="isRequireClearanceAgedItemFilterComponent" class="com.itecheasy.core.fba.report.IsRequireClearanceAgedItemFilterComponent"
+		 	/>
+
 </beans>

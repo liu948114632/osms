@@ -219,6 +219,49 @@
 	</bean>
 
 
+	<!-- age_report-->
+	<bean id="sync_amazon_age_item_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sync_amazon_age_item_Job" />
+		</property>
+		<property name="cronExpression">
+			<value>${sync.amazon.age.item.report}</value>
+		</property>
+	</bean>
+	<bean id="sync_amazon_age_item_Job"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="syncAmazonAgedItemReportTaskImpl" />
+		</property>
+		<property name="targetMethod">
+			<value>syncAmazonAgedItemReport</value>
+		</property>
+		<!-- 将并发设置为false -->
+		<property name="concurrent" value="true" />
+	</bean>
+
+
+	<!-- age_report_reset-->
+	<bean id="sync_amazon_age_item_reset_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sync_amazon_age_item_reset_Job" />
+		</property>
+		<property name="cronExpression">
+			<value>${sync.amazon.age.item.report.reset}</value>
+		</property>
+	</bean>
+	<bean id="sync_amazon_age_item_reset_Job"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="syncAmazonAgedItemReportTaskImpl" />
+		</property>
+		<property name="targetMethod">
+			<value>resetEverydaySync</value>
+		</property>
+		<!-- 将并发设置为false -->
+		<property name="concurrent" value="false" />
+	</bean>
+
 	<bean id="report_fba_sales_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail">
 			<ref bean="report_fba_sales_Job" />
@@ -648,11 +691,16 @@
 				<ref bean="syncReplenishmentTask_cron"></ref>
 				<ref bean="smt_download_order_cron"></ref>
 				<ref bean="again_auth_cron"></ref> -->
+				<!--<ref bean="amazon_code_submit_cron"></ref>-->
+
+				<!--获取亚马逊库龄报告-->
+				<ref bean="sync_amazon_age_item_cron"></ref>
+				<ref bean="sync_amazon_age_item_reset_cron"></ref>
 
 				<!--  暂时先不上线 -->
 				<ref bean="amazon_stock_report_cron"></ref>
 				<ref bean="amazon_stock_report_cron_reset"></ref>
-				<ref bean="amazon_code_submit_cron"></ref>
+
 				<ref bean="sync_amazon_shipment_status_cron"></ref>
 
 				<ref bean="statisticFbaShopProductMonthSales_cron"/>

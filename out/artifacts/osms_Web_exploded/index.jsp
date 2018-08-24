@@ -45,6 +45,8 @@
 		<a href="downloadSmtOrder.jsp">添加smt订单</a>
 		<a href="updateCache">更新店铺缓存</a>
 		<a href="resumeSeaTransData.jsp">补货订单生成补货计划以及备货计划</a>
+		<a href="report.jsp">getAmazonReport</a>
+		<a href="agedReport.jsp">获取亚马逊库龄报告表</a>
 	</div>
 </body>
 </html>

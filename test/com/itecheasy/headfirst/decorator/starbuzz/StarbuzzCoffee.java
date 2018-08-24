@@ -8,6 +8,7 @@ public class StarbuzzCoffee {
 				+ " $" + beverage.cost());
  
 		Beverage beverage2 = new DarkRoast();
+
 		beverage2 = new Mocha(beverage2); //Beverage的类型
 		beverage2 = new Mocha(beverage2);
 		beverage2 = new Whip(beverage2);

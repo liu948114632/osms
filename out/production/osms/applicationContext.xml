@@ -63,7 +63,11 @@
 			<tx:method name="listOrderSimple" propagation="REQUIRES_NEW" />
 			<tx:method name="syncCmsProductInfo" propagation="REQUIRES_NEW" />
 			<tx:method name="syncReplenishmentTask" propagation="REQUIRES_NEW" />
+
+			<tx:method name="syncAmazonAgedItemReport" propagation="REQUIRES_NEW" />
+
 			<!-- <tx:method name="addOrderSimple" propagation="REQUIRES_NEW" /> -->
+			<tx:method name="autoSyncInboundShipments" propagation="NOT_SUPPORTED" />
 			<tx:method name="*" propagation="REQUIRED" />
 			<tx:method name="*" rollback-for="com.itecheasy.core.BussinessException" />
 <!-- 			<tx:method name="listOrder" propagation="SUPPORTS" no-rollback-for="com.itecheasy.core.BussinessException"/>
@@ -84,13 +88,11 @@
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="autotask" />
 	</aop:config>
 
-	<bean id="serviceMethodInterceptor" class="com.itecheasy.printMethod.AccessPath"/>
-	<!--&lt;!&ndash; 方法拦截器（拦截Service包中的所有的方法） MethodInterceptor &ndash;&gt;-->
-	<aop:config >
-		<aop:pointcut id="serviceMethodPointcut"
-					  expression="execution(* com.itecheasy.osms..*.*(..))"/>
-		<aop:advisor advice-ref="serviceMethodInterceptor"
-					 pointcut-ref="serviceMethodPointcut" />
+	<bean id="serviceMethodInterceptor" class="com.itecheasy.printMethod.AccessPath"></bean>
+	<!-- &lt;!&ndash; 方法拦截器（拦截Service包中的所有的方法） MethodInterceptor &ndash;&gt; -->
+	<aop:config>
+		<aop:pointcut id="serviceMethodPointcut" expression="execution(* com.itecheasy.osms..*.*(..))"/>
+		<aop:advisor advice-ref="serviceMethodInterceptor" pointcut-ref="serviceMethodPointcut" />
 	</aop:config>
 
 	<!--用于打印日志的参数和返回值-->

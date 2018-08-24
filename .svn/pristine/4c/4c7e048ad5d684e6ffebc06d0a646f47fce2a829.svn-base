@@ -1,0 +1,150 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.fba.dao;
+
+import com.itecheasy.common.BaseDAOImpl;
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.CollectionUtils;
+import com.itecheasy.core.operation.AmazonAgedReportForm;
+import com.itecheasy.core.po.AmazonInventoryAgedReportPO;
+import com.itecheasy.core.system.Shop;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/9 17:14
+ * @Description:
+ */
+public class AmazonInventoryAgedReportDaoImpl extends BaseDAOImpl<AmazonInventoryAgedReportPO, Integer> implements AmazonInventoryAgedReportDao {
+
+
+    /**
+     * where sku in and shopId
+     *
+     * @param agedReportPOS
+     * @param shopId
+     * @return
+     */
+    public List<AmazonInventoryAgedReportPO> findByShopIdAndSkuIn(List<AmazonInventoryAgedReportPO> agedReportPOS, Integer shopId) {
+        String hql = "FROM AmazonInventoryAgedReportPO WHERE shopId=? ";
+        StringBuilder builder = new StringBuilder();
+        for (AmazonInventoryAgedReportPO po : agedReportPOS) {
+            builder.append(",'").append(po.getSku()).append("'");
+        }
+        hql += "  AND sku in ( " + builder.substring(1).toString() + " )";
+
+        return findListByHql(hql, new Object[]{shopId});
+    }
+    public void updateBySku(List<AmazonInventoryAgedReportPO> agedReportPOS, Integer shopId) {
+        addObject(agedReportPOS);
+        flush();
+        updateBySql
+                (" delete from amazon_inventory_aged_report where id in (  select min(id) from amazon_inventory_aged_report where shopId = "
+                        + shopId + "  group by sku having(count(1)>1)  ) ");
+    }
+
+    @Override
+    public PageList<AmazonInventoryAgedReportPO> findPageListTrendHql(AmazonAgedReportForm amazonAgedReportForm, List<Shop> shops) {
+        StringBuilder sql = new StringBuilder();
+        List<Object> params = new ArrayList<Object>();
+        sql.append("FROM AmazonInventoryAgedReportPO where shopId = ? ");
+        params.add(amazonAgedReportForm.getShopId());
+
+//        if (amazonAgedReportForm.getShopId() < 0) {
+//            sql.append("AND a.shop_id IN ( ");
+////            List<Shop> shops = systemService.getShopsByUserId(amazonAgedReportForm.getOperatorId());
+//            for (int i = 0; i < shops.size(); i++) {
+//                if (i == shops.size() - 1) {
+//                    sql.append(shops.get(i).getId() + " ) ");
+//                } else {
+//                    sql.append(shops.get(i).getId() + ",");
+//                }
+//            }
+//        } else {
+//            sql.append("AND a.shop_id = ? ");
+//            params.add(amazonAgedReportForm.getShopId());
+//        }
+
+
+
+        List<String> skuList = amazonAgedReportForm.getSkuList();
+        if (CollectionUtils.isNotEmpty(skuList)) {
+            if (skuList.size() == 1) {
+                sql.append("AND sku = ? ");
+                params.add(skuList.get(0).trim());
+            } else if (skuList.size() > 1) {
+                sql.append("AND sku in ( ");
+                for (int i = 0; i < skuList.size(); i++) {
+                    if (i == skuList.size() - 1) {
+                        sql.append("'").append(skuList.get(i).trim()).append("' )");
+                    } else {
+                        sql.append("'").append(skuList.get(i).trim()).append("',");
+                    }
+                }
+            }
+        }
+        //是否需要清仓    0不需要   1需要
+        if (amazonAgedReportForm.getIsClearanceItem() > -1) {
+            if (amazonAgedReportForm.getIsClearanceItem() == 0){
+                sql.append(" AND ClearanceItem = ? ");
+                params.add(false);
+            }else if(amazonAgedReportForm.getIsClearanceItem() == 1){
+                sql.append(" AND ClearanceItem = ? ");
+                params.add(true);
+            }
+        }
+
+        //库龄              91-180天  = 1; 大于180天 = 2 ;other -1
+        int agingQueryCondition = amazonAgedReportForm.getAgingQueryCondition();
+        if (agingQueryCondition == 0) {
+            sql.append(" AND invAge0To90Days < 0 ");
+            sql.append(" AND invAge91To180Days > 0 ");
+            sql.append(" AND invAge181To270Days < 0 ");
+            sql.append(" AND invAge271To365Days < 0 ");
+            sql.append(" AND invAge365PlusDays < 0 ");
+        } else if (agingQueryCondition == 1) {
+            sql.append(" AND invAge0To90Days < 0 ");
+            sql.append(" AND invAge91To180Days < 0 ");
+            sql.append(" AND invAge181To270Days > 0 ");
+            sql.append(" AND invAge271To365Days > 0 ");
+            sql.append(" AND invAge365PlusDays > 0 ");
+        }
+
+        //起始日期的开始时间
+        if (amazonAgedReportForm.getOriginationStartDate() != null) {
+            sql.append(" and startDate >=? ");
+            params.add(amazonAgedReportForm.getOriginationStartDate());
+//            params.add(DateUtils.getRealDate(amazonAgedReportForm.getOrderedDateBegin()));
+        }
+        //起始日期的截止时间
+        if (amazonAgedReportForm.getOriginationEndDate() != null) {
+            sql.append(" and startDate<=? ");
+            params.add(amazonAgedReportForm.getOriginationEndDate());
+//            params.add(DateUtils.getFullDate(amazonAgedReportForm.getOrderedDateEnd()));
+        }
+        //更新日期的开始时间
+        if (amazonAgedReportForm.getOriginationStartDate() != null) {
+            sql.append(" and syncLast>=? ");
+            params.add(amazonAgedReportForm.getUpdateStartDate());
+        }
+        //更新日期的截止时间
+        if (amazonAgedReportForm.getOriginationEndDate() != null) {
+            sql.append(" and syncLast<=? ");
+            params.add(amazonAgedReportForm.getUpdateEndDate());
+        }
+
+        //连接表，获取商品的cms信息
+
+        return findPageListByHql(amazonAgedReportForm.getCurrentPage(), amazonAgedReportForm.getPageSize(),
+                sql.toString(), params.toArray());
+    }
+
+}

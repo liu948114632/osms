@@ -1,0 +1,96 @@
+Index: core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java	(date 1533209411879)
++++ core_impl/com/itecheasy/core/fba/ReplenishmentOrderServiceImpl.java	(date 1533209411879)
+@@ -85,6 +85,12 @@
+ 	protected FbaReplenishmentPlanDao fbaReplenishmentPlanDao;
+ 	protected FbaReplenishmentPlanOperateLogDao fbaReplenishmentPlanOperateLogDao;
+ 
++	private FbaInboundService fbaInboundService;
++
++	public void setFbaInboundService(FbaInboundService fbaInboundService) {
++		this.fbaInboundService = fbaInboundService;
++	}
++
+ 	public void setFbaReplenishmentPlanOperateLogDao(FbaReplenishmentPlanOperateLogDao fbaReplenishmentPlanOperateLogDao) {
+ 		this.fbaReplenishmentPlanOperateLogDao = fbaReplenishmentPlanOperateLogDao;
+ 	}
+@@ -1003,13 +1009,33 @@
+ 	@Override
+ 	public void addAndUpdateOrderProductList(int orderId, List<UpdateOrderProductForm> orderProducts, String operator){
+ 		ReplenishmentOrderPO po = replenishmentOrderDao.getObject(orderId);
++
++//		List<String> checkSku = new ArrayList<String>();
++//		for (UpdateOrderProductForm orderProduct : orderProducts) {
++//			checkSku.add(orderProduct.getSku());
++//		}
++//
++//		List<String> checkExcel = fbaInboundService.checkExcel(po.getShopId(), checkSku);
++//		if (CollectionUtils.isNotEmpty(checkExcel)){
++//			throw new BussinessException("有不合法的sku:"+checkExcel);
++//		}
++
+ 		for (UpdateOrderProductForm form : orderProducts) {
+ 			if (form.getUpdateProductCode() != null) {
+ 				ShopProductRelated relatedBySku = fbaShopProductService.getRelatedBySku(form.getSku(), po.getShopId());
+ //				ShopProductRelated relatedByOtherCode = fbaShopProductService.getRelatedByOtherCode(form.getUpdateProductCode(), po.getShopId());
++
+ 				if (relatedBySku==null){
+ 					throw new BussinessException("有不合法的sku:"+form.getSku());
+ 				}
++
++				if (form.getUpdateProductCode()!=null) {
++					if (!form.getUpdateProductCode().trim().equalsIgnoreCase(relatedBySku.getCmsProductCode())) {
++						throw new BussinessException("有不合法的cms_code:" + form.getUpdateProductCode());
++					}
++				}
++
++				//set attributes
+ 				if (form.getOrderProductId()==0) {
+ 					form.setUnitQty(relatedBySku.getUnitQuantity());
+ 					form.setUpdateProductCode(relatedBySku.getCmsProductCode());
+@@ -1054,8 +1080,8 @@
+ 
+ 		// 判断是否会出现重复的备货商品
+ 		checkRepeat4UpdateOrderProduct(orderId, orderProducts);
+-		
+-		
++
++		List<String> errSku = new ArrayList<String>();
+ 		List<ReplenishmentOrderItemPO> items = new ArrayList<ReplenishmentOrderItemPO>();
+ //		boolean _order_has_limit_product = false;
+ 		for (UpdateOrderProductForm form : orderProducts) {
+@@ -1073,8 +1099,15 @@
+ 			}
+ 			CMSProduct product = CMSClient.getCMSProductByCode(updateProductCode);
+ 			swOrderAddItemLimit(po, form, product);
+-			hasAvailableStockout(form, updateProductCode, product);
+-			
++
++			try {
++				hasAvailableStockout(form, updateProductCode, product);
++			} catch (Exception e) {
++				errSku.add(updateProductCode);
++				e.printStackTrace();
++				continue;
++			}
++
+ 			FbaShopProduct fba=fbaShopProductService.getFbaShopProduct(form.getFbaShopProductId());
+ 			// 再添加
+ 			ReplenishmentOrderItemPO item = addItemPO(fba, orderId, updateProductCode, qty, product);
+@@ -1099,8 +1132,12 @@
+ 			// 更新订单成本价
+ 			po.setCostPrice((po.getCostPrice() == null ? 0 : po.getCostPrice()) + item.getCostPrice());
+ 			addOrderOperateLog("新增订单商品项" + updateProductCode, operator, po.getId());
++		}
+ 
++		if (CollectionUtils.isNotEmpty(errSku)){
++			throw new BussinessException("以下cmsCode不合法"+errSku);
+ 		}
++
+ //		po.setElectronic(isElectronic(orderId));
+ 		updateOrderStatusByOrderProduct(po);
+ 		// cms备货

@@ -1,0 +1,197 @@
+package com.itecheasy.core.fba.AgedItemReportCalculateUtil;
+
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.common.util.CollectionUtils;
+import com.itecheasy.common.util.DateUtils;
+import com.itecheasy.common.util.HqlUtils;
+import com.itecheasy.core.fba.dao.AmazonInventoryAgedReportDao;
+import com.itecheasy.core.fba.dao.AmazonInventoryAgedReportHistoryDao;
+import com.itecheasy.core.po.AmazonInventoryAgedReportHistoryPO;
+import com.itecheasy.core.po.AmazonInventoryAgedReportPO;
+import com.itecheasy.core.po.AmazonStockReportPO;
+import com.itecheasy.webservice.amazon.AmazonStockReportVO;
+
+import java.util.*;
+
+/**
+ *
+ */
+public class IsExistAgedTableFilterComponent extends CountAgedItemReportComponent {
+
+    private AmazonInventoryAgedReportDao amazonInventoryAgedReportDao;
+
+    private AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao;
+
+    private ThreadLocal<Integer> shopId;
+
+    private CountAgedItemReportComponent countAgedItemReportComponent;
+
+    public IsExistAgedTableFilterComponent() {
+    }
+
+    public IsExistAgedTableFilterComponent(CountAgedItemReportComponent component, ThreadLocal<Integer> shopIdThreadLocal, AmazonInventoryAgedReportDao amazonInventoryAgedReportDao) {
+        this.shopId = shopIdThreadLocal;
+        this.countAgedItemReportComponent = component;
+        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
+    }
+
+    public IsExistAgedTableFilterComponent(CountAgedItemReportComponent component, ThreadLocal<Integer> shopIdThreadLocal,
+                                           AmazonInventoryAgedReportDao amazonInventoryAgedReportDao,
+                                           AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao) {
+        this.shopId = shopIdThreadLocal;
+        this.countAgedItemReportComponent = component;
+        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
+        this.amazonInventoryAgedReportHistoryDao = amazonInventoryAgedReportHistoryDao;
+    }
+
+    public IsExistAgedTableFilterComponent(CountAgedItemReportComponent component) {
+        this.countAgedItemReportComponent = component;
+    }
+
+
+    /**
+     * isHasHistoryRecord
+     * 把不存在resultTable的记录新增
+     *
+     * @param newAgedItemList 传入刚刚同步的报告
+     *                        oldAgedItemList 数据库中的报告
+     *                        不存在的直接新增
+     * @return 存在的则返回, 用于下一步判断
+     */
+    @Override
+    public List<AmazonInventoryAgedReportPO> cost(List<AmazonInventoryAgedReportPO> newAgedItemList) {
+        //查询库龄报告表   result_table
+        List<AmazonInventoryAgedReportPO> dataBaseResultAgedItemsByshopId = this.amazonInventoryAgedReportDao.
+                findListByHql("FROM AmazonInventoryAgedReportPO where shopId = ? ",
+                        new Object[]{shopId.get()});
+
+        //已经存在result结果表中的数据
+        List<AmazonInventoryAgedReportPO> existItems = new ArrayList<AmazonInventoryAgedReportPO>();
+
+        //不存在result结果表中的数据
+        List<AmazonInventoryAgedReportPO> directnessToDataBaseItems = new ArrayList<AmazonInventoryAgedReportPO>();
+
+        //把新传入的item分为存在于以前表中的和不存在以前表中的
+        if (CollectionUtils.isNotEmpty(dataBaseResultAgedItemsByshopId)) {
+            for (AmazonInventoryAgedReportPO newAgeItem : newAgedItemList) {
+                for (AmazonInventoryAgedReportPO dataBaseAgedItemByshopId : dataBaseResultAgedItemsByshopId) {
+                    if (newAgeItem.getSku().equals(dataBaseAgedItemByshopId.getSku())) {
+                        //存在返回
+                        existItems.add(newAgeItem);
+                    } else {
+                        //save以前不存在的记录
+                        //不存在 情况
+                        directnessToDataBaseItems.add(newAgeItem);
+                    }
+                }
+            }
+        } else {
+            directnessToDataBaseItems.addAll(newAgedItemList);
+        }
+
+       //获取已经存在于result表中的sku
+//        List<String> skus = new ArrayList<String>();
+//        for (AmazonInventoryAgedReportPO directnessToDataBaseItem : directnessToDataBaseItems) {
+//            skus.add(directnessToDataBaseItem.getSku());
+//        }
+
+//        String from_amazonInventoryAgedReportHistoryPO = "from AmazonInventoryAgedReportHistoryPO";
+//        if (CollectionUtils.isNotEmpty(skus)) {
+//            from_amazonInventoryAgedReportHistoryPO = HqlUtils.jointCriteriaString("from AmazonInventoryAgedReportHistoryPO where sku ", skus);
+//        } else {
+//            from_amazonInventoryAgedReportHistoryPO = "from AmazonInventoryAgedReportHistoryPO";
+//        }
+
+
+        // TODO: 2018/8/15    修改为查询所有的sku
+        //在历史表中查到这个商店的所有最新的历史记录
+//        String sql ="select * from amazon_inventory_aged_report " +
+//                " where sync_first=(select max(sync_first) from amazon_inventory_aged_report) AND shopId= ? ";
+
+        String sql = " select a.* from amazon_inventory_aged_report_history a " +
+                     " where not exists(select 1 from amazon_inventory_aged_report_history b " +
+                                    " where b.sku=a.sku and b.sync_last>a.sync_last and shopId=? )";
+        List<Object> params = new ArrayList<Object>();
+        params.add(shopId.get());
+        List<AmazonInventoryAgedReportHistoryPO> historyLastPOList = amazonInventoryAgedReportHistoryDao.findListBySql(sql,params);
+
+
+        if (CollectionUtils.isNotEmpty(historyLastPOList)) {
+            Map<String, AmazonInventoryAgedReportHistoryPO> historyPOMap = new HashMap<String, AmazonInventoryAgedReportHistoryPO>();
+            for (AmazonInventoryAgedReportHistoryPO amazonInventoryAgedReportHistoryPO : historyLastPOList) {
+                historyPOMap.put(amazonInventoryAgedReportHistoryPO.getSku(), amazonInventoryAgedReportHistoryPO);
+            }
+
+            Date date = new Date();
+            //directnessToDataBaseItem 新传来的
+            for (AmazonInventoryAgedReportPO directnessToDataBaseItem : directnessToDataBaseItems) {
+                //历史表中的
+                AmazonInventoryAgedReportHistoryPO amazonInventoryAgedReportHistoryPO = historyPOMap.get(directnessToDataBaseItem.getSku());
+
+                //首次同步时间和最后同步时间为一个
+//                directnessToDataBaseItem.setSyncFirst(date);    //设置首次同步时间
+
+                //set other 属性
+                //还是把历史表2中的数据拿出来，只是不要历史表中的id和历史表中的起始日期和最后同步时间
+                if (amazonInventoryAgedReportHistoryPO != null) {
+                    BeanUtils.copyProperties(amazonInventoryAgedReportHistoryPO, directnessToDataBaseItem,
+                            new String[]{"id", "startDate", "syncLast"});
+                    // TODO: 2018/8/13 other ignore set 属性
+                    directnessToDataBaseItem.setSyncLast(date); //设置更新时间
+                    directnessToDataBaseItem.setStartDate(date);    //设置起始时间
+                }
+            }
+        }
+
+        //directnessToDataBaseItems copy了历史表中的数据
+        //各种计算之后的结果
+        List<AmazonInventoryAgedReportPO> calculateContentAfter = calculateContent(directnessToDataBaseItems);
+
+        //直接新增之后删除id小一些的
+//        this.amazonInventoryAgedReportDao.updateBySku(calculateContentAfter, shopId.get());
+
+        //根据shopId查出结果表中说有的数据
+        List<AmazonInventoryAgedReportPO> daoStockReportList = amazonInventoryAgedReportDao.findListByHql
+                ("FROM AmazonInventoryAgedReportPO WHERE shopId=? ", new Object[]{shopId.get()});
+
+        //其实直接新增就好了，因为不可能存在于数据库中，但是考虑到元件复用
+
+        //左边是历史表中的数据，但是没有Id
+        amazonInventoryAgedReportDao.updateDataById(calculateContentAfter,daoStockReportList);
+
+        //返回的就是不在库龄报表中的
+        if (this.countAgedItemReportComponent != null) {
+            return this.countAgedItemReportComponent.cost(existItems);
+        }
+        return existItems;
+    }
+
+
+
+
+
+    /**
+     * @param pos
+     * @return
+     */
+    private List<AmazonInventoryAgedReportPO> calculateContent(List<AmazonInventoryAgedReportPO> pos) {
+
+        List<AmazonInventoryAgedReportPO> calculateNextClearPoint =
+                CalculateContentUtils.calculateNextClearPoint(pos);
+
+        List<AmazonInventoryAgedReportPO> calculateTerminationDate =
+                CalculateContentUtils.calculateTerminationDate(calculateNextClearPoint);
+
+        List<AmazonInventoryAgedReportPO> calculatePlanStockToZeroDate =
+                CalculateContentUtils.calculatePlanStockToZeroDate(calculateTerminationDate);
+
+        List<AmazonInventoryAgedReportPO> calculateSellOutDate =
+                CalculateContentUtils.calculateSellOutDate(calculatePlanStockToZeroDate);
+
+        List<AmazonInventoryAgedReportPO> calculateSellOutStatus
+                = CalculateContentUtils.calculateSellOutStatus(calculateSellOutDate);
+
+        return calculateSellOutStatus;
+    }
+
+}

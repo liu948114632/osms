@@ -7,7 +7,7 @@ public class GumballMachine {
 	State hasQuarterState;
 	State soldState;
  
-	State state = soldOutState;
+	State state = soldOutState;	//默认的状态
 	int count = 0;
  
 	public GumballMachine(int numberGumballs) {
@@ -16,7 +16,7 @@ public class GumballMachine {
 		hasQuarterState = new HasQuarterState(this);
 		soldState = new SoldState(this);
 
-		this.count = numberGumballs;
+		this.count = numberGumballs;	//SET INIT COUNT
  		if (numberGumballs > 0) {
 			state = noQuarterState;
 		} 

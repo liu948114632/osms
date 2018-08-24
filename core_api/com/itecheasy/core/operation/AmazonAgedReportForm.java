@@ -1,0 +1,120 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.operation;
+
+import com.itecheasy.core.BaseSearchForm;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/10 19:11
+ * @Description:
+ */
+public class AmazonAgedReportForm extends BaseSearchForm {
+
+    private Integer shopId;
+
+    private List<String> skuList;
+
+    private int operatorId;
+
+    private Date originationStartDate;  //起始日期的开始日期
+
+    private Date originationEndDate;    //起始日期的截止日期
+
+    private Date updateStartDate;
+
+    private Date updateEndDate;
+
+
+    private int isClearanceItem;    //0 否   1是需要清仓的商品
+
+    private int agingQueryCondition;
+   // 91-180天  = 1; 大于180天 = 2 ;other -1
+
+
+    public int getAgingQueryCondition() {
+        return agingQueryCondition;
+    }
+
+    public void setAgingQueryCondition(int agingQueryCondition) {
+        this.agingQueryCondition = agingQueryCondition;
+    }
+
+    public Date getOriginationStartDate() {
+        return originationStartDate;
+    }
+
+    public void setOriginationStartDate(Date originationStartDate) {
+        this.originationStartDate = originationStartDate;
+    }
+
+    public Date getOriginationEndDate() {
+        return originationEndDate;
+    }
+
+    public void setOriginationEndDate(Date originationEndDate) {
+        this.originationEndDate = originationEndDate;
+    }
+
+    public Date getUpdateStartDate() {
+        return updateStartDate;
+    }
+
+    public void setUpdateStartDate(Date updateStartDate) {
+        this.updateStartDate = updateStartDate;
+    }
+
+    public Date getUpdateEndDate() {
+        return updateEndDate;
+    }
+
+    public void setUpdateEndDate(Date updateEndDate) {
+        this.updateEndDate = updateEndDate;
+    }
+
+    public List<String> getSkuList() {
+        return skuList;
+    }
+
+    public void setSkuList(List<String> skuList) {
+        this.skuList = skuList;
+    }
+
+    public int getIsClearanceItem() {
+        return isClearanceItem;
+    }
+
+    public void setIsClearanceItem(int isClearanceItem) {
+        this.isClearanceItem = isClearanceItem;
+    }
+
+
+
+
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+
+
+    public int getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(int operatorId) {
+        this.operatorId = operatorId;
+    }
+}
