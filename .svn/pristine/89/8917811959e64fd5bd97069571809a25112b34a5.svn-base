@@ -1,0 +1,78 @@
+package com.itecheasy.core.po;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * @author taozihao
+ * @date 2018年8月24日 下午5:17:34
+ * @description 清仓跟踪sku对应记录
+ */
+@Entity
+@Table(name = "clear_inventory_tracking_record")
+public class ClearInventoryTrackingRecordPO {
+    private int id;
+    private Integer clearInventoryTrackingId;
+    private Date priceOffDate;
+    private BigDecimal salePrice;
+    private String remark;
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Basic
+    @Column(name = "clear_inventory_tracking_id", nullable = true)
+    public Integer getClearInventoryTrackingId() {
+        return clearInventoryTrackingId;
+    }
+
+    public void setClearInventoryTrackingId(Integer clearInventoryTrackingId) {
+        this.clearInventoryTrackingId = clearInventoryTrackingId;
+    }
+
+    @Basic
+    @Column(name = "price_off_date", nullable = true)
+    public Date getPriceOffDate() {
+        return priceOffDate;
+    }
+
+    public void setPriceOffDate(Date priceOffDate) {
+        this.priceOffDate = priceOffDate;
+    }
+
+    @Basic
+    @Column(name = "sale_price", nullable = true, precision = 2)
+    public BigDecimal getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(BigDecimal salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    @Basic
+    @Column(name = "remark", nullable = true, length = 200)
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+    
+}

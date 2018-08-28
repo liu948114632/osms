@@ -1,0 +1,66 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.prepare;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.HqlUtils;
+import com.itecheasy.core.prepare.dao.SuperLongPrepareProductDao;
+import com.itecheasy.core.product.ShopProductCmsInfo;
+import com.itecheasy.core.product.ShopProductCmsInfoService;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/24 16:14
+ * @Description:
+ */
+
+public class SuperLongPrepareProductServiceImpl implements SuperLongPrepareProductService {
+
+    private SuperLongPrepareProductDao superLongPrepareProductDao;
+//    ShopProductCmsInfoPO
+
+    private ShopProductCmsInfoService shopProductCmsInfoService;
+
+    public void setShopProductCmsInfoService(ShopProductCmsInfoService shopProductCmsInfoService) {
+        this.shopProductCmsInfoService = shopProductCmsInfoService;
+    }
+
+    @Override
+    public PageList<SuperLongPrepareProductVO> showSuperLongPrepareProduct(SuperLongPrepareProductSearchForm superLongPrepareProductSearchForm) {
+
+
+        return null;
+    }
+
+    @Override
+    public void addSuperLongPrepareProducts( List<String> cmsCodes, Integer operatorId) {
+        List<ShopProductCmsInfo> infoByCmsCodes = shopProductCmsInfoService.findInfoByCmsCodes(cmsCodes);
+
+
+        List<Integer> cmsInfoId = new ArrayList<Integer>();
+        for (ShopProductCmsInfo cmsInfo : infoByCmsCodes) {
+            cmsInfoId.add(cmsInfo.getCmsProductId());
+        }
+
+
+
+
+    }
+
+    @Override
+    public void deleteSuperLongPrepareProducts( List<String> cmsCodes, Integer operatorId) {
+
+    }
+
+
+}

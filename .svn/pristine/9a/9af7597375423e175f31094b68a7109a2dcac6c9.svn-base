@@ -1,0 +1,134 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.operation;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.*;
+import com.itecheasy.core.BussinessException;
+import com.itecheasy.core.fba.dao.AmazonInventoryAgedReportDao;
+import com.itecheasy.core.fba.dao.ShopProductCmsInfoDao;
+import com.itecheasy.core.po.AmazonInventoryAgedReportPO;
+import com.itecheasy.core.po.ShopProductCmsInfoPO;
+import com.itecheasy.core.system.Shop;
+import com.itecheasy.core.system.SystemService;
+import com.itecheasy.core.util.StringUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/11 16:46
+ * @Description:
+ */
+public class ShowAmazonAgedReportServiceImpl implements ShowAmazonAgedReportService {
+    private SystemService systemService;
+
+    private ShopProductCmsInfoDao shopProductCmsInfoDao;
+
+    private static final String SYNCAGED= DeployProperties.getInstance().getProperty("sync.amazon.aged.item");
+
+    public void setShopProductCmsInfoDao(ShopProductCmsInfoDao shopProductCmsInfoDao) {
+        this.shopProductCmsInfoDao = shopProductCmsInfoDao;
+    }
+
+    private AmazonInventoryAgedReportDao amazonInventoryAgedReportDao;
+
+    public void setAmazonInventoryAgedReportDao(AmazonInventoryAgedReportDao amazonInventoryAgedReportDao) {
+        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
+    }
+
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
+    }
+
+
+    @Override
+    public List<Shop> getSyncAgedShop() {
+        String[] shopIds = SYNCAGED.split(",");
+
+        List<Shop> shopList = new ArrayList<Shop>();
+        for (String shopId : shopIds) {
+            Shop shop = systemService.getShop(Integer.parseInt(shopId));
+            shopList.add(shop);
+        }
+
+        return shopList;
+    }
+
+    @Override
+    public PageList<AmazonAgedReportVO> getAmazonAgedReport(AmazonAgedReportForm amazonAgedReportForm) {
+
+//        List<Shop> shops = systemService.getShopsByUserId(amazonAgedReportForm.getOperatorId());
+        String[] shopIds = SYNCAGED.split(",");
+
+        List<Shop> shopList = new ArrayList<Shop>();
+        for (String shopId : shopIds) {
+            Shop shop = systemService.getShop(Integer.parseInt(shopId));
+            shopList.add(shop);
+        }
+
+
+        PageList<AmazonInventoryAgedReportPO> amazonInventoryAgedReportPOPageList =
+                amazonInventoryAgedReportDao.findPageListTrendHql(amazonAgedReportForm, shopList);
+
+        //把cms的图片信息给赋值上去
+        Map<String,String> map = new HashMap<String, String>();
+        for (AmazonInventoryAgedReportPO datum : amazonInventoryAgedReportPOPageList.getData()) {
+            List<Object> params = new ArrayList<Object>();
+            params.add(datum.getShopId());
+            params.add(datum.getSku());
+            List<ShopProductCmsInfoPO> cmsInfoPO = shopProductCmsInfoDao.findListBySql
+                    ("select * from shop_product_cms_info c left join fba_shop_product f on f.cms_product_code = c.cms_product_code where shop_id= ? and sku= ? ",params);
+            if (CollectionUtils.isNotEmpty(cmsInfoPO)){
+                map.put(datum.getSku(),cmsInfoPO.get(0).getPrimaryPictureCode());
+            }
+        }
+
+        List<AmazonAgedReportVO> amazonAgedReportVOS = BeanUtils.copyList(amazonInventoryAgedReportPOPageList.getData(), AmazonAgedReportVO.class);
+
+        //set cms pictureCode
+        for (AmazonAgedReportVO amazonAgedReportVO : amazonAgedReportVOS) {
+            amazonAgedReportVO.setPrimaryPictureCode(map.get(amazonAgedReportVO.getSku()));
+        }
+
+        PageList<AmazonAgedReportVO> amazonAgedReportVOPageList = new PageList<AmazonAgedReportVO>();
+        amazonAgedReportVOPageList.setData(amazonAgedReportVOS);
+        amazonAgedReportVOPageList.setPage(amazonInventoryAgedReportPOPageList.getPage());
+
+        return amazonAgedReportVOPageList;
+    }
+
+	@Override
+	public AmazonAgedReportVO getAmazonAgedReport(String sku, int shopId) {
+		AmazonInventoryAgedReportPO po = amazonInventoryAgedReportDao.findByHql("FROM AmazonInventoryAgedReportPO WHERE shopId=? AND sku=? ", new Object[]{shopId,sku});
+		return BeanUtils.copyProperties(po, AmazonAgedReportVO.class);
+	}
+
+
+    @Override
+    public void addToClearTracking(List<String> skus, int shopId,int operatorId) {
+
+        String hql="FROM AmazonInventoryAgedReportPO WHERE shopId = ? ";
+        if (CollectionUtils.isNotEmpty(skus)) {
+            String jointCriteriaString = HqlUtils.jointCriteriaString(" and  sku ", skus);
+            hql += jointCriteriaString;
+        }
+
+        List<AmazonInventoryAgedReportPO> pos = amazonInventoryAgedReportDao.findListByHql(hql,shopId);
+
+        for (AmazonInventoryAgedReportPO po : pos) {
+            po.setDoingClearance(true);
+        }
+        amazonInventoryAgedReportDao.updateObject(pos);
+
+    }
+}

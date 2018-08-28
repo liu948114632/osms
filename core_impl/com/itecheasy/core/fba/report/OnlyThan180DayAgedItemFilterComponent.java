@@ -23,26 +23,14 @@ import java.util.List;
  * @Date: 2018/7/2 14:05
  * @Description:
  */
-public  class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemReportComponent {
+public class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemReportComponent {
 
     private AmazonInventoryAgedReportDao amazonInventoryAgedReportDao;
 
     //库龄历史表
     private AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao;
-
-    public void setAmazonInventoryAgedReportHistoryDao(AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao) {
-        this.amazonInventoryAgedReportHistoryDao = amazonInventoryAgedReportHistoryDao;
-    }
     private CountAgedItemReportComponent countAgedItemReportComponent;
-    public void setCountAgedItemReportComponent(CountAgedItemReportComponent countAgedItemReportComponent) {
-        this.countAgedItemReportComponent = countAgedItemReportComponent;
-    }
-
-    public void setShopIdThreadLocal(ThreadLocal<Integer> shopIdThreadLocal) {
-        this.shopIdThreadLocal = shopIdThreadLocal;
-    }
-
-    private  ThreadLocal<Integer> shopIdThreadLocal;
+    private ThreadLocal<Integer> shopIdThreadLocal;
 
     public OnlyThan180DayAgedItemFilterComponent(CountAgedItemReportComponent component, ThreadLocal<Integer> shopIdThreadLocal,
                                                  AmazonInventoryAgedReportDao amazonInventoryAgedReportDao,
@@ -56,26 +44,9 @@ public  class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemRepo
     public OnlyThan180DayAgedItemFilterComponent() {
     }
 
-    public void setAmazonInventoryAgedReportDao(AmazonInventoryAgedReportDao amazonInventoryAgedReportDao, CountAgedItemReportComponent component
-
-                                                            ) {
-        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
-    }
-
-    public void setAmazonInventoryAgedReportDao(AmazonInventoryAgedReportDao amazonInventoryAgedReportDao) {
-        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
-    }
-
     public OnlyThan180DayAgedItemFilterComponent(CountAgedItemReportComponent component) {
         this.countAgedItemReportComponent = component;
     }
-    public  List<AmazonInventoryAgedReportPO> isEntrust(List<AmazonInventoryAgedReportPO> items, CountAgedItemReportComponent component) throws ParseException {
-        if (component!=null){
-            component.cost(items);
-        }
-        return items;
-    }
-
 
     public OnlyThan180DayAgedItemFilterComponent(CountAgedItemReportComponent component, ThreadLocal<Integer> longLocal) {
         this.shopIdThreadLocal = longLocal;
@@ -83,10 +54,38 @@ public  class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemRepo
 
     }
 
+    public void setAmazonInventoryAgedReportHistoryDao(AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao) {
+        this.amazonInventoryAgedReportHistoryDao = amazonInventoryAgedReportHistoryDao;
+    }
+
+    public void setCountAgedItemReportComponent(CountAgedItemReportComponent countAgedItemReportComponent) {
+        this.countAgedItemReportComponent = countAgedItemReportComponent;
+    }
+
+    public void setShopIdThreadLocal(ThreadLocal<Integer> shopIdThreadLocal) {
+        this.shopIdThreadLocal = shopIdThreadLocal;
+    }
+
+    public void setAmazonInventoryAgedReportDao(AmazonInventoryAgedReportDao amazonInventoryAgedReportDao, CountAgedItemReportComponent component) {
+        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
+    }
+
+    public void setAmazonInventoryAgedReportDao(AmazonInventoryAgedReportDao amazonInventoryAgedReportDao) {
+        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
+    }
+
+    public List<AmazonInventoryAgedReportPO> isEntrust(List<AmazonInventoryAgedReportPO> items, CountAgedItemReportComponent component) throws ParseException {
+        if (component != null) {
+            component.cost(items);
+        }
+        return items;
+    }
+
     /**
-     *  step4
-     *  如果该商品的库龄仅仅大于180
-     *  如果不是的话 就把起始时间改为服务器当前时间
+     * step4
+     * 如果该商品的库龄仅仅大于180
+     * 如果不是的话 就把起始时间改为服务器当前时间
+     *
      * @param
      * @return
      */
@@ -98,7 +97,7 @@ public  class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemRepo
 
         //dataBaseResult 中这个商店下所有的
         List<AmazonInventoryAgedReportPO> daoStockReportList = amazonInventoryAgedReportDao.findListByHql
-                        ("FROM AmazonInventoryAgedReportPO WHERE shopId=? ", new Object[]{shopIdThreadLocal.get()});
+                ("FROM AmazonInventoryAgedReportPO WHERE shopId=? ", new Object[]{shopIdThreadLocal.get()});
 //        amazonInventoryAgedReportDao.updateDataById(calculateYesterdayUpdateContent,daoStockReportList);
 
 
@@ -120,29 +119,28 @@ public  class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemRepo
             int i3 = invAge271To365Days.compareTo(BigDecimal.ZERO);
             int i4 = invAge365PlusDays.compareTo(BigDecimal.ZERO);
 
-          boolean b =    i2 > 0 || i3 > 0 || i4 > 0;
+            boolean b = i2 > 0 || i3 > 0 || i4 > 0;
 
-          boolean c =    i <= 0 && i1 <= 0;
-          if (b && c){
+            boolean c = i <= 0 && i1 <= 0;
+            if (b && c) {
 //            if (i <= 0 && i1 <= 0 && i2 > 0 && i3 > 0 && i4 > 0) {
                 satisfiedConditionItems.add(agedItem);
                 //仅库龄大于180天的商品 直接清仓
-            }else{
+            } else {
                 //其他状态库龄的商品
                 notSatisfiedConditionItems.add(agedItem);
             }
         }
 
 
-
         List<AmazonInventoryAgedReportPO> calculateOnlyThan180DayAgedItemContent
-                     = calculateOnlyThan180DayAgedItemContent(satisfiedConditionItems);
+                = calculateOnlyThan180DayAgedItemContent(satisfiedConditionItems);
 //        amazonInventoryAgedReportDao.updateBySku(calculateOnlyThan180DayAgedItemContent,shopIdThreadLocal.get());
-        amazonInventoryAgedReportDao.updateDataById(calculateOnlyThan180DayAgedItemContent,daoStockReportList);
+        amazonInventoryAgedReportDao.updateDataById(calculateOnlyThan180DayAgedItemContent, daoStockReportList);
 
         //is set id to zero
         List<AmazonInventoryAgedReportPO> calculateNotOnlyThan180DayAgedItemContent =
-                          calculateNotOnlyThan180DayAgedItemContent(notSatisfiedConditionItems);
+                calculateNotOnlyThan180DayAgedItemContent(notSatisfiedConditionItems);
 
         //非仅库龄大于180天的商品
 //        Date date =new Date();
@@ -156,25 +154,13 @@ public  class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemRepo
     }
 
     /**
-     *  仅库龄大于180天的有amount的商品
+     * 仅库龄大于180天的有amount的商品
+     *
      * @param pos
      * @return
      */
     private List<AmazonInventoryAgedReportPO> calculateOnlyThan180DayAgedItemContent(List<AmazonInventoryAgedReportPO> pos) {
 
-        //只有库龄大于180天的商品
-        for (AmazonInventoryAgedReportPO po : pos) {
-            po.setStartDate(null);
-            po.setTerminationDate(null);
-            po.setNextClearingPoint(null);
-
-            po.setClearanceItem(true);
-
-            po.setNextClearingPoint(null);
-            po.setTerminationDate(null);
-            po.setSellOutDate(null);
-            po.setSellOutStatus(null);
-        }
 
 //        List<AmazonInventoryAgedReportPO> calculateNextClearPoint =
 //                CalculateContentUtils.calculateNextClearPoint(pos);
@@ -194,17 +180,32 @@ public  class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemRepo
 //        List<AmazonInventoryAgedReportPO> calculateIsClearItem
 //                = CalculateContentUtils.calculateIsClearItem(calculateSellOutStatus);
 
+
+        //只有库龄大于180天的商品
+        for (AmazonInventoryAgedReportPO po : pos) {
+//            po.setStartDate(null);
+//            po.setTerminationDate(null);
+//            po.setNextClearingPoint(null);
+
+            po.setClearanceItem(true);
+
+//            po.setSellOutDate(null);
+//            po.setSellOutStatus(null);
+        }
+
+
         return pos;
     }
 
     /**
      * 单独抽为component
      * 非仅库龄大于180天的商品这个条件的商品
+     *
      * @param pos
      * @return
      */
     private List<AmazonInventoryAgedReportPO> calculateNotOnlyThan180DayAgedItemContent(List<AmazonInventoryAgedReportPO> pos) {
-       //记录日期为服务器的起始日期
+        //记录日期为服务器的起始日期
         Date date = new Date();
 //        for (AmazonInventoryAgedReportPO po : pos) {
 //            po.setStartDate(date);
@@ -214,9 +215,17 @@ public  class OnlyThan180DayAgedItemFilterComponent implements CountAgedItemRepo
 
 
 
+
+
+
+
+
+
+
     /**
      * 单独抽为component
      * 跟新日期是昨天的计算方式
+     *
      * @param pos
      * @return
      */

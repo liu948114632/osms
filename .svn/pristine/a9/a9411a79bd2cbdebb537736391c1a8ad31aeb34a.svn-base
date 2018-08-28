@@ -1,0 +1,25 @@
+package com.itecheasy.core.report;
+
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.core.fba.dao.AmazonLogisticsForecastCostReportDao;
+import com.itecheasy.core.po.AmazonLogisticsForecastCostReportPO;
+
+/**
+ * @author taozihao
+ * @date 2018年8月25日 下午4:01:11
+ * @description	物流成本预测报告服务
+ */
+public class AmazonLogisticsForecastCostReportServiceImpl implements AmazonLogisticsForecastCostReportService{
+	private AmazonLogisticsForecastCostReportDao amazonLogisticsForecastCostReportDao;
+
+	public void setAmazonLogisticsForecastCostReportDao(
+			AmazonLogisticsForecastCostReportDao amazonLogisticsForecastCostReportDao) {
+		this.amazonLogisticsForecastCostReportDao = amazonLogisticsForecastCostReportDao;
+	}
+
+	@Override
+	public AmazonLogisticsForecastCostReportVO getAmazonLogisticsForecastCostReport(int shopId, String sku) {
+		AmazonLogisticsForecastCostReportPO po = amazonLogisticsForecastCostReportDao.findByHql("FROM AmazonLogisticsForecastCostReportPO WHERE shopId=? AND sku=? ", new Object[]{shopId,sku});
+		return BeanUtils.copyProperties(po, AmazonLogisticsForecastCostReportVO.class);
+	}
+}

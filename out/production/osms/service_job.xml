@@ -219,6 +219,56 @@
 	</bean>
 
 
+
+	<!--syncAmazonLogisticsForecastCostReport-->
+<!--	amazonLogisticsForecastCostReportTask   -->
+	<!--	#同步亚马逊物流预计费用报告   清仓跟踪底价获取-->
+	<!-- newTask3-->
+	<bean id="sync_amazon_logistics_forecast_cost_report_corn" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sync_amazon_logistics_forecast_cost_report_Job" />
+		</property>
+		<property name="cronExpression">
+			<value>${sync_amazon_logistics_forecast_cost_report}</value>
+		</property>
+	</bean>
+
+	<bean id="sync_amazon_logistics_forecast_cost_report_Job"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="amazonLogisticsForecastCostReportTask" />
+		</property>
+		<property name="targetMethod">
+			<value>syncAmazonLogisticsForecastCostReportTask</value>
+		</property>
+		<property name="concurrent" value="true" />
+	</bean>
+
+
+
+	<bean id="sync_amazon_logistics_forecast_cost_report_reset_corn" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="sync_amazon_logistics_forecast_cost_report_reset_Job" />
+		</property>
+		<property name="cronExpression">
+			<value>${sync_amazon_logistics_forecast_cost_report.reset}</value>
+		</property>
+	</bean>
+
+	<bean id="sync_amazon_logistics_forecast_cost_report_reset_Job"
+		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="amazonLogisticsForecastCostReportTask" />
+		</property>
+		<property name="targetMethod">
+			<value>resetEverydaySync</value>
+		</property>
+		<!-- 将并发设置为false -->
+		<property name="concurrent" value="false" />
+	</bean>
+
+
+
 	<!-- age_report-->
 	<bean id="sync_amazon_age_item_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail">
@@ -231,7 +281,7 @@
 	<bean id="sync_amazon_age_item_Job"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
-			<ref bean="syncAmazonAgedItemReportTaskImpl" />
+			<ref bean="syncAmazonAgedItemReportTask" />
 		</property>
 		<property name="targetMethod">
 			<value>syncAmazonAgedItemReport</value>
@@ -253,7 +303,7 @@
 	<bean id="sync_amazon_age_item_reset_Job"
 		  class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject">
-			<ref bean="syncAmazonAgedItemReportTaskImpl" />
+			<ref bean="syncAmazonAgedItemReportTask" />
 		</property>
 		<property name="targetMethod">
 			<value>resetEverydaySync</value>
@@ -661,6 +711,26 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	
+	<!-- 定时更新清仓跟踪的关注情况 -->
+	<bean id="updateClearInventoryTrackingIsThisWeekConcerned_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="updateClearInventoryTrackingIsThisWeekConcerned_job" />
+		</property>
+		<property name="cronExpression">
+			<value>${updateClearInventoryTrackingIsThisWeekConcerned.timer}</value>
+		</property>
+	</bean>
+	<bean id="updateClearInventoryTrackingIsThisWeekConcerned_job"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="autoTaskService" />
+		</property>
+		<property name="targetMethod">
+			<value>updateClearInventoryTrackingIsThisWeekConcerned</value>
+		</property>
+		<property name="concurrent" value="false" />
+	</bean>
+	
 
 	<!-- 管理触发器 ，负责配置所有定时器 -->
 	<bean autowire="no"
@@ -693,6 +763,11 @@
 				<ref bean="again_auth_cron"></ref> -->
 				<!--<ref bean="amazon_code_submit_cron"></ref>-->
 
+
+
+				<ref bean="sync_amazon_logistics_forecast_cost_report_corn"></ref>
+				<ref bean="sync_amazon_logistics_forecast_cost_report_reset_corn"></ref>
+
 				<!--获取亚马逊库龄报告-->
 				<ref bean="sync_amazon_age_item_cron"></ref>
 				<ref bean="sync_amazon_age_item_reset_cron"></ref>
@@ -706,6 +781,7 @@
 				<ref bean="statisticFbaShopProductMonthSales_cron"/>
 				<ref bean="updateHasSeaTransported_cron" />
 				<ref bean="statisticThreeMonth_cron" />
+				<ref bean="updateClearInventoryTrackingIsThisWeekConcerned_cron" />
 			</list>
 		</property>
 		<property name="autoStartup">

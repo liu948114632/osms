@@ -121,5 +121,31 @@
 			<ref bean="saajInInterceptor" />
 		</jaxws:inInterceptors>
 	</jaxws:endpoint>
+
+	<jaxws:endpoint id="LineOfBusinessWS" implementor="#lineOfBusinessWebService"
+					address="/lineOfBusinessWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+
+
+	<jaxws:endpoint id="SuperLongPrepareProductWebServiceWS" implementor="#superLongPrepareProductWebService"
+					address="/superLongPrepareProductWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+	
+	<jaxws:endpoint id="clearInventoryTrackingWebServiceWS" implementor="#clearInventoryTrackingWebService"
+					address="/clearInventoryTrackingWebService">
+		<jaxws:inInterceptors>
+			<ref bean="wss4jInInterceptor" />
+			<ref bean="saajInInterceptor" />
+		</jaxws:inInterceptors>
+	</jaxws:endpoint>
+
 	
 </beans>

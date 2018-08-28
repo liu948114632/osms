@@ -1,0 +1,125 @@
+package com.itecheasy.core.po;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+/**
+ * @author taozihao
+ * @date 2018年8月24日 下午5:17:34
+ * @description 清仓跟踪
+ */
+@Entity
+@Table(name = "clear_inventory_tracking")
+public class ClearInventoryTrackingPO {
+    private int id;
+    private Integer shopId;
+    private Integer fbaShopProductId;
+    private String sku;
+    private BigDecimal initialInventory;
+    private BigDecimal initialSalePrice;
+    private Integer priceOffTimes;
+    private Date firstPriceOffDate;
+    /**
+	 * 是否本周关注
+	 */
+	private Integer isThisWeekConcerned;
+
+    @Id
+    @GeneratedValue
+    @Column(name = "id", nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Basic
+    @Column(name = "shop_id", nullable = true)
+    public Integer getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Integer shopId) {
+        this.shopId = shopId;
+    }
+
+    @Basic
+    @Column(name = "fba_shop_product_id", nullable = true)
+    public Integer getFbaShopProductId() {
+        return fbaShopProductId;
+    }
+
+    public void setFbaShopProductId(Integer fbaShopProductId) {
+        this.fbaShopProductId = fbaShopProductId;
+    }
+
+    @Basic
+    @Column(name = "sku", nullable = true, length = 100)
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    @Basic
+    @Column(name = "initial_inventory", nullable = true)
+    public BigDecimal getInitialInventory() {
+        return initialInventory;
+    }
+
+    public void setInitialInventory(BigDecimal initialInventory) {
+        this.initialInventory = initialInventory;
+    }
+
+    @Basic
+    @Column(name = "initial_sale_price", nullable = true, precision = 2)
+    public BigDecimal getInitialSalePrice() {
+        return initialSalePrice;
+    }
+
+    public void setInitialSalePrice(BigDecimal initialSalePrice) {
+        this.initialSalePrice = initialSalePrice;
+    }
+
+    @Basic
+    @Column(name = "price_off_times", nullable = true)
+    public Integer getPriceOffTimes() {
+        return priceOffTimes;
+    }
+
+    public void setPriceOffTimes(Integer priceOffTimes) {
+        this.priceOffTimes = priceOffTimes;
+    }
+
+    @Basic
+    @Column(name = "first_price_off_date", nullable = true)
+    public Date getFirstPriceOffDate() {
+        return firstPriceOffDate;
+    }
+
+    public void setFirstPriceOffDate(Date firstPriceOffDate) {
+        this.firstPriceOffDate = firstPriceOffDate;
+    }
+    
+    @Basic
+    @Column(name = "is_this_week_concerned")
+	public Integer getIsThisWeekConcerned() {
+		return isThisWeekConcerned;
+	}
+
+	public void setIsThisWeekConcerned(Integer isThisWeekConcerned) {
+		this.isThisWeekConcerned = isThisWeekConcerned;
+	}
+
+}

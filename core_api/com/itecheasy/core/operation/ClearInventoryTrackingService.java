@@ -1,0 +1,55 @@
+package com.itecheasy.core.operation;
+
+import java.util.List;
+
+import com.itecheasy.common.PageList;
+
+/**
+ * @author taozihao
+ * @date 2018年8月24日 下午7:11:48
+ * @description 清仓跟踪
+ */
+public interface ClearInventoryTrackingService {
+
+	/**
+	 * 新增订单跟踪
+	 * 
+	 * @param shopId
+	 *            店铺id
+	 * @param skus
+	 */
+	public void addClearInventoryTrackings(int shopId, List<String> skus, int operatorId);
+
+	/**
+	 * 分页查询清仓跟踪
+	 * 
+	 * @param queryForm
+	 *            查询表单
+	 * @return 分页清仓跟踪
+	 */
+	public PageList<ClearInventoryTrackingVO> getClearInventoryTrackingPageList(ClearInventoryTrackingForm queryForm);
+
+	/**
+	 * 批量降价
+	 * 
+	 * @param shopId
+	 *            店铺id
+	 * @param priceOffPercentVO
+	 *            降价商品sku以及对应的降价百分比
+	 */
+	public void batchPriceOff(int shopId, List<PriceOffPercentVO> priceOffPercentVOList,int operatorId);
+	
+	/**
+	 * 通过清仓跟踪id获取操作日志
+	 * 
+	 * @param clearInventoryTrackingId
+	 *            清仓跟踪id
+	 * @return List<ClearInventoryTrackingOperateLogVO>
+	 */
+	public List<ClearInventoryTrackingOperateLogVO> getOperateLogsByClearInventoryTrackingId(int clearInventoryTrackingId);
+	
+	/**
+	 * 由于每周的关注情况会不一样，所以需要每周更新
+	 */
+	public void updateIsThisWeekConcerned();
+}

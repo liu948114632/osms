@@ -1,0 +1,165 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.prepare;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.HqlUtils;
+import com.itecheasy.core.po.SuperLongPrepareProductPO;
+import com.itecheasy.core.prepare.dao.SuperLongPrepareProductDao;
+import com.itecheasy.core.product.ShopProductCmsInfo;
+import com.itecheasy.core.product.ShopProductCmsInfoService;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/24 16:14
+ * @Description:
+ */
+
+public class SuperLongPrepareProductServiceImpl implements SuperLongPrepareProductService {
+
+    private SuperLongPrepareProductDao superLongPrepareProductDao;
+
+//    ShopProductCmsInfoPO
+
+    private ShopProductCmsInfoService shopProductCmsInfoService;
+
+    public void setSuperLongPrepareProductDao(SuperLongPrepareProductDao superLongPrepareProductDao) {
+        this.superLongPrepareProductDao = superLongPrepareProductDao;
+    }
+
+    public void setShopProductCmsInfoService(ShopProductCmsInfoService shopProductCmsInfoService) {
+        this.shopProductCmsInfoService = shopProductCmsInfoService;
+    }
+
+    @Override
+    public PageList<SuperLongPrepareProductVO> showSuperLongPrepareProduct(SuperLongPrepareProductSearchForm superLongPrepareProductSearchForm) {
+
+
+
+
+        return null;
+    }
+
+
+    /**
+     *
+     * 返回的是依据用户传来的
+     *
+     * 如果原来的状态是超长备货
+     *
+     * @param cmsCodes
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public IsExistSuperLongPrepareProductDataBase checkRepeatCmsCode( List<String> cmsCodes, Integer operatorId) {
+        List<ShopProductCmsInfo> infoByCmsCodes = shopProductCmsInfoService.findInfoByCmsCodes(cmsCodes);
+
+
+        //通过用户传来的cmsCode得到所有对应的cmsCode信息
+        List<Integer> cmsInfoId = new ArrayList<Integer>();
+        for (ShopProductCmsInfo cmsInfo : infoByCmsCodes) {
+            cmsInfoId.add(cmsInfo.getCmsProductId());
+        }
+
+        String jointCriteriaInt = HqlUtils.jointCriteriaInt(cmsInfoId);
+        //哪些cmsCode是已经在超长商品备货里面的
+        List<SuperLongPrepareProductPO> superLongPrepareProductPOS = superLongPrepareProductDao.
+                findListByHql( " from SuperLongPrepareProductPO where cmsId in ("+ jointCriteriaInt +" )");
+
+
+        List<SuperLongPrepareProductPO> superItem = new ArrayList<SuperLongPrepareProductPO>();
+        List<SuperLongPrepareProductPO> notSuperItem = new ArrayList<SuperLongPrepareProductPO>();
+
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : superLongPrepareProductPOS) {
+            if (superLongPrepareProductPO.getIsSuperLongPrepareProduct().equals(0)){
+                notSuperItem.add(superLongPrepareProductPO);
+            }else if(superLongPrepareProductPO.getIsSuperLongPrepareProduct().equals(1)){
+                superItem.add(superLongPrepareProductPO);
+            }
+        }
+
+        IsExistSuperLongPrepareProductDataBase isExistSuperLongPrepareProductDataBase = new IsExistSuperLongPrepareProductDataBase();
+        isExistSuperLongPrepareProductDataBase.setSuperItem(superItem);
+        isExistSuperLongPrepareProductDataBase.setNotSuperItem(notSuperItem);
+
+        return isExistSuperLongPrepareProductDataBase;
+    }
+
+
+
+    @Override
+    public List<Integer> addSuperLongPrepareProducts( List<String> cmsCodes, Integer operatorId) {
+        IsExistSuperLongPrepareProductDataBase isExistSuperLongPrepareProductDataBase = checkRepeatCmsCode(cmsCodes, operatorId);
+
+
+        /**
+         * 根据用户传来的code获取是超长备货的商品
+         */
+        List<Integer> existIds = new ArrayList<Integer>();
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : isExistSuperLongPrepareProductDataBase.getSuperItem()) {
+            existIds.add(superLongPrepareProductPO.getId());
+        }
+
+        //把不是超长备货的商品给改掉的给改掉
+        List<SuperLongPrepareProductPO> notSuperItems = isExistSuperLongPrepareProductDataBase.getNotSuperItem();
+        for (SuperLongPrepareProductPO notSuperItem : notSuperItems) {
+            notSuperItem.setIsSuperLongPrepareProduct(ItemType.superPrepareItem.code);
+        }
+        superLongPrepareProductDao.updateObject(notSuperItems);
+
+
+        //返回已经存在的商品，这些商品需要提示
+        return existIds;
+    }
+
+
+
+
+    @Override
+    public List<Integer> deleteSuperLongPrepareProducts( List<String> cmsCodes, Integer operatorId) {
+        IsExistSuperLongPrepareProductDataBase isExistSuperLongPrepareProductDataBase = checkRepeatCmsCode(cmsCodes, operatorId);
+
+        /**
+         * 根据用户传来的code获取不是超长备货的商品
+         *
+         */
+        List<Integer> notExistIds = new ArrayList<Integer>();
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : isExistSuperLongPrepareProductDataBase.getNotSuperItem()) {
+            notExistIds.add(superLongPrepareProductPO.getId());
+        }
+
+        List<SuperLongPrepareProductPO> superItem = isExistSuperLongPrepareProductDataBase.getSuperItem();
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : superItem) {
+            superLongPrepareProductPO.setIsSuperLongPrepareProduct(ItemType.notSuperPrepareItem.code);
+        }
+        superLongPrepareProductDao.updateObject(superItem);
+
+        return notExistIds;
+    }
+
+
+    @Override
+    public List<SuperLongPrepareProductPO> getSuperLongPrepareProductById( List<Integer> ids, Integer operatorId) {
+
+
+        String jointCriteriaInt = HqlUtils.jointCriteriaInt(ids);
+
+        List<SuperLongPrepareProductPO> superLongPrepareProductPOS = superLongPrepareProductDao.findListByHql
+                            ("from SuperLongPrepareProductPO where id in ("+jointCriteriaInt+")");
+
+        return superLongPrepareProductPOS;
+    }
+
+
+}

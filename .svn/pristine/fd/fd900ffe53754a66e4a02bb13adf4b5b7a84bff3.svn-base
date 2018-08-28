@@ -1,0 +1,312 @@
+package com.itecheasy.core.operation;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import com.itecheasy.common.Page;
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.common.util.CollectionUtils;
+import com.itecheasy.common.util.DateUtils;
+import com.itecheasy.common.util.HqlUtils;
+import com.itecheasy.core.fba.AmazonReportService;
+import com.itecheasy.core.fba.FbaShopProduct;
+import com.itecheasy.core.fba.FbaShopProductService;
+import com.itecheasy.core.fba.dao.AmazonLogisticsForecastCostReportDao;
+import com.itecheasy.core.operation.dao.ClearInventoryTrackingDao;
+import com.itecheasy.core.operation.dao.ClearInventoryTrackingOperateLogDao;
+import com.itecheasy.core.operation.dao.ClearInventoryTrackingRecordDao;
+import com.itecheasy.core.po.ClearInventoryTrackingOperateLogPO;
+import com.itecheasy.core.po.ClearInventoryTrackingPO;
+import com.itecheasy.core.po.ClearInventoryTrackingRecordPO;
+import com.itecheasy.core.report.AmazonLogisticsForecastCostReportService;
+import com.itecheasy.core.report.AmazonLogisticsForecastCostReportVO;
+import com.itecheasy.core.system.SystemService;
+import com.itecheasy.core.user.ProfileService;
+
+/**
+ * @author taozihao
+ * @date 2018年8月24日 下午7:17:52
+ * @description 清仓跟踪
+ */
+public class ClearInventoryTrackingServiceImpl implements ClearInventoryTrackingService {
+
+	private ClearInventoryTrackingDao clearInventoryTrackingDao;
+	private ClearInventoryTrackingRecordDao clearInventoryTrackingRecordDao;
+	private ClearInventoryTrackingOperateLogDao clearInventoryTrackingOperateLogDao;
+
+	private ProfileService profileService;
+	private FbaShopProductService fbaShopProductService;
+	private ShowAmazonAgedReportService showAmazonAgedReportService;
+	private AmazonLogisticsForecastCostReportService amazonLogisticsForecastCostReportService;
+	
+	
+	public void setClearInventoryTrackingDao(ClearInventoryTrackingDao clearInventoryTrackingDao) {
+		this.clearInventoryTrackingDao = clearInventoryTrackingDao;
+	}
+
+	public void setClearInventoryTrackingRecordDao(ClearInventoryTrackingRecordDao clearInventoryTrackingRecordDao) {
+		this.clearInventoryTrackingRecordDao = clearInventoryTrackingRecordDao;
+	}
+
+	public void setClearInventoryTrackingOperateLogDao(
+			ClearInventoryTrackingOperateLogDao clearInventoryTrackingOperateLogDao) {
+		this.clearInventoryTrackingOperateLogDao = clearInventoryTrackingOperateLogDao;
+	}
+
+	public void setProfileService(ProfileService profileService) {
+		this.profileService = profileService;
+	}
+
+	public void setFbaShopProductService(FbaShopProductService fbaShopProductService) {
+		this.fbaShopProductService = fbaShopProductService;
+	}
+
+	public void setShowAmazonAgedReportService(ShowAmazonAgedReportService showAmazonAgedReportService) {
+		this.showAmazonAgedReportService = showAmazonAgedReportService;
+	}
+
+	public void setAmazonLogisticsForecastCostReportService(
+			AmazonLogisticsForecastCostReportService amazonLogisticsForecastCostReportService) {
+		this.amazonLogisticsForecastCostReportService = amazonLogisticsForecastCostReportService;
+	}
+
+	@Override
+	public void addClearInventoryTrackings(int shopId, List<String> skus, int operatorId) {
+		Date today = new Date();
+		for (String sku : skus) {
+			FbaShopProduct fbaShopProduct = fbaShopProductService.getFbaShopProduct(sku, shopId);
+			ClearInventoryTrackingPO trackingPO = new ClearInventoryTrackingPO();
+			trackingPO.setShopId(shopId);
+			trackingPO.setFbaShopProductId(fbaShopProduct.getId());
+			trackingPO.setFirstPriceOffDate(today);
+			AmazonAgedReportVO amazonAgedReport = showAmazonAgedReportService.getAmazonAgedReport(sku, shopId);
+			trackingPO.setInitialInventory(amazonAgedReport.getAvaliableQuantitySellable().subtract(amazonAgedReport.getInvAge0To90Days()));
+			trackingPO.setInitialSalePrice(amazonAgedReport.getYourPrice());
+			trackingPO.setIsThisWeekConcerned(1);
+			trackingPO.setPriceOffTimes(1);
+			trackingPO.setSku(sku);
+			Integer clearInventoryTrackingId = clearInventoryTrackingDao.addObject(trackingPO);
+
+			ClearInventoryTrackingRecordPO recordPO = new ClearInventoryTrackingRecordPO();
+			recordPO.setClearInventoryTrackingId(clearInventoryTrackingId);
+			recordPO.setPriceOffDate(today);
+
+			AmazonLogisticsForecastCostReportVO reportVO = amazonLogisticsForecastCostReportService.getAmazonLogisticsForecastCostReport(shopId, sku);
+			BigDecimal priceOffPercent = calcPriceOffPercent(amazonAgedReport);
+			if(amazonAgedReport.getYourPrice().multiply(priceOffPercent).compareTo(reportVO.getBasePrice())<=0){
+				recordPO.setSalePrice(reportVO.getBasePrice());
+			}else{
+				recordPO.setSalePrice(amazonAgedReport.getYourPrice().multiply(priceOffPercent));
+			}
+			recordPO.setRemark("无法售完，做第一次降价");
+			addTrackOperateLog("对商品进行了第一次降价", operatorId, clearInventoryTrackingId);
+		}
+
+	}
+
+	@Override
+	public PageList<ClearInventoryTrackingVO> getClearInventoryTrackingPageList(ClearInventoryTrackingForm queryForm) {
+
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT ");
+
+		sql.append("a.id AS id, ");
+		sql.append("a.shop_id AS shopId, ");
+		sql.append("a.fba_shop_product_id AS fbaShopProductId, ");
+		sql.append("a.sku AS sku, ");
+		sql.append("f.cms_product_code AS cmsProductCode, ");
+		sql.append("f.primary_picture_code AS primaryPictureCode, ");
+		sql.append("a.is_this_week_concerned AS isThisWeekConcerned, ");
+		sql.append("a.initial_inventory AS initialInventory, ");
+		sql.append("a.initial_sale_price AS initialSalePrice, ");
+		sql.append("a.price_off_times AS priceOffTimes, ");
+		sql.append("a.first_price_off_date AS firstPriceOffDate, ");
+		sql.append("c.avaliable_quantity_sellable-c.inv_age_0_to_90_days AS inventory, ");
+		sql.append("c.units_shipped_last_30_days AS unitsShippedLast30Days, ");
+		sql.append("c.sell_out_date AS sellOutDays, ");
+		sql.append("DATEDIFF(day,c.termination_date,GETDATE()) AS daysLeft, ");
+		sql.append("c.sell_out_status AS sellOutStatus, ");
+		sql.append("d.base_price AS basePrice, ");
+		sql.append("d.currency AS currency ");
+
+		sql.append("FROM dbo.clear_inventory_tracking a ");
+		sql.append("LEFT JOIN dbo.clear_inventory_tracking_record b ");
+		sql.append("ON a.id = b.clear_inventory_tracking_id ");
+		sql.append("LEFT JOIN dbo.amazon_inventory_aged_report c ");
+		sql.append("ON a.shop_id = c.shopId AND a.sku = c.sku ");
+		sql.append("LEFT JOIN dbo.amazon_logistics_forecast_cost_report d ");
+		sql.append("ON a.shop_id = d.shop_id  AND a.sku = d.sku ");
+		sql.append("WHERE a.shop_id=? ");
+		List<Object> params = new ArrayList<Object>();
+		params.add(queryForm.getShopId());
+
+		if (queryForm.getPriceOffDateStart() != null) {
+			sql.append("AND b.price_off_date>=? ");
+			params.add(queryForm.getPriceOffDateStart());
+		}
+		if (queryForm.getPriceOffDateEnd() != null) {
+			sql.append("AND b.price_off_date<=? ");
+			params.add(queryForm.getPriceOffDateEnd());
+		}
+		if (queryForm.getPriceOffTimes() > 0) {
+			sql.append(" AND a.price_off_times=? ");
+			params.add(queryForm.getPriceOffTimes());
+		}
+		if (queryForm.getSellOutStatus() > 0) {
+			sql.append("AND c.sell_out_status=? ");
+			params.add(queryForm.getSellOutStatus());
+		}
+		if (CollectionUtils.isNotEmpty(queryForm.getSkus())) {
+			if (queryForm.getSkus().size() == 1) {
+				sql.append("AND a.sku=? ");
+				params.add(queryForm.getSkus().get(0));
+			} else {
+				sql.append("AND a.sku " + HqlUtils.jointCriteriaString("", queryForm.getSkus()));
+			}
+		}
+		if (queryForm.getIsThisWeekConcerned() > 0) {
+			sql.append(" AND is_this_week_concerned=? ");
+			params.add(queryForm.getIsThisWeekConcerned());
+		}
+		Integer totalCount = (Integer) clearInventoryTrackingDao
+				.getSingleObjectBySql("SELECT COUNT(*) FROM ( " + sql.toString() + " )", params.toArray());
+
+		int offsetPosition = (queryForm.getCurrentPage() - 1) * queryForm.getPageSize();
+
+		sql.append("ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY ");
+		params.add(offsetPosition);
+		params.add(queryForm.getPageSize());
+
+		List<ClearInventoryTrackingVO> list = clearInventoryTrackingDao.findListBySql(sql.toString(), params,
+				ClearInventoryTrackingVO.class);
+
+		Date date = new Date();
+		for (ClearInventoryTrackingVO vo : list) {
+			boolean twentyPercent = vo.getUnitsShippedLast30Days().compareTo(BigDecimal.ZERO) <= 0|| vo.getSellOutDays().compareTo(BigDecimal.valueOf((vo.getDaysLeft()*2))) > 0;
+			BigDecimal percent = calcPriceOffPercent(twentyPercent);
+			BigDecimal priceOffPercent = BigDecimal.valueOf(100).subtract(percent.multiply(BigDecimal.valueOf(100)));
+			vo.setPriceOffPercent(priceOffPercent.intValue());
+			vo.setSelectable(true);
+			List<ClearInventoryTrackingRecordVO> recordList = BeanUtils.copyList(
+					clearInventoryTrackingRecordDao.findListByHql(
+							"FROM ClearInventoryTrackingRecordPO WHERE clearInventoryTrackingId=? ", vo.getId()),
+					ClearInventoryTrackingRecordVO.class);
+			vo.setClearInventoryTrackingRecords(recordList);
+			if (vo.getIsThisWeekConcerned() == 1) {
+				vo.setSelectable(false);
+				continue;
+			}
+			for (ClearInventoryTrackingRecordVO recordVO : recordList) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(recordVO.getPriceOffDate());
+				recordVO.setWeekOfYear(calendar.get(Calendar.WEEK_OF_YEAR));
+				if (DateUtils.isSameWeek(date, recordVO.getPriceOffDate())) {
+					vo.setSelectable(false);
+					break;
+				}
+				if (recordVO.getSalePrice().compareTo(vo.getBasePrice()) <= 0) {
+					vo.setSelectable(false);
+					break;
+				}
+			}
+		}
+		PageList<ClearInventoryTrackingVO> pageList = new PageList<ClearInventoryTrackingVO>();
+		Page page = new Page(totalCount, queryForm.getCurrentPage(), queryForm.getPageSize());
+		pageList.setPage(page);
+		pageList.setData(list);
+		return pageList;
+	}
+
+	@Override
+	public List<ClearInventoryTrackingVO> getAllClearInventoryTracking(ClearInventoryTrackingForm queryForm) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void batchPriceOff(int shopId, List<PriceOffPercentVO> priceOffPercentVO) {
+		Date today = new Date();
+		for (PriceOffPercentVO vo : priceOffPercentVO) {
+			ClearInventoryTrackingPO trackingPO = clearInventoryTrackingDao.getObject(vo.getClearInventoryTrackingId());
+			ClearInventoryTrackingRecordPO recordPO = new ClearInventoryTrackingRecordPO();
+			recordPO.setClearInventoryTrackingId(vo.getClearInventoryTrackingId());
+			recordPO.setPriceOffDate(today);
+			
+			
+			AmazonLogisticsForecastCostReportVO reportVO = amazonLogisticsForecastCostReportService.getAmazonLogisticsForecastCostReport(shopId, vo.getSku());
+			BigDecimal yourPrice = reportVO.getYourPrice();
+			
+			int priceOffPercent = vo.getPriceOffPercent();
+			BigDecimal calcPrice = calcPriceOff(yourPrice, priceOffPercent);
+			if(calcPrice.compareTo(reportVO.getBasePrice())>0){
+				recordPO.setSalePrice(calcPrice);
+			}else{
+				recordPO.setSalePrice(reportVO.getBasePrice());
+			}
+			trackingPO.setPriceOffTimes(trackingPO.getPriceOffTimes()+1);
+			recordPO.setRemark("无法售完，做第"+trackingPO.getPriceOffTimes()+"次降价");
+			clearInventoryTrackingRecordDao.addObject(recordPO);
+			clearInventoryTrackingDao.updateObject(trackingPO);
+		}
+	}
+
+	@Override
+	public List<ClearInventoryTrackingOperateLogVO> getOperateLogsByClearInventoryTrackingId(
+			int clearInventoryTrackingId) {
+		List<ClearInventoryTrackingOperateLogPO> poList = clearInventoryTrackingOperateLogDao.findListByHql("FROM ClearInventoryTrackingOperateLogPO WHERE clearInventoryTrackingId=? ", clearInventoryTrackingId);
+		List<ClearInventoryTrackingOperateLogVO> voList = new ArrayList<ClearInventoryTrackingOperateLogVO>();
+		for (ClearInventoryTrackingOperateLogPO po : poList) {
+			ClearInventoryTrackingOperateLogVO vo = new ClearInventoryTrackingOperateLogVO();
+			vo.setComment(po.getComment());
+			vo.setOperateTime(po.getOperateTime());
+			vo.setOperator(profileService.getUserNameById(po.getOperatorId()));
+			voList.add(vo);
+		}
+		return voList;
+	}
+
+	/**
+	 * 添加日志
+	 * 
+	 * @param comment
+	 * @param operatorId
+	 * @param planId
+	 */
+	protected void addTrackOperateLog(String comment, int operatorId, int clearInventoryTrackingId) {
+		ClearInventoryTrackingOperateLogPO po = new ClearInventoryTrackingOperateLogPO();
+		po.setClearInventoryTrackingId(clearInventoryTrackingId);
+		po.setComment(comment);
+		po.setOperateTime(new Date());
+		po.setOperatorId(operatorId);
+		clearInventoryTrackingOperateLogDao.addObject(po);
+	}
+	
+	protected BigDecimal calcPriceOffPercent(AmazonAgedReportVO amazonAgedReport){
+		BigDecimal daysLeft = new BigDecimal(DateUtils.dayDiffer(amazonAgedReport.getTerminationDate(), new Date()));
+		boolean twentyPercent = (amazonAgedReport.getUnitsShippedLast30Days().compareTo(BigDecimal.ZERO) <= 0)
+				|| amazonAgedReport.getSellOutDate().compareTo((daysLeft.multiply(BigDecimal.valueOf(2)))) > 0;
+				
+		return calcPriceOffPercent(twentyPercent);
+	}
+	
+	protected BigDecimal calcPriceOffPercent(boolean twentyPercent){
+		if(twentyPercent){
+			return new BigDecimal(0.8);
+		}else{
+			return new BigDecimal(0.9);
+		}
+	}
+	
+	protected BigDecimal calcPriceOff(BigDecimal yourPrice,int priceOffPercent){
+		BigDecimal calcPrice = yourPrice.multiply(BigDecimal.valueOf((100 - priceOffPercent)*0.01));
+		
+		calcPrice.setScale(1, BigDecimal.ROUND_DOWN);
+		calcPrice.setScale(2);
+		calcPrice.add(BigDecimal.valueOf(0.09));
+		return calcPrice;
+	}
+}

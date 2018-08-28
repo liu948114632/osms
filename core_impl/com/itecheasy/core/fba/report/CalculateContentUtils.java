@@ -161,6 +161,9 @@ public class CalculateContentUtils {
                         boolean c = i <= 0 && i1 <= 0;
 
                         if (b && c) {
+                            // TODO: 2018/8/28
+                            newAgedReportPO.setSnapshotDate(date);
+                            newAgedReportPO.setStartDate(date);
                             //仅库龄为180天
                         } else {
                             //非   仅库龄为180天
@@ -320,11 +323,6 @@ public class CalculateContentUtils {
                 int i3 = invAge271To365Days.compareTo(BigDecimal.ZERO);
                 int i4 = invAge365PlusDays.compareTo(BigDecimal.ZERO);
 
-
-                if ("TOOL-MSMC002-19-FBA".equals(sellOutStatus.getSku())){
-                    System.out.println("i4 = " + i4);
-                }
-
                 //if 条件1
                 Date terminationDate = sellOutStatus.getTerminationDate();
                 Date planStockToZeroDate = sellOutStatus.getPlanStockToZeroDate();
@@ -344,14 +342,14 @@ public class CalculateContentUtils {
                     sellOutStatus.setClearanceItem(true);
                 }else if (onlyExist180DayAgedItemFlag) {
 
-                    sellOutStatus.setStartDate(null);
-                    sellOutStatus.setTerminationDate(null);
-                    sellOutStatus.setNextClearingPoint(null);
+//                    sellOutStatus.setStartDate(null);
+//                    sellOutStatus.setTerminationDate(null);
+//                    sellOutStatus.setNextClearingPoint(null);
 
-                    sellOutStatus.setNextClearingPoint(null);
-                    sellOutStatus.setTerminationDate(null);
-                    sellOutStatus.setSellOutDate(null);
-                    sellOutStatus.setSellOutStatus(null);
+                    
+                   
+//                    sellOutStatus.setSellOutDate(null);
+//                    sellOutStatus.setSellOutStatus(null);
 
                     sellOutStatus.setClearanceItem(true);  //需要清仓的 180up
 

@@ -28,7 +28,7 @@ public class ShowAmazonAgedReportImplTest {
     @Test
     public void getAmazonAgedReport() {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        ShowAmazonAgedReport showAmazonAgedReport = (ShowAmazonAgedReport) context.getBean("showAmazonAgedReport");
+        ShowAmazonAgedReportService showAmazonAgedReport = (ShowAmazonAgedReportService) context.getBean("showAmazonAgedReport");
 
         AmazonAgedReportForm form = new AmazonAgedReportForm();
         form.setShopId(1);
@@ -76,7 +76,7 @@ public class ShowAmazonAgedReportImplTest {
     @Test
     public void showAmazonAgedReportTestWebservice(){
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        ShowAmazonAgedReport showAmazonAgedReport = (ShowAmazonAgedReport) context.getBean("showAmazonAgedReport");
+        ShowAmazonAgedReportService showAmazonAgedReport = (ShowAmazonAgedReportService) context.getBean("showAmazonAgedReport");
         AmazonAgedReportForm form = new AmazonAgedReportForm();
         form.setShopId(-1);
         form.setCurrentPage(1);

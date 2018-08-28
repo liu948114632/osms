@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.prepare;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.core.po.LineOfBusinessPO;
+import com.itecheasy.core.system.Shop;
+
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/24 10:00
+ * @Description:
+ */
+public interface LineOfBusinessService {
+
+
+    /**
+     * 通过业务线的id来获取业务线对象
+     * @param operatorId
+     * @return
+     */
+    public LineOfBusinessVO getLineOfBusinessById(Integer LineOfBusinessId,int operatorId) ;
+
+
+    /**
+     * 根据用户的id获取所有的有权限的业务线
+     * 用户只要有这个业务线中的其中一个店铺，就等于有这条业务线的权限
+     * @param operatorId
+     */
+    public abstract List<Integer> getPowerByOperation(int operatorId);
+
+
+
+    public abstract void updateLineOfBusinessSingle(LineOfBusinessVO lineOfBusinessVO, int operatorId);
+
+    public abstract PageList<LineOfBusinessVO> findLineOfBusinessPage(LineOfBusinessSearchForm lineOfBusinessSearchForm);
+
+    public abstract void addLineOfBusiness(LineOfBusinessVO lineOfBusinessVO, int operatorId);
+
+    /**
+     * 更新店铺
+     * @param lineOfBusinessVOS
+     * @param operatorId
+     */
+    public void updateLineOfBusiness(List<LineOfBusinessVO> lineOfBusinessVOS, int operatorId);
+
+    public abstract void cancelLineOfBusiness(Integer lineOfBusinessId, int operatorId);
+
+
+    /**
+     * 获取所有的没有绑定业务线的shop
+     * @return
+     */
+    public abstract List<Shop> notBindLineOfBusinessShops();
+
+}

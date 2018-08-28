@@ -5,6 +5,7 @@ import com.itecheasy.core.fba.AmazonReportService;
 import com.itecheasy.core.order.AmazonStockReport;
 import com.itecheasy.core.order.AmazonStockReportSearchForm;
 import com.itecheasy.core.order.OrderTrackingMessageService;
+import com.itecheasy.core.system.Shop;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -33,4 +34,19 @@ public class AmazonReportServiceImplTest {
         form.setPageSize(5);
         PageList<AmazonStockReport> amazonStocks = amazonReportService.getAmazonStocks(form);
     }
+
+    @Test
+    public void getAmazonLogisticsForecastCostReport() throws Exception {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        AmazonReportService amazonReportService = (AmazonReportService) context.getBean("amazonReportService");
+
+
+        Shop shop = new Shop();
+        shop.setId(1);
+        String enumType = AmazonReportService.GetReportType.亚马逊物流预计费用报告.getEnumType();
+
+        amazonReportService.syncAmazonLogisticsForecastCostReport(shop,enumType);
+
+    }
+
 }

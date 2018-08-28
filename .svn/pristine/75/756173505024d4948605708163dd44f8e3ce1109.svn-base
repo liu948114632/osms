@@ -1,0 +1,292 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.prepare;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.common.util.CollectionUtils;
+import com.itecheasy.common.util.HqlUtils;
+import com.itecheasy.core.po.SuperLongPrepareProductPO;
+import com.itecheasy.core.prepare.dao.SuperLongPrepareProductDao;
+import com.itecheasy.core.product.ShopProductCmsInfo;
+import com.itecheasy.core.product.ShopProductCmsInfoService;
+
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/24 16:14
+ * @Description:
+ */
+
+public class SuperLongPrepareProductServiceImpl implements SuperLongPrepareProductService {
+
+    private SuperLongPrepareProductDao superLongPrepareProductDao;
+
+//    ShopProductCmsInfoPO
+
+    private ShopProductCmsInfoService shopProductCmsInfoService;
+
+
+    public void setSuperLongPrepareProductDao(SuperLongPrepareProductDao superLongPrepareProductDao) {
+        this.superLongPrepareProductDao = superLongPrepareProductDao;
+    }
+
+    public void setShopProductCmsInfoService(ShopProductCmsInfoService shopProductCmsInfoService) {
+        this.shopProductCmsInfoService = shopProductCmsInfoService;
+    }
+
+    @Override
+    public PageList<SuperLongPrepareProductVO> showSuperLongPrepareProduct(SuperLongPrepareProductSearchForm superLongPrepareProductSearchForm) {
+        List<String> cmsCodes = superLongPrepareProductSearchForm.getCmsCodes();
+
+        /**
+         * 获取用户传来的那些cmsCode
+         */
+        List<ShopProductCmsInfo> infoByCmsCodes = shopProductCmsInfoService.findInfoByCmsCodes(cmsCodes);
+
+       List<Object> params = new ArrayList<Object>();
+        StringBuilder hql = new StringBuilder("from SuperLongPrepareProductPO where ");
+        Date paramDate = superLongPrepareProductSearchForm.getJoinSuperLongPrepareProductDate();
+        if (paramDate!=null){
+            hql.append(" joinSuperLongPrepareProductDate = ? ");
+            params.add(paramDate);
+        }else {
+            hql.append(" joinSuperLongPrepareProductDate = ? ");
+            Date date = new Date();
+            params.add(date);
+
+        }
+
+
+        /**
+         * 用户传来的那些cmsCode 中选择名字name
+         */
+        List<ShopProductCmsInfo> result = new ArrayList<ShopProductCmsInfo>();
+        for (ShopProductCmsInfo infoByCmsCode : infoByCmsCodes) {
+            if (cmsCodes.contains(infoByCmsCode.getProductName())) {
+                result.add(infoByCmsCode);
+            }
+        }
+
+        List<Integer> cmsIds = new ArrayList<Integer>();
+        for (ShopProductCmsInfo shopProductCmsInfo : result) {
+            cmsIds.add(shopProductCmsInfo.getCmsProductId());
+        }
+
+        if (CollectionUtils.isNotEmpty(cmsIds)) {
+            String jointCriteriaInt = HqlUtils.jointCriteriaInt(cmsIds);
+            hql.append(" and shopProductCmsInfoId in (" + jointCriteriaInt + ") ");
+        }
+
+
+
+
+        PageList<SuperLongPrepareProductPO> superLongPrepareProductPOPageList = superLongPrepareProductDao.findPageListByHql(superLongPrepareProductSearchForm.getCurrentPage(),
+                                        superLongPrepareProductSearchForm.getPageSize(), hql.toString(),params.toArray());
+
+
+        List<Integer> PageListCmsIds = new ArrayList<Integer>();
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : superLongPrepareProductPOPageList.getData()) {
+            Integer shopProductCmsInfoId = superLongPrepareProductPO.getShopProductCmsInfoId();
+            PageListCmsIds.add(shopProductCmsInfoId);
+        }
+
+
+        List<ShopProductCmsInfo> cmsInfos = new ArrayList<ShopProductCmsInfo>();
+        for (Integer pageListCmsId : PageListCmsIds) {
+            ShopProductCmsInfo shopProductCmsInfoById = shopProductCmsInfoService.getShopProductCmsInfoById(pageListCmsId);
+            cmsInfos.add(shopProductCmsInfoById);
+        }
+
+
+
+        List<SuperLongPrepareProductVO> superLongPrepareProductVOS = BeanUtils.copyList(cmsInfos, SuperLongPrepareProductVO.class);
+
+
+
+        for (SuperLongPrepareProductVO superLongPrepareProductVO : superLongPrepareProductVOS) {
+            for (SuperLongPrepareProductPO datum : superLongPrepareProductPOPageList.getData()) {
+                if (superLongPrepareProductVO.getShopProductCmsInfoId().equals(datum.getId())){
+                    superLongPrepareProductVO.setShopProductCmsInfoId( datum.getShopProductCmsInfoId());
+                    superLongPrepareProductVO.setIsSuperLongPrepareProduct(datum.getIsSuperLongPrepareProduct());
+                    superLongPrepareProductVO.setId( datum.getId());
+
+                    superLongPrepareProductVO.setJoinSuperLongPrepareProductDate(datum.getJoinSuperLongPrepareProductDate());
+                }
+            }
+        }
+
+
+        PageList<SuperLongPrepareProductVO> pageList = new PageList<SuperLongPrepareProductVO>();
+        pageList.setData(superLongPrepareProductVOS);
+        pageList.setPage(superLongPrepareProductPOPageList.getPage());
+
+//        List<SuperLongPrepareProductVO> superLongPrepareProductVOS = BeanUtils.copyList(pageListByHql.getData(), SuperLongPrepareProductVO.class);
+
+
+
+        return pageList;
+    }
+
+
+    /**
+     *
+     * 返回的是依据用户传来的
+     *
+     * 如果原来的状态是超长备货
+     *
+     * @param cmsCodes
+     * @param operatorId
+     * @return
+     */
+    @Override
+    public IsExistSuperLongPrepareProductDataBase checkRepeatCmsCode( List<String> cmsCodes, Integer operatorId) {
+        List<ShopProductCmsInfo> infoByCmsCodes = shopProductCmsInfoService.findInfoByCmsCodes(cmsCodes);
+
+
+        //通过用户传来的cmsCode得到所有对应的cmsCode信息
+        List<Integer> cmsInfoId = new ArrayList<Integer>();
+        for (ShopProductCmsInfo cmsInfo : infoByCmsCodes) {
+            cmsInfoId.add(cmsInfo.getCmsProductId());
+        }
+
+        String jointCriteriaInt = HqlUtils.jointCriteriaInt(cmsInfoId);
+        //哪些cmsCode是已经在超长商品备货里面的
+        List<SuperLongPrepareProductPO> superLongPrepareProductPOS = superLongPrepareProductDao.
+                findListByHql( " from SuperLongPrepareProductPO where shopProductCmsInfoId in ("+ jointCriteriaInt +" ) ");
+
+
+        List<SuperLongPrepareProductPO> superItem = new ArrayList<SuperLongPrepareProductPO>();
+        List<SuperLongPrepareProductPO> notSuperItem = new ArrayList<SuperLongPrepareProductPO>();
+
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : superLongPrepareProductPOS) {
+            if (superLongPrepareProductPO.getIsSuperLongPrepareProduct().equals(0)){
+                notSuperItem.add(superLongPrepareProductPO);
+            }else if(superLongPrepareProductPO.getIsSuperLongPrepareProduct().equals(1)){
+                superItem.add(superLongPrepareProductPO);
+            }
+        }
+
+        IsExistSuperLongPrepareProductDataBase isExistSuperLongPrepareProductDataBase = new IsExistSuperLongPrepareProductDataBase();
+        isExistSuperLongPrepareProductDataBase.setSuperItem(superItem);
+        isExistSuperLongPrepareProductDataBase.setNotSuperItem(notSuperItem);
+
+        return isExistSuperLongPrepareProductDataBase;
+    }
+
+
+
+    @Override
+    public List<Integer> addSuperLongPrepareProducts( List<String> cmsCodes, Integer operatorId) {
+        IsExistSuperLongPrepareProductDataBase isExistSuperLongPrepareProductDataBase = checkRepeatCmsCode(cmsCodes, operatorId);
+
+        List<Integer> existIds = new ArrayList<Integer>();
+        //first
+        if (isExistSuperLongPrepareProductDataBase.getSuperItem()==null && isExistSuperLongPrepareProductDataBase.getNotSuperItem()==null){
+            List<ShopProductCmsInfo> infoByCmsCodes = shopProductCmsInfoService.findInfoByCmsCodes(cmsCodes);
+
+            Date date = new Date();
+            List<SuperLongPrepareProductPO> superLongPrepareProductPOS = new ArrayList<SuperLongPrepareProductPO>();
+
+            for (ShopProductCmsInfo shopProductCmsInfo : infoByCmsCodes) {
+                SuperLongPrepareProductPO po = new SuperLongPrepareProductPO();
+                po.setShopProductCmsInfoId( shopProductCmsInfo.getCmsProductId());
+                po.setIsSuperLongPrepareProduct(ItemType.superPrepareItem.getCode());
+                po.setJoinSuperLongPrepareProductDate(date);
+                superLongPrepareProductPOS.add(po);
+            }
+            superLongPrepareProductDao.addObject(superLongPrepareProductPOS);
+            return existIds;
+        }
+
+        /**
+         * 根据用户传来的code获取是超长备货的商品
+         */
+
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : isExistSuperLongPrepareProductDataBase.getSuperItem()) {
+            existIds.add(superLongPrepareProductPO.getId());
+        }
+
+        //把不是超长备货的商品给改掉的给改掉
+        List<SuperLongPrepareProductPO> notSuperItems = isExistSuperLongPrepareProductDataBase.getNotSuperItem();
+        for (SuperLongPrepareProductPO notSuperItem : notSuperItems) {
+            notSuperItem.setIsSuperLongPrepareProduct(ItemType.superPrepareItem.code);
+        }
+        superLongPrepareProductDao.updateObject(notSuperItems);
+
+
+
+        //返回已经存在的商品，这些商品需要提示
+        return existIds;
+    }
+
+
+
+
+    @Override
+    public List<Integer> deleteSuperLongPrepareProducts( List<String> cmsCodes, Integer operatorId) {
+        IsExistSuperLongPrepareProductDataBase isExistSuperLongPrepareProductDataBase = checkRepeatCmsCode(cmsCodes, operatorId);
+
+
+        List<Integer> notExistIds = new ArrayList<Integer>();
+        //first
+        if (isExistSuperLongPrepareProductDataBase.getSuperItem()==null && isExistSuperLongPrepareProductDataBase.getNotSuperItem()==null){
+            List<ShopProductCmsInfo> infoByCmsCodes = shopProductCmsInfoService.findInfoByCmsCodes(cmsCodes);
+
+            Date date = new Date();
+            List<SuperLongPrepareProductPO> superLongPrepareProductPOS = new ArrayList<SuperLongPrepareProductPO>();
+
+            for (ShopProductCmsInfo shopProductCmsInfo : infoByCmsCodes) {
+                SuperLongPrepareProductPO po = new SuperLongPrepareProductPO();
+                po.setShopProductCmsInfoId( shopProductCmsInfo.getCmsProductId());
+                po.setIsSuperLongPrepareProduct(ItemType.notSuperPrepareItem.getCode());
+                po.setJoinSuperLongPrepareProductDate(date);
+                superLongPrepareProductPOS.add(po);
+            }
+            superLongPrepareProductDao.addObject(superLongPrepareProductPOS);
+            return notExistIds;
+        }
+
+        /**
+         * 根据用户传来的code获取不是超长备货的商品
+         *
+         */
+
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : isExistSuperLongPrepareProductDataBase.getNotSuperItem()) {
+            notExistIds.add(superLongPrepareProductPO.getId());
+        }
+
+        List<SuperLongPrepareProductPO> superItem = isExistSuperLongPrepareProductDataBase.getSuperItem();
+        for (SuperLongPrepareProductPO superLongPrepareProductPO : superItem) {
+            superLongPrepareProductPO.setIsSuperLongPrepareProduct(ItemType.notSuperPrepareItem.code);
+        }
+        superLongPrepareProductDao.updateObject(superItem);
+
+        return notExistIds;
+    }
+
+
+    @Override
+    public List<SuperLongPrepareProductPO> getSuperLongPrepareProductById( List<Integer> ids, Integer operatorId) {
+
+
+        String jointCriteriaInt = HqlUtils.jointCriteriaInt(ids);
+
+        List<SuperLongPrepareProductPO> superLongPrepareProductPOS = superLongPrepareProductDao.findListByHql
+                            ("from SuperLongPrepareProductPO where id in ("+jointCriteriaInt+")");
+
+        return superLongPrepareProductPOS;
+    }
+
+
+}

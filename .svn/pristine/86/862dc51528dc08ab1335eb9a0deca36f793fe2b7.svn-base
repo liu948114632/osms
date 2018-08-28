@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.osms.prepare;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.core.BussinessException;
+import com.itecheasy.core.prepare.LineOfBusinessSearchForm;
+import com.itecheasy.core.prepare.LineOfBusinessVO;
+import com.itecheasy.core.prepare.SeaTransportationPlanVO;
+
+import javax.jws.WebParam;
+import javax.jws.WebService;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/24 09:58
+ * @Description:
+ */
+@WebService
+public interface LineOfBusinessWebService {
+
+    /**
+     * 通过业务线的id来获取业务线对象
+     * @param operatorId
+     * @return
+     */
+    public abstract List<LineOfBusinessVO> getLineOfBusinessById(@WebParam(name = "LineOfBusinessIdList")List<Integer> LineOfBusinessIdList,
+                                                                 @WebParam(name = "operatorId")int operatorId);
+
+    public abstract PageList<LineOfBusinessVO> findLineOfBusinessPage(@WebParam(name = "lineOfBusinessSearchForm")
+                                                                              LineOfBusinessSearchForm lineOfBusinessSearchForm);
+
+    public abstract void addLineOfBusiness(@WebParam(name = "lineOfBusinessVO")LineOfBusinessVO lineOfBusinessVO,
+                                           @WebParam(name = "operatorId") int operatorId);
+
+    public abstract void updateLineOfBusiness(@WebParam(name = "lineOfBusinessVO")LineOfBusinessVO lineOfBusinessVO,
+                                              @WebParam(name = "operatorId") int operatorId);
+
+    public abstract void cancelLineOfBusiness(@WebParam(name = "lineOfBusinessId")Integer lineOfBusinessId,
+                                              @WebParam(name = "operatorId")int operatorId);
+}

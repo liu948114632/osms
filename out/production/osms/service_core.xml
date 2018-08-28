@@ -186,9 +186,7 @@
     <bean id="statisticFbaShopProductService" class="com.itecheasy.core.task.StatisticFbaShopProductServiceImpl"></bean>
     <!--new task amozon-->
     <bean id="amozonUpdateReplenishmentShipment" class="com.itecheasy.core.task.AmozonUpdateReplenishmentShipmentImpl"/>
-
-
-    <bean id="syncAmazonAgedItemReportTaskImpl" class="com.itecheasy.core.task.SyncAmazonAgedItemReportTaskImpl"/>
+    <bean id="autoTaskService" class="com.itecheasy.core.task.AutoTaskServiceImpl" />
 
     <!-- email -->
     <bean id="emailService" class="com.itecheasy.core.email.EmailServiceImpl"/>
@@ -253,6 +251,12 @@
     <bean id="seaTransportationPrepareService" class="com.itecheasy.core.prepare.SeaTransportationPrepareServiceImpl"/>
     <bean id="seaTransportationSkuStockPeriodDao"
           class="com.itecheasy.core.prepare.dao.SeaTransportationSkuStockPeriodDaoImpl"/>
+          
+    <!-- operation -->
+    <bean id="clearInventoryTrackingDao" class="com.itecheasy.core.operation.dao.ClearInventoryTrackingDaoImpl" />
+    <bean id="clearInventoryTrackingRecordDao" class="com.itecheasy.core.operation.dao.ClearInventoryTrackingRecordDaoImpl" />
+    <bean id="clearInventoryTrackingOperateLogDao" class="com.itecheasy.core.operation.dao.ClearInventoryTrackingOperateLogDaoImpl" />
+    <bean id="clearInventoryTrackingService" class="com.itecheasy.core.operation.ClearInventoryTrackingServiceImpl" />
 
     <!--amazon report-->
     <bean id="amazonReportService" class="com.itecheasy.core.fba.AmazonReportServiceImpl"/>
@@ -267,7 +271,8 @@
     <bean id="syncAmazonAgedItemReportTask" class="com.itecheasy.core.task.SyncAmazonAgedItemReportTaskImpl"/>
 
 
-    <bean id="showAmazonAgedReport" class="com.itecheasy.core.operation.ShowAmazonAgedReportImpl"/>
+    <bean id="showAmazonAgedReportService" class="com.itecheasy.core.operation.ShowAmazonAgedReportServiceImpl"/>
+    <bean id="amazonLogisticsForecastCostReportService" class="com.itecheasy.core.report.AmazonLogisticsForecastCostReportServiceImpl"/>
 
 
     <!--<bean id="doneSyncState" class="com.itecheasy.core.task.syncState.DoneSyncState"/>-->
@@ -303,6 +308,24 @@
 
     <bean id="amazonLogisticsForecastCostReportDao"
           class="com.itecheasy.core.fba.dao.AmazonLogisticsForecastCostReportDaoImpl"/>
+
+
+    <!--syncAmazonLogisticsForecastCostReport 自动任务-->
+    <bean id="amazonLogisticsForecastCostReportTask"
+          class="com.itecheasy.core.task.SyncAmazonLogisticsForecastCostReportTaskImpl"/>
+
+
+
+    <bean id="lineOfBusinessDao" class="com.itecheasy.core.prepare.dao.LineOfBusinessDaoImpl"/>
+
+    <bean id="lineOfBusinessService" class="com.itecheasy.core.prepare.LineOfBusinessServiceImpl"/>
+
+
+
+    <bean id="superLongPrepareProductService" class="com.itecheasy.core.prepare.SuperLongPrepareProductServiceImpl"/>
+
+
+    <bean id="superLongPrepareProductDao" class="com.itecheasy.core.prepare.dao.SuperLongPrepareProductDaoImpl"/>
 
 
 </beans>

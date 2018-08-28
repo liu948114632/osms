@@ -42,6 +42,7 @@
     if(shopId != null) {
         out.println("你输入的shopId:"+shopId);
         BeanFactory bf = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
+
         AmazonReportService amazonReportService = (AmazonReportService) bf.getBean("amazonReportService");
         List<Shop> shopList = new ArrayList<Shop>();
         Shop s = new Shop();

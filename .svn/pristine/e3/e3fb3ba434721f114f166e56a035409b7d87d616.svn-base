@@ -1,0 +1,81 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.osms.prepare;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.core.po.SuperLongPrepareProductPO;
+import com.itecheasy.core.prepare.IsExistSuperLongPrepareProductDataBase;
+import com.itecheasy.core.prepare.SuperLongPrepareProductSearchForm;
+import com.itecheasy.core.prepare.SuperLongPrepareProductVO;
+
+import javax.jws.WebParam;
+import javax.jws.WebService;
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/24 16:11
+ * @Description:
+ */
+@WebService
+public interface SuperLongPrepareProductWebService {
+
+
+    /**
+     *
+     * 根据查询条件来展示分页数据
+     *
+     * @param superLongPrepareProductSearchForm
+     * @return
+     */
+    public abstract PageList<SuperLongPrepareProductVO> showSuperLongPrepareProduct(@WebParam(name = "seaTransportationPlanVO")
+                                                                                            SuperLongPrepareProductSearchForm superLongPrepareProductSearchForm);
+
+
+    /**
+     * 传入cmsCode,这些code已经存在于数据库中的则在SuperItem
+     * 而不存在的在notSuperItem中
+     * @param cmsCodes
+     * @param operatorId
+     * @return
+     */
+    public abstract IsExistSuperLongPrepareProductDataBase checkRepeatCmsCode(@WebParam(name = "cmsCodes")List<String> cmsCodes,
+                                                                              @WebParam(name = "operatorId")Integer operatorId);
+
+
+    /**
+     * 传入cmsCode，把这些cmsCode给改为超长备货商品
+     * @param cmsCodes
+     * @param operatorId
+     * @return 返回的是已经是超长备货商品
+     */
+    public abstract List<Integer> addSuperLongPrepareProducts(@WebParam(name = "cmsCodes") List<String> cmsCodes,
+                                                    @WebParam(name = "operatorId")Integer operatorId);
+
+    /**
+     *传入cmsCode，把这些cmsCode给改为非超长备货商品
+     * @param cmsCodes
+     * @param operatorId
+     * @return 返回的是已经不是超长备货商品
+     */
+    public abstract List<Integer> deleteSuperLongPrepareProducts(@WebParam(name = "cmsCodes")List<String> cmsCodes,
+                                                       @WebParam(name = "operatorId")Integer operatorId);
+
+
+    /**
+     *根据超长备货商品的ids来获取对象
+     *
+     * @param ids
+     * @param operatorId
+     * @return
+     */
+    public abstract List<SuperLongPrepareProductPO> getSuperLongPrepareProductById(@WebParam(name = "ids")List<Integer> ids,
+                                                                                   @WebParam(name = "operatorId")Integer operatorId);
+
+}

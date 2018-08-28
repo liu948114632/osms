@@ -1,0 +1,203 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.prepare;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.BeanUtils;
+import com.itecheasy.common.util.CollectionUtils;
+import com.itecheasy.common.util.HqlUtils;
+import com.itecheasy.core.po.LineOfBusinessPO;
+import com.itecheasy.core.prepare.dao.LineOfBusinessDao;
+import com.itecheasy.core.system.Shop;
+import com.itecheasy.osms.system.SystemWebService;
+
+import java.util.*;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/8/24 10:00
+ * @Description:
+ */
+public class LineOfBusinessServiceImpl implements LineOfBusinessService {
+
+    private SystemWebService systemWebService;
+
+    private LineOfBusinessDao lineOfBusinessDao;
+
+    public void setSystemWebService(SystemWebService systemWebService) {
+        this.systemWebService = systemWebService;
+    }
+
+    public void setLineOfBusinessDao(LineOfBusinessDao lineOfBusinessDao) {
+        this.lineOfBusinessDao = lineOfBusinessDao;
+    }
+
+
+    @Override
+    public List<LineOfBusinessVO> getLineOfBusinessById(List<Integer> LineOfBusinessIdList,int operatorId) {
+
+        String connectIds = HqlUtils.jointCriteriaInt(LineOfBusinessIdList);
+
+
+        List<LineOfBusinessPO> lineOfBusinessPOS = lineOfBusinessDao.findListByHql("from LineOfBusinessPO where id in ("+ connectIds +")");
+
+
+        List<LineOfBusinessVO> lineOfBusinessVOS = BeanUtils.copyList(lineOfBusinessPOS, LineOfBusinessVO.class);
+
+        return lineOfBusinessVOS;
+    }
+
+
+
+    //权限控制
+    @Override
+    public List<Integer> getPowerByOperation(int operatorId) {
+        List<Shop> shopList = systemWebService.getShopsByUserId(operatorId);
+
+        //all line of business
+        List<LineOfBusinessPO> allLineOfBusinessPO = lineOfBusinessDao.getAll();
+
+        Map<Integer, List<Integer>> integerListHashMap = new HashMap<Integer, List<Integer>>();
+
+        for (LineOfBusinessPO lineOfBusinessPO : allLineOfBusinessPO) {
+
+            String[] split = lineOfBusinessPO.getBusinessBindShopList().split(",");
+
+            List<Integer> shopIds = new ArrayList<Integer>();
+            for (String s : split) {
+                Integer shopId = Integer.valueOf(s);
+                shopIds.add(shopId);
+            }
+
+            integerListHashMap.put(lineOfBusinessPO.getId(), shopIds);
+
+        }
+
+        //该用户所有有权限的业务线
+        Set<Integer> rtx = new HashSet<Integer>();
+
+        for (Shop shop : shopList) {
+            for (Map.Entry<Integer, List<Integer>> entry : integerListHashMap.entrySet()) {
+                if (entry.getValue().contains(shop.getId())) {
+                    rtx.add(entry.getKey());
+                }
+            }
+        }
+
+        //把set转换为list
+        List<Integer> shops = new ArrayList<Integer>(rtx);
+
+
+//        List<Integer> lineOfBusinessPOS = new ArrayList<Integer>();
+//        for (LineOfBusinessPO lineOfBusinessPO : allLineOfBusinessPO) {
+//
+//            if (rtx.contains(lineOfBusinessPO.getId())){
+//                lineOfBusinessPOS.add(lineOfBusinessPO);
+//            }
+//        }
+
+//        List<LineOfBusinessVO> lineOfBusinessVOS = BeanUtils.copyList(lineOfBusinessPOS, LineOfBusinessVO.class);
+
+        return shops;
+    }
+
+
+
+
+    @Override
+    public PageList<LineOfBusinessVO> findLineOfBusinessPage(LineOfBusinessSearchForm lineOfBusinessSearchForm) {
+        //获取有权限的店铺
+         List<Integer>LineOfBusinessIdList = getPowerByOperation(lineOfBusinessSearchForm.getOperatorId());
+
+
+        String connectIds = HqlUtils.jointCriteriaInt(LineOfBusinessIdList);
+
+        PageList<LineOfBusinessPO> pageListByHql = lineOfBusinessDao.findPageListByHql(lineOfBusinessSearchForm.getCurrentPage(), lineOfBusinessSearchForm.getPageSize()
+                , " FROM LineOfBusinessPO where id in ( "+connectIds+" ) ");
+
+        List<LineOfBusinessVO> lineOfBusinessVOS = BeanUtils.copyList(pageListByHql.getData(), LineOfBusinessVO.class);
+        PageList<LineOfBusinessVO> pageList = new PageList<LineOfBusinessVO>();
+        pageList.setPage(pageListByHql.getPage());
+        pageList.setData(lineOfBusinessVOS);
+
+        return pageList;
+    }
+
+    @Override
+    public void addLineOfBusiness(LineOfBusinessVO lineOfBusinessVO, int operatorId) {
+
+
+        if (CollectionUtils.isNotEmpty(lineOfBusinessVO.getBusinessBindShopList())) {
+            //抛出异常 必须要绑定一个店铺
+        }
+
+        LineOfBusinessPO lineOfBusinessPO = BeanUtils.copyProperties(lineOfBusinessVO, LineOfBusinessPO.class, new String[]{"businessBindShopList"});
+
+
+        /**
+         * 把shopList转换为StringShopId 用逗号分隔
+         */
+        LineOfBusinessPO lineOfBusinessPOStringShopId = shopListConvertToString(lineOfBusinessVO, lineOfBusinessPO);
+
+
+        Date date = new Date();
+        lineOfBusinessPOStringShopId.setCreateTime(date);
+        lineOfBusinessPOStringShopId.setLastUpdateTime(date);
+
+        lineOfBusinessDao.addObject(lineOfBusinessPOStringShopId);
+    }
+
+    /**
+     * 把shopList转换为StringShopId 用逗号分隔
+     *
+     * @param lineOfBusinessVO 传来的
+     * @param lineOfBusinessPO 数据库中的
+     * @return 数据库类型
+     */
+    private LineOfBusinessPO shopListConvertToString(LineOfBusinessVO lineOfBusinessVO, LineOfBusinessPO lineOfBusinessPO) {
+        if (CollectionUtils.isNotEmpty(lineOfBusinessVO.getBusinessBindShopList())) {
+            StringBuilder busShopIds = new StringBuilder();
+            for (String busShopId : lineOfBusinessVO.getBusinessBindShopList()) {
+                busShopIds.append(busShopId).append(",");
+            }
+            String substring = busShopIds.toString().substring(0, busShopIds.length() - 1);
+            lineOfBusinessPO.setBusinessBindShopList(substring);
+        }
+
+        return lineOfBusinessPO;
+    }
+
+
+    @Override
+    public void updateLineOfBusiness(LineOfBusinessVO lineOfBusinessVO, int operatorId) {
+
+        //必须要有名称
+
+
+        LineOfBusinessPO lineOfBusinessPO = lineOfBusinessDao.getObject(lineOfBusinessVO.getId());
+
+        if (lineOfBusinessPO != null) {
+            Date date = new Date();
+            LineOfBusinessPO newPo = BeanUtils.copyProperties(lineOfBusinessVO, LineOfBusinessPO.class);
+            newPo.setId(lineOfBusinessPO.getId());
+            newPo.setLastUpdateTime(date);
+            newPo.setCreateTime(lineOfBusinessPO.getCreateTime());
+
+            LineOfBusinessPO shopListConvertToString = shopListConvertToString(lineOfBusinessVO, lineOfBusinessPO);
+            lineOfBusinessDao.updateObject(shopListConvertToString);
+        }
+
+    }
+
+    @Override
+    public void cancelLineOfBusiness(Integer lineOfBusinessId, int operatorId) {
+
+        //
+    }
+}
