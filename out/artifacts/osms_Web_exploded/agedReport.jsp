@@ -44,10 +44,12 @@
 //        out.println("你输入的shopId:"+shopId);
         BeanFactory bf = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
         SyncAmazonAgedItemReportTask amazonReportService = (SyncAmazonAgedItemReportTask) bf.getBean("syncAmazonAgedItemReportTask");
+
 //        List<Shop> shopList = new ArrayList<Shop>();
 //        Shop s = new Shop();
 //        s.setId(Integer.parseInt(shopId));
 //        shopList.add(s);
+        amazonReportService.resetEverydaySync();
         amazonReportService.syncAmazonAgedItemReport();
 //    }
 %>

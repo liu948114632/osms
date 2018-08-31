@@ -1,0 +1,512 @@
+package com.itecheasy.core.fba;
+
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.common.util.*;
+import com.itecheasy.core.fba.dao.*;
+import com.itecheasy.core.fba.report.*;
+import com.itecheasy.core.operation.AmazonAgedReportVO;
+import com.itecheasy.core.order.AmazonStockReport;
+import com.itecheasy.core.order.AmazonStockReportSearchForm;
+import com.itecheasy.core.po.*;
+import com.itecheasy.core.system.Shop;
+import com.itecheasy.core.system.SystemService;
+import com.itecheasy.core.util.StaticUtils;
+import com.itecheasy.printMethod.annotations.LoggerNameDescription;
+import com.itecheasy.webservice.amazon.AllReportUltimateVO;
+import com.itecheasy.webservice.amazon.AmazonStockReportVO;
+import com.itecheasy.webservice.amazon.RequestReportVO;
+import com.itecheasy.webservice.client.AmazonClient;
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.ContextLoader;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/7/2 14:05
+ * @Description:
+ */
+public class AmazonReportServiceImpl implements AmazonReportService {
+    private static final Logger LOGGER = Logger.getLogger(AmazonReportServiceImpl.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private SystemService systemService;
+    private AmazonStockReportDao amazonStockReportDao;
+    private AmazonStockReportHistoryDao amazonStockReportHistoryDao;
+    private ReplenishmentOrderItemDao replenishmentOrderItemDao;
+    private AmazonInventoryAgedReportDao amazonInventoryAgedReportDao;
+    private AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao;
+
+    private AmazonLogisticsForecastCostReportDao amazonLogisticsForecastCostReportDao;
+
+
+    public void setAmazonLogisticsForecastCostReportDao(AmazonLogisticsForecastCostReportDao amazonLogisticsForecastCostReportDao) {
+        this.amazonLogisticsForecastCostReportDao = amazonLogisticsForecastCostReportDao;
+    }
+
+    public void setAmazonInventoryAgedReportHistoryDao(AmazonInventoryAgedReportHistoryDao amazonInventoryAgedReportHistoryDao) {
+        this.amazonInventoryAgedReportHistoryDao = amazonInventoryAgedReportHistoryDao;
+    }
+
+    public void setAmazonInventoryAgedReportDao(AmazonInventoryAgedReportDao amazonInventoryAgedReportDao) {
+        this.amazonInventoryAgedReportDao = amazonInventoryAgedReportDao;
+    }
+
+    public void setReplenishmentOrderItemDao(ReplenishmentOrderItemDao replenishmentOrderItemDao) {
+        this.replenishmentOrderItemDao = replenishmentOrderItemDao;
+    }
+
+    public void setAmazonStockReportHistoryDao(AmazonStockReportHistoryDao amazonStockReportHistoryDao) {
+        this.amazonStockReportHistoryDao = amazonStockReportHistoryDao;
+    }
+
+    public void setAmazonStockReportDao(AmazonStockReportDao amazonStockReportDao) {
+        this.amazonStockReportDao = amazonStockReportDao;
+    }
+
+    public void setSystemService(SystemService systemService) {
+        this.systemService = systemService;
+    }
+
+    @Override
+    @Deprecated
+    public AmazonStockReport getAmazonStockBySku(AmazonStockReportSearchForm form) {
+        return null;
+    }
+
+
+    @Override
+    public PageList<AmazonStockReport> getAmazonStocks(AmazonStockReportSearchForm form) {
+        //根据店铺id ， sku,productCode查询出该店铺的补货计划
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("SELECT distinct a FROM AmazonStockReportPO a,ShopPo b WHERE a.shopId=b.id ");
+        List<Object> o = new ArrayList<Object>();
+        if (form.getShopId() != -1) {
+            buffer.append("AND a.shopId = ? ");
+            o.add(form.getShopId());
+        } else {
+            buffer.append("AND a.shopId in ( ");
+            List<Shop> shops = systemService.getShopsByUserId(form.getOperatorId());   //查看该用户的权限，可用的shopId，不能把所有的shop的信息都给显示出来
+            for (int i = 0; i < shops.size(); i++) {
+                if (i == shops.size() - 1) {
+                    buffer.append(shops.get(i).getId() + " )");
+                } else {
+                    buffer.append(shops.get(i).getId() + ",");
+                }
+            }
+        }
+
+        if (form.getSku() != null && !form.getSku().trim().equals("")) {
+            String[] skus = form.getSku().split(";");
+            if (skus.length == 1) {
+                buffer.append("AND a.sku = ? ");
+                o.add(form.getSku().trim());
+            } else {
+                buffer.append("AND a.sku in ( ");
+                for (int i = 0; i < skus.length; i++) {
+                    if (i == skus.length - 1) {
+                        buffer.append("'" + skus[i].trim() + "' )");
+                    } else {
+                        buffer.append("'" + skus[i].trim() + "',");
+                    }
+                }
+            }
+        }
+
+        buffer.append(" ORDER BY a.syncLast DESC");
+        //从report中查出这些信息
+        PageList<AmazonStockReportPO> pageList = amazonStockReportDao.findPageListByHql(form.getCurrentPage(), form.getPageSize(), buffer.toString(), o.toArray());
+
+        PageList<AmazonStockReport> amazonStockReportPageList = BeanUtils.copyPageList(pageList, AmazonStockReport.class);
+        List<AmazonStockReport> data = amazonStockReportPageList.getData();
+        String[] skus = new String[amazonStockReportPageList.getData().size()];
+        for (int i = 0; i < skus.length; i++) {
+            skus[i] = data.get(i).getSku();
+        }
+
+        // TODO: 2018/7/19 计算海运的
+
+        Map<String, Integer> map = null;
+        if (skus.length > 0 && !skus[0].trim().equals("")) {
+            map = replenishmentOrderItemDao.getSeaTransOnPassageQuantity(form.getShopId(), skus, DateUtils.getRealDate(new Date()), null);
+        }
+        if (map != null && map.size() > 0) {
+            for (AmazonStockReport report : amazonStockReportPageList.getData()) {
+                report.setFbaSeaTransit(map.get(report.getSku()) == null ? 0 : map.get(report.getSku()));
+            }
+        }
+        return amazonStockReportPageList;
+    }
+
+
+    /**
+     * 封装传给亚马逊的vo
+     *
+     * @param enableShop 商店
+     * @param reportType 报告类型
+     * @return
+     * @throws ParseException
+     */
+    private RequestReportVO setTimeAndOtherParam(Shop enableShop, String reportType, String startDate, String endDate) throws ParseException {
+        RequestReportVO requestReportVO = new RequestReportVO();
+        requestReportVO.setReportType(reportType);
+        requestReportVO.setShopId(enableShop.getId());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //开始日期
+        requestReportVO.setStartDate(DateUtils.getXMLGregorianCalendar(format.parse(startDate)));
+        //结束日期
+        if (StringUtils.isNotEmpty(endDate)) {
+            requestReportVO.setEndDate(DateUtils.getXMLGregorianCalendar(format.parse(endDate)));
+        } else {
+            requestReportVO.setEndDate(DateUtils.getXMLGregorianCalendar(new Date()));
+        }
+
+        return requestReportVO;
+    }
+
+
+    /**
+     * caution  spring alternative 事务管理
+     *
+     * @param enableShop
+     * @param reportType
+     * @return 返回false则需要发邮件，通知收件人，同步亚马逊失败了
+     * @throws Exception
+     */
+    @LoggerNameDescription(methodNameDescription = "syncAmazonLogisticsForecastCostReport亚马逊物流预计费用报告方法")
+    public boolean syncAmazonLogisticsForecastCostReport(Shop enableShop, String reportType) throws Exception {
+
+        String startDateProperty = DeployProperties.getInstance().getProperty("amazon.Aged.item.report.start.date", "2018-03-03 09:15:12");
+        String endDateProperty = DeployProperties.getInstance().getProperty("amazon.Aged.item.report.end.date", null);
+
+        //set 属性
+        RequestReportVO requestReportVO = setTimeAndOtherParam(enableShop, reportType, startDateProperty, endDateProperty);
+
+        //调用中间服务
+        AllReportUltimateVO amazonStockReportUltimateRTX = AmazonClient.getAmazonStockReportUltimateRTX(enableShop.getId(), requestReportVO);
+
+        //调用中间服务失败了
+        if (amazonStockReportUltimateRTX==null){
+            return false;
+        }
+
+        List<AmazonLogisticsForecastCostReportPO> newReportPOS = MAPPER.readValue(amazonStockReportUltimateRTX.getJson(), new TypeReference<List<AmazonLogisticsForecastCostReportPO>>() {
+        });
+        LOGGER.info("转换为json成功");
+
+        List<AmazonLogisticsForecastCostReportPO> daoPosByShopId = amazonLogisticsForecastCostReportDao.findListByShopId(enableShop.getId());
+
+
+
+        /**
+         * calculate base price
+         */
+        List<AmazonLogisticsForecastCostReportPO> newReportAmazonLogisticsForecastCostReportPOS = calculateBasePrice(newReportPOS, enableShop);
+
+
+        if (CollectionUtils.isNotEmpty(daoPosByShopId)) {
+            amazonLogisticsForecastCostReportDao.updateDataById(newReportAmazonLogisticsForecastCostReportPOS, daoPosByShopId);
+        }else {
+            amazonLogisticsForecastCostReportDao.addObject(newReportAmazonLogisticsForecastCostReportPOS);
+        }
+        amazonLogisticsForecastCostReportDao.flush();
+
+        return true;
+    }
+
+
+    /**
+     *  底价= expected-fulfillment-fee-per-unit/0.85
+     *  其中，0.85不同店铺不一样，且需要考虑会修改
+     *
+     * @param pos
+     * @return
+     */
+    private List<AmazonLogisticsForecastCostReportPO> calculateBasePrice(List<AmazonLogisticsForecastCostReportPO> pos,Shop shop){
+
+        //价格取配置database配置，取不到就选0.85
+        BigDecimal cost;
+        if (shop.getId()==0){
+            cost = new BigDecimal("0.85");
+        }else {
+            cost = new BigDecimal("0.85");
+        }
+
+        for (AmazonLogisticsForecastCostReportPO po : pos) {
+            if (po.getExpectedFulfillmentFeePerUnit()!=null) {
+                BigDecimal divide = po.getExpectedFulfillmentFeePerUnit().divide(cost, 2, BigDecimal.ROUND_HALF_DOWN);
+                po.setBasePrice(divide);
+            }else if (po.getEstimatedFeeTotal()!=null && po.getExpectedFulfillmentFeePerUnit()!=null){
+                BigDecimal subtract = po.getEstimatedFeeTotal().subtract(po.getExpectedFulfillmentFeePerUnit());
+                BigDecimal divide = subtract.divide(cost, 2, BigDecimal.ROUND_HALF_DOWN);
+                po.setBasePrice(divide);
+            }
+        }
+        return pos;
+    }
+
+
+    public static void main(String[] args) {
+        BigDecimal divide = new BigDecimal("1.11");
+        BigDecimal divide3 = new BigDecimal("1");
+        BigDecimal divide1 = divide.divide(divide3);
+        System.out.println(divide1);
+    }
+
+
+    //注意spring事务管理
+    //责任，把库存从亚马逊跑回来，根据店铺来跑，根据服务器的url来跑
+    //把数据同步过来并且计算之后写入到数据库
+    @LoggerNameDescription(methodNameDescription = "syncAmazonAgedItemReport方法")
+    public boolean syncAmazonAgedItemReport(Shop enableShop, String reportType) throws Exception {
+
+        String startDateProperty = DeployProperties.getInstance().getProperty("amazon.Aged.item.report.start.date", "2018-03-03 09:15:12");
+        String endDateProperty = DeployProperties.getInstance().getProperty("amazon.Aged.item.report.end.date", null);
+
+        RequestReportVO requestReportVO = setTimeAndOtherParam(enableShop, reportType, startDateProperty, endDateProperty);
+
+        String jsonString = AmazonClient.getAmazonStockReport3(enableShop.getId(), requestReportVO);    //call amazon
+
+        List<AmazonAgedReportVO> amazonInventoryAgedReportVOS = MAPPER.readValue(jsonString, new TypeReference<List<AmazonAgedReportVO>>() {
+        });
+
+        List<AmazonInventoryAgedReportPO> amazonInventoryAgedReportPOS = BeanUtils.copyList(amazonInventoryAgedReportVOS, AmazonInventoryAgedReportPO.class);
+
+        //存储到历史表的保存操作
+        List<AmazonInventoryAgedReportHistoryPO> amazonInventoryAgedReportHistoryPOS = BeanUtils.copyList(amazonInventoryAgedReportPOS,
+                AmazonInventoryAgedReportHistoryPO.class);
+
+        amazonInventoryAgedReportHistoryDao.addObject(amazonInventoryAgedReportHistoryPOS);
+        amazonInventoryAgedReportHistoryDao.flush();
+
+        Date date = new Date();
+
+        List<AmazonInventoryAgedReportPO> updateDateList = new ArrayList<AmazonInventoryAgedReportPO>();
+        List<AmazonInventoryAgedReportPO> dataBase = amazonInventoryAgedReportDao.findListByShopId(enableShop.getId());
+        if (CollectionUtils.isNotEmpty(dataBase)) {
+            List<AmazonInventoryAgedReportPO> amazonInventoryAgedReportPOS1 = CalculateContentUtils.calculateUpdate(amazonInventoryAgedReportPOS, dataBase);
+            updateDateList.addAll(amazonInventoryAgedReportPOS1);
+        } else {
+            for (AmazonInventoryAgedReportPO amazonInventoryAgedReportPO : amazonInventoryAgedReportPOS) {
+                amazonInventoryAgedReportPO.setSyncLast(date);
+            }
+            updateDateList.addAll(amazonInventoryAgedReportPOS);
+        }
+
+
+        ThreadLocal<Integer> shopIdThreadLocal = new ThreadLocal<Integer>();
+        shopIdThreadLocal.set(enableShop.getId());
+        // TODO: 2018/8/16 给spring管理
+        ApplicationContext act = ContextLoader.getCurrentWebApplicationContext();
+
+        OnlySaveThan90DayAgedItemFilterComponent onlySaveThan90DayAgedItemFilterComponent =
+                (OnlySaveThan90DayAgedItemFilterComponent) act.getBean("onlySaveThan90DayAgedItemFilterComponent");
+        IsExistAgedTableFilterComponent isExistAgedTableFilterComponent =
+                (IsExistAgedTableFilterComponent) act.getBean("isExistAgedTableFilterComponent");
+        IsYesterdayUpdateFilterComponent isYesterdayUpdateFilterComponent =
+                (IsYesterdayUpdateFilterComponent) act.getBean("isYesterdayUpdateFilterComponent");
+        OnlyThan180DayAgedItemFilterComponent onlyThan180DayAgedItemFilterComponent =
+                (OnlyThan180DayAgedItemFilterComponent) act.getBean("onlyThan180DayAgedItemFilterComponent");
+        IsRequireClearanceAgedItemFilterComponent isRequireClearanceAgedItemFilterComponent =
+                (IsRequireClearanceAgedItemFilterComponent) act.getBean("isRequireClearanceAgedItemFilterComponent");
+
+        onlySaveThan90DayAgedItemFilterComponent.setShopId(shopIdThreadLocal);
+        isExistAgedTableFilterComponent.setShopId(shopIdThreadLocal);
+        isYesterdayUpdateFilterComponent.setShopIdThreadLocal(shopIdThreadLocal);
+        onlyThan180DayAgedItemFilterComponent.setShopIdThreadLocal(shopIdThreadLocal);
+        isRequireClearanceAgedItemFilterComponent.setShopIdThreadLocal(shopIdThreadLocal);
+
+        onlyThan180DayAgedItemFilterComponent.setCountAgedItemReportComponent(isRequireClearanceAgedItemFilterComponent);
+        isYesterdayUpdateFilterComponent.setCountAgedItemReportComponent(onlyThan180DayAgedItemFilterComponent);
+        isExistAgedTableFilterComponent.setCountAgedItemReportComponent(isYesterdayUpdateFilterComponent);
+        onlySaveThan90DayAgedItemFilterComponent.setCountAgedItemReportComponent(isExistAgedTableFilterComponent);
+
+        //count
+        onlySaveThan90DayAgedItemFilterComponent.cost(updateDateList);
+
+        /**
+         * 每一个组件都有不同的用处 以下说明:
+         * 如果业务发生了改变，只需要调用组件的位置或者在中间插入或移除组件即可
+         * 换句话说，组件各个之间独立，无依赖关系，修改其中任何一个都不会对其他造成影响
+         *
+         * OnlySaveThan90DayAgedItemFilterComponent     只存储大于90天的商品
+         *
+         * IsExistAgedTableFilterComponent  是否存在于库龄报告表中
+         *
+         * IsYesterdayUpdateFilterComponent 是否跟新日期为昨天
+         *
+         * OnlyThan180DayAgedItemFilterComponent   不大于180天的
+         *
+         * IsRequireClearanceAgedItemFilterComponent    是否需要清仓计算
+         */
+
+        if (CollectionUtils.isNotEmpty(amazonInventoryAgedReportPOS)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+    /**
+     * auto task
+     */
+    @Override
+    public Map<Integer, Boolean> syncAmazonStockReportFromAmazon(List<Shop> shopList) {
+        Map<Integer, Boolean> isSuccessSyncAmazonStock = new HashMap<Integer, Boolean>();
+        for (Shop enableShop : shopList) {   //只有一个shopId
+            RequestReportVO requestReportVO = new RequestReportVO();
+            requestReportVO.setReportType("_GET_FBA_MYI_UNSUPPRESSED_INVENTORY_DATA_");
+            requestReportVO.setShopId(enableShop.getId());
+            try {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+                //开始日期
+                requestReportVO.setStartDate(DateUtils.getXMLGregorianCalendar(format.parse(DeployProperties.getInstance().getProperty("amazon.stock.report.start.date", null))));
+
+                //结束日期
+                String endDateProperty = DeployProperties.getInstance().getProperty("amazon.stock.report.end.date", null);
+                if (StringUtils.isNotEmpty(endDateProperty)) {
+                    requestReportVO.setEndDate(DateUtils.getXMLGregorianCalendar(format.parse(endDateProperty)));
+                } else {
+                    requestReportVO.setEndDate(DateUtils.getXMLGregorianCalendar(new Date()));
+                }
+
+            } catch (ParseException e) {
+                LOGGER.info("date convert error 时间转换错误,请在配置文件deploy_config.properties中重新配置正确的时间格式 “yyyy-MM-dd HH:mm:ss” ");
+                throw new RuntimeException(e);
+            }
+
+            //同步回单个店铺的所有报告
+
+            LOGGER.error("getAmazonStockReport step 0 ,店铺ID为：" + enableShop.getId());
+            List<AmazonStockReportVO> amazonStockReport = AmazonClient.getAmazonStockReport(enableShop.getId(), requestReportVO);//调用amazon
+
+            LOGGER.error("getAmazonStockReport step 1 ,店铺ID为：" + enableShop.getId());
+            LOGGER.error("getAmazonStockReport step 1 amazonStockReport size " + amazonStockReport == null ? 0 : amazonStockReport.size());
+
+            //把商店信息设置回来
+            for (AmazonStockReportVO amazonStockReportVO : amazonStockReport) {
+                amazonStockReportVO.setShopId(enableShop.getId());
+            }
+
+            if (CollectionUtils.isNotEmpty(amazonStockReport)) {
+                try {
+                    String amazonStockReportJson = MAPPER.writeValueAsString(amazonStockReport);
+                    int shopID = enableShop.getId();
+                    LOGGER.error("店铺ID为：" + shopID + "已获取到结果，同步回的数量为" + amazonStockReport.size() +
+                            "内容为" + amazonStockReportJson);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (CollectionUtils.isEmpty(amazonStockReport)) {
+                isSuccessSyncAmazonStock.put(enableShop.getId(), false);
+            } else {
+                isSuccessSyncAmazonStock.put(enableShop.getId(), true);
+            }
+
+            synchronized (this.getClass()) {
+                if (CollectionUtils.isNotEmpty(amazonStockReport)) {
+                    LOGGER.error("getAmazonStockReport step 3 ,店铺ID为：" + enableShop.getId());
+                    //更新到历史记录的表中,并且确保时间唯一   可以考虑分批写
+                    amazonStockReportHistoryDao.addObject(BeanUtils.copyList(encapsulationToAmazonStockReportPo(amazonStockReport), AmazonStockReportHistoryPO.class));
+
+                    //把从亚马逊所有的记录都从dao中拿到,用于比较时间,根据shopIdid和sku来进行判断
+                    List<AmazonStockReportPO> daoStockReportList = findFromDao(amazonStockReport, enableShop.getId());
+                    LOGGER.error("getAmazonStockReport step 4 ,店铺ID为：" + enableShop.getId());
+
+                    //根据shopIdid和sku来进行判断，如果没有这个商品的报告记录，就设置首次同步时间，从中间服务同步回来时，首次和最后同步时间都有
+                    List<AmazonStockReportVO> amazonStockReportVOS = updateData(amazonStockReport, daoStockReportList);
+                    LOGGER.error("getAmazonStockReport step 5 ,店铺ID为：" + enableShop.getId());
+
+                    //写入数据库，但是要自己包装
+                    for (AmazonStockReportPO asrPo : encapsulationToAmazonStockReportPo(amazonStockReportVOS)) {
+                        if (asrPo.getShopId() == null) {
+                            amazonStockReportDao.addObject(asrPo);
+                        } else {
+                            amazonStockReportDao.mergeObject(asrPo);
+                        }
+
+                    }
+                    amazonStockReportDao.flush();
+                    LOGGER.error("getAmazonStockReport step 6 ,店铺ID为：" + enableShop.getId());
+
+                }
+                LOGGER.error("getAmazonStockReport step 7 ,店铺ID为：" + enableShop.getId());
+//                if (CollectionUtils.isEmpty(amazonStockReport)) {
+//                    StaticUtils.addEmail("OSMS系统:同步库存报告出错", "\r\n" + "shopId：" + enableShop.getId());
+//                }
+                LOGGER.error("getAmazonStockReport step 8 ,店铺ID为：" + enableShop.getId());
+            }
+        }
+        return isSuccessSyncAmazonStock;
+    }
+
+    //读取数据库
+    private List<AmazonStockReportPO> findFromDao(List<AmazonStockReportVO> amazonStockReport, Integer shopId) {
+        String hql = "FROM AmazonStockReportPO WHERE shopId=? ";
+
+        return amazonStockReportDao.findListByHql(hql, new Object[]{shopId});
+    }
+
+    //返回的多个报告对象里，如果是旧的报告，则不跟新创建时间
+    private List<AmazonStockReportVO> updateData(List<AmazonStockReportVO> amazonStockReport, List<AmazonStockReportPO> daoStockReportList) {
+        for (AmazonStockReportVO amazonStockReportVO : amazonStockReport) { //new
+            for (AmazonStockReportPO daoStockReport : daoStockReportList) {     //old
+                if (amazonStockReportVO.getShopId().equals(daoStockReport.getShopId()) &&
+                        amazonStockReportVO.getSku().equalsIgnoreCase(daoStockReport.getSku())) {   //没有这个商品才设置第一次同步时间
+                    amazonStockReportVO.setSyncFirst(DateUtils.getXMLGregorianCalendar(daoStockReport.getSyncFirst()));
+                    amazonStockReportVO.setId(daoStockReport.getId());
+                }
+            }
+        }
+        return amazonStockReport;
+    }
+
+    private List<AmazonStockReportPO> encapsulationToAmazonStockReportPo(List<AmazonStockReportVO> amazonStockReport) {
+        List<AmazonStockReportPO> po = new ArrayList<AmazonStockReportPO>();
+        for (AmazonStockReportVO reportVO : amazonStockReport) {
+            AmazonStockReportPO _po = new AmazonStockReportPO();
+
+            _po.setAfnFulfillableQuantity(reportVO.getAfnFulfillableQuantity());
+            _po.setAfnInboundReceivingQuantity(reportVO.getAfnInboundReceivingQuantity());
+            _po.setAfnInboundShippedQuantity(reportVO.getAfnInboundShippedQuantity());
+            _po.setAfnInboundWorkingQuantity(reportVO.getAfnInboundWorkingQuantity());
+            _po.setAfnReservedQuantity(reportVO.getAfnReservedQuantity());
+            _po.setAfnUnsellableQuantity(reportVO.getAfnUnsellableQuantity());
+            _po.setAfnWarehouseQuantity(reportVO.getAfnWarehouseQuantity());
+            _po.setAfnTotalQuantity(reportVO.getAfnTotalQuantity());
+            _po.setSku(reportVO.getSku());
+            _po.setShopId(reportVO.getShopId());
+            _po.setSyncFirst(DateUtils.getDateByXMLGregorianCalendar(reportVO.getSyncFirst()));
+            _po.setSyncLast(DateUtils.getDateByXMLGregorianCalendar(reportVO.getSyncLast()));
+
+            //other property
+            _po.setFnsku(reportVO.getFnsku());
+            _po.setAmazonStockReportAsin(reportVO.getAmazonStockReportAsin());
+            _po.setProductName(reportVO.getProductName());
+            _po.setCondition(reportVO.getCondition());
+            _po.setYourPrice(reportVO.getYourPrice());
+            _po.setMfnListingExists(reportVO.getMfnListingExists());
+            _po.setMfnFulfillableQuantity(reportVO.getMfnFulfillableQuantity());
+            _po.setAfnListingExists(reportVO.getAfnListingExists());
+            _po.setPerUnitVolume(reportVO.getPerUnitVolume());
+            if (reportVO.getId() > 0) {
+                _po.setId(reportVO.getId());
+            }
+            po.add(_po);
+        }
+        return po;
+    }
+
+}

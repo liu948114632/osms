@@ -8,18 +8,19 @@
 
 package com.itecheasy.osms.prepare;
 
-import com.itecheasy.core.fba.AmazonReportService;
-import com.itecheasy.core.po.SuperLongPrepareProductPO;
 import com.itecheasy.core.prepare.IsExistSuperLongPrepareProductDataBase;
+import com.itecheasy.core.prepare.SuperLongPrepareProductSearchForm;
+import com.itecheasy.core.prepare.SuperLongPrepareProductVO;
+import com.itecheasy.core.product.ShopProductCmsInfo;
+import org.apache.commons.lang.time.DateUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * @Auther: liteng
@@ -28,7 +29,7 @@ import static org.junit.Assert.*;
  */
 public class SuperLongPrepareProductWebServiceImplTest {
 
-  private   SuperLongPrepareProductWebService superLongPrepareProductWebService;
+    private SuperLongPrepareProductWebService superLongPrepareProductWebService;
 
     @Before
     public void init() {
@@ -37,18 +38,31 @@ public class SuperLongPrepareProductWebServiceImplTest {
 
     }
 
+
     @Test
     public void showSuperLongPrepareProduct() {
+        SuperLongPrepareProductSearchForm form = new SuperLongPrepareProductSearchForm();
         List<String> cmsCode = new ArrayList<String>();
-        cmsCode.add("KK08");
-        cmsCode.add("KK16");
         cmsCode.add("OPP02");
         cmsCode.add("OPP07");
-        cmsCode.add("HPB4.0cm");
-        cmsCode.add("E029");
-        cmsCode.add("JRDS5mm");
+        form.setCmsCodes(cmsCode);
+//        form.setJoinSuperLongPrepareProductDate();
+        Date date = new Date();
+        Date before = DateUtils.addDays(date, -3);
+//        Date after = DateUtils.addDays(date, 3);
 
-        superLongPrepareProductWebService.addSuperLongPrepareProducts(cmsCode,1);
+//        form.setJoinSuperLongPrepareProductDateEnd(after);
+        form.setJoinSuperLongPrepareProductDateStart(before);
+
+        //
+        form.setCmsCodeName("Zip Lock Bags, Rectangle, Clear, 7x5cm; Unilateral thickness: 0.023mm");
+
+
+        form.setOperatorId(1);
+        form.setCurrentPage(1);
+        form.setPageSize(3);
+
+        superLongPrepareProductWebService.showSuperLongPrepareProduct(form);
     }
 
     @Test
@@ -67,7 +81,11 @@ public class SuperLongPrepareProductWebServiceImplTest {
         cmsCode.add("OPP07");
         cmsCode.add("HPB4.0cm");
         cmsCode.add("E029");
-        List<Integer> integers = superLongPrepareProductWebService.addSuperLongPrepareProducts(cmsCode, 1);
+//        cmsCode.add("cocoa");
+//        cmsCode.add("chino");
+//        cmsCode.add("shiro");
+
+        List<ShopProductCmsInfo> cmsInfos = superLongPrepareProductWebService.addSuperLongPrepareProducts(cmsCode, 1);
 
     }
 
@@ -76,7 +94,7 @@ public class SuperLongPrepareProductWebServiceImplTest {
         List<String> cmsCode = new ArrayList<String>();
         cmsCode.add("OPP02");
         cmsCode.add("OPP07");
-        List<Integer> integers = superLongPrepareProductWebService.deleteSuperLongPrepareProducts(cmsCode, 1);
+        List<ShopProductCmsInfo> cmsInfos = superLongPrepareProductWebService.deleteSuperLongPrepareProducts(cmsCode, 1);
 
 
     }
@@ -87,8 +105,48 @@ public class SuperLongPrepareProductWebServiceImplTest {
         ids.add(1);
         ids.add(2);
         ids.add(3);
-        List<SuperLongPrepareProductPO> superLongPrepareProductById = superLongPrepareProductWebService.getSuperLongPrepareProductById(ids, 1);
+        List<SuperLongPrepareProductVO> superLongPrepareProductById = superLongPrepareProductWebService.getSuperLongPrepareProductById(ids, 1);
 
 
     }
+
+
+    @Test
+    public void getCmsCodeBySuperLongPrepareProductIds() {
+        List<Integer> ids = new ArrayList<Integer>();
+        ids.add(2);
+        ids.add(3);
+        List<ShopProductCmsInfo> cmsCodeBySuperLongPrepareProductIds = superLongPrepareProductWebService.getCmsCodeBySuperLongPrepareProductIds(ids);
+
+
+    }
+
+    @Test
+    public void showSuperLongPrepareProduct333() {
+        SuperLongPrepareProductSearchForm form = new SuperLongPrepareProductSearchForm();
+        List<String> cmsCode = new ArrayList<String>();
+        cmsCode.add("OPP02");
+        cmsCode.add("OPP07");
+//        form.setCmsCodes(cmsCode);
+//        form.setJoinSuperLongPrepareProductDate();
+//        Date date = new Date();
+//        Date before = DateUtils.addDays(date, -5);
+//        Date after = DateUtils.addDays(date, 3);
+
+//        form.setJoinSuperLongPrepareProductDateEnd(after);
+//        form.setJoinSuperLongPrepareProductDateStart(before);
+
+        //
+//        form.setCmsCodeName("Zip Lock Bags, Rectangle, Clear, 7x5cm; Unilateral thickness: 0.023mm");
+
+
+        form.setOperatorId(1);
+
+        form.setCurrentPage(1);
+        form.setPageSize(50);
+
+        superLongPrepareProductWebService.showSuperLongPrepareProduct3(form);
+    }
+
+
 }

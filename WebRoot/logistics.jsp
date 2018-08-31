@@ -3,7 +3,8 @@
 <%@ page import="com.itecheasy.core.fba.AmazonReportService" %>
 <%@ page import="com.itecheasy.core.system.Shop" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %><%--
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.itecheasy.core.task.SyncAmazonLogisticsForecastCostReportTask" %><%--
   ~ Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
   ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
@@ -36,28 +37,23 @@
     </script>
 </head>
 <body>
+
 <%
-
-
-    <%--输入指定的店铺 获取亚马逊的fee报告--%>
     String shopId = request.getParameter("id");
 
     if(shopId != null) {
         out.println("你输入的shopId:"+shopId);
         BeanFactory bf = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
 
-        AmazonReportService amazonReportService = (AmazonReportService) bf.getBean("amazonReportService");
+        SyncAmazonLogisticsForecastCostReportTask task = (SyncAmazonLogisticsForecastCostReportTask) bf.getBean("amazonLogisticsForecastCostReportTask");
         List<Shop> shopList = new ArrayList<Shop>();
         Shop s = new Shop();
         s.setId(Integer.parseInt(shopId));
-        shopList.add(s);
-//        amazonReportService.syncAmazonStockReportFromAmazon(shopList);
 
-        try {
-            boolean get_fba_estimated_fba_fees_txt_data_ = amazonReportService.syncAmazonLogisticsForecastCostReport(s, "_GET_FBA_ESTIMATED_FBA_FEES_TXT_DATA_");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        task.syncAmazonLogisticsForecastCostReportTask();
+
+
+
     }
 %>
 

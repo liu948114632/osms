@@ -96,14 +96,18 @@ public class LineOfBusinessWebServiceTest {
         vo.setLastUpdateTime(new Date());
 
         List<Integer> shopIds = new ArrayList<Integer>();
-        shopIds.add(0);
-        shopIds.add(3);
-        shopIds.add(1);
+        shopIds.add(13);
+        shopIds.add(12);
+        shopIds.add(41);
+        shopIds.add(69);
         vo.setBusinessBindShopIdList(shopIds);
         vo.setLineOfBusinessExplain("qqqqqqq explain");
         vo.setLineOfBusinessName("ewfgerg shiro update");
         vo.setNormalProductStockCycle(new BigDecimal(10));
-        vo.setLineOfBusinessId("d9758477842149ad8465e3c39173b936");
+//        vo.setLineOfBusinessId("d9758477842149ad8465e3c39173b936");
+        vo.setLineOfBusinessId("dd0a77fcd18641cb952ba015f9e07c2d");
+
+
         vo.setId(1);
         vos.add(vo);
 

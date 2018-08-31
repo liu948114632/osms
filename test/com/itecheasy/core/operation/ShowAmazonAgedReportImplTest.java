@@ -28,7 +28,7 @@ public class ShowAmazonAgedReportImplTest {
     @Test
     public void getAmazonAgedReport() {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        ShowAmazonAgedReportService showAmazonAgedReport = (ShowAmazonAgedReportService) context.getBean("showAmazonAgedReport");
+        ShowAmazonAgedReportService showAmazonAgedReport = (ShowAmazonAgedReportService) context.getBean("showAmazonAgedReportService");
 
         AmazonAgedReportForm form = new AmazonAgedReportForm();
         form.setShopId(1);
@@ -36,6 +36,8 @@ public class ShowAmazonAgedReportImplTest {
         form.setPageSize(10);
         form.setIsClearanceItem(1);
         form.setAgingQueryCondition(-1);
+
+        form.setHasDoingClearance(false);
 
         form.setOriginationStartDate(DateUtils.addDays(new Date(),-1));
 //        form.setOriginationEndDate(new Date());
