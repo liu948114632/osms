@@ -1,0 +1,27 @@
+package com.itecheasy.core.report.dao;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+import org.hibernate.SQLQuery;
+
+import com.itecheasy.common.BaseDAOImpl;
+import com.itecheasy.core.po.ReportAutotaskShopConfigPO;
+
+/**
+ * @author taozihao
+ * @date 2018年9月3日 下午4:30:59
+ * @description
+ */
+public class ReportAutotaskShopConfigDaoImpl extends BaseDAOImpl<ReportAutotaskShopConfigPO, Integer> implements ReportAutotaskShopConfigDao {
+
+	@Override
+	public int updateLastFireTime(Date lastFireTime,int shopId,String reportType) {
+		SQLQuery query = getSession().createSQLQuery("UPDATE report_autotask_shop_config SET last_fire_time=? WHERE shop_id=? AND report_type=? ");
+		query.setTimestamp(1, new Timestamp(lastFireTime.getTime()));
+		query.setInteger(2, shopId);
+		query.setString(3, reportType);
+		return query.executeUpdate();
+	}
+
+}

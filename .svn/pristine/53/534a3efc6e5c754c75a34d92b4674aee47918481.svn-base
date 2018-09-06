@@ -13,7 +13,7 @@ package com.itecheasy.core;
  * @Date: 2018/8/30 14:16
  * @Description:
  */
-public class ExceptionCode {
+public enum  ExceptionCodeEnum {
 
 
 

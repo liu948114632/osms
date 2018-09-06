@@ -4,7 +4,8 @@
 <%@ page import="com.itecheasy.core.system.Shop" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="com.itecheasy.core.task.SyncAmazonLogisticsForecastCostReportTask" %><%--
+<%@ page import="com.itecheasy.core.task.SyncAmazonLogisticsForecastCostReportTask" %>
+<%@ page import="com.itecheasy.core.system.SystemService" %><%--
   ~ Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
   ~ Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
   ~ Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
@@ -46,12 +47,13 @@
         BeanFactory bf = WebApplicationContextUtils.getWebApplicationContext(request.getSession().getServletContext());
 
         SyncAmazonLogisticsForecastCostReportTask task = (SyncAmazonLogisticsForecastCostReportTask) bf.getBean("amazonLogisticsForecastCostReportTask");
-        List<Shop> shopList = new ArrayList<Shop>();
-        Shop s = new Shop();
-        s.setId(Integer.parseInt(shopId));
 
+
+        int shopIdI = Integer.parseInt(shopId);
         task.syncAmazonLogisticsForecastCostReportTask();
 
+//        SystemService systemService = (SystemService) bf.getBean("systemService");
+//        Shop shop = systemService.getShop(shopIdI);
 
 
     }

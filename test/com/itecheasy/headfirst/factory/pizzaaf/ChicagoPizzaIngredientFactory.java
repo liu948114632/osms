@@ -1,9 +1,6 @@
 package com.itecheasy.headfirst.factory.pizzaaf;
 
-public class ChicagoPizzaIngredientFactory 
-	implements PizzaIngredientFactory 
-{
-
+public class ChicagoPizzaIngredientFactory implements PizzaIngredientFactory {
 	public Dough createDough() {
 		return new ThickCrustDough();
 	}

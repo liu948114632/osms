@@ -6,9 +6,12 @@ import com.itecheasy.core.order.AmazonStockReport;
 import com.itecheasy.core.order.AmazonStockReportSearchForm;
 import com.itecheasy.core.order.OrderTrackingMessageService;
 import com.itecheasy.core.system.Shop;
+import com.itecheasy.core.system.SystemService;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -40,12 +43,12 @@ public class AmazonReportServiceImplTest {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         AmazonReportService amazonReportService = (AmazonReportService) context.getBean("amazonReportService");
 
+        SystemService systemService = (SystemService)context.getBean("systemService");
+        List<Shop> syncAgedShops = systemService.getSyncAgedShops();
 
-        Shop shop = new Shop();
-        shop.setId(1);
         String enumType = AmazonReportService.GetReportType.亚马逊物流预计费用报告.getEnumType();
 
-        amazonReportService.syncAmazonLogisticsForecastCostReport(shop,enumType);
+        amazonReportService.syncAmazonLogisticsForecastCostReport(syncAgedShops.get(0),enumType);
 
     }
 
