@@ -317,4 +317,10 @@ public interface OrderWebService {
 	public BaseOrderView getBaseOrderView(@WebParam(name="orderCode")String orderCode);
 	
 	public OrderDetail getOrder(@WebParam(name="orderCode")String orderCode);
+
+
+
+	public void addOrderToDms(@WebParam(name="order")OrderDetail order,@WebParam(name="operator") String operator) throws BussinessException ;
+
+
 }

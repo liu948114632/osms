@@ -75,7 +75,7 @@ public class AmazonStockReport {
             }
             listasda.add(vo);
         }
-        listInboundShipmentsResultVO.setInboundShipmentInfoVOList(listasda);
+//        listInboundShipmentsResultVO.setInboundShipmentInfoVOList(listasda);
         Integer shopId = 1;
         
 

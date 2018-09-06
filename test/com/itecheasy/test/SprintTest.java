@@ -128,7 +128,7 @@ public class SprintTest extends AbstractDependencyInjectionSpringContextTests {
 		infoVOS.add(vo);
 		infoVOS.add(vo2);
 
-		resultVO.setInboundShipmentInfoVOList(infoVOS);
+//		resultVO.setInboundShipmentInfoVOList(infoVOS);
 
 
 		boolean b = amozonUpdateReplenishmentShipment instanceof AmozonUpdateReplenishmentShipmentImpl;

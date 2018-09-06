@@ -396,5 +396,10 @@ public class OrderWebServiceImpl implements OrderWebService {
 	public void addOrder(OrderDetail order, ShopType type, String operator) {
 		orderService.addOrderByManual(order, type.getVal(), operator);
 	}
-	
+
+
+	@Override
+	public void addOrderToDms(OrderDetail order, String operator) throws BussinessException {
+
+	}
 }
