@@ -185,7 +185,9 @@ public class DMSUtils {
 		info.setShippingAddress(shippingAddress);
 
 		List<BoxInfo> boxList = new ArrayList<BoxInfo>();
+
 		OrderWeighingRecordInfo rinfo = CMSOrderClient.getLastOrderWeighingRecordByOrderCode(detail.getCode());
+
 		List<OrderWeighingRecordItemInfo> items = rinfo.getItems();
 		BoxInfo boxInfo = null;
 		List<OrderProductInfo> productList = null;
@@ -268,7 +270,8 @@ public class DMSUtils {
 		info.setElectrified(detail.isElectronic());
 		return accountSetting;
 	}
-	
+
+
 	/**
 	 * 判断带电
 	 * @param categoryName1
@@ -686,6 +689,11 @@ public class DMSUtils {
 	
 	
 	public static void main(String[] args) {
+
+		OrderWeighingRecordInfo wa150616162910 = CMSOrderClient.getLastOrderWeighingRecordByOrderCode("WA150616162910");
+
+		System.out.println("wa150616162910 = " + wa150616162910);
+
 		System.out.println(OrderQuestionProcessType.getOrderQuestionProcessTypeText(2));
 	}
 

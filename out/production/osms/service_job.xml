@@ -731,6 +731,46 @@
 		<property name="concurrent" value="false" />
 	</bean>
 	
+	<!-- 检查店铺的自动任务下载报告配置，并将该时间段内的下载报告任务加入报告的自动任务处理列表 -->
+	<bean id="autoAddReportTaskRecord_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="autoAddReportTaskRecord_job" />
+		</property>
+		<property name="cronExpression">
+			<value>${autoAddReportTaskRecord.timer}</value>
+		</property>
+	</bean>
+	<bean id="autoAddReportTaskRecord_job"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="autoTaskService" />
+		</property>
+		<property name="targetMethod">
+			<value>autoAddReportTaskRecord</value>
+		</property>
+		<property name="concurrent" value="true" />
+	</bean>
+	
+	<!-- 检查店铺的自动任务下载报告配置，并将该时间段内的下载报告任务加入报告的自动任务处理列表 -->
+	<bean id="autoProcessReportTaskRecord_cron" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="autoProcessReportTaskRecord_job" />
+		</property>
+		<property name="cronExpression">
+			<value>${autoProcessReportTaskRecord.timer}</value>
+		</property>
+	</bean>
+	<bean id="autoProcessReportTaskRecord_job"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="autoTaskService" />
+		</property>
+		<property name="targetMethod">
+			<value>autoProcessReportTaskRecord</value>
+		</property>
+		<property name="concurrent" value="false" />
+	</bean>
+	
 
 	<!-- 管理触发器 ，负责配置所有定时器 -->
 	<bean autowire="no"
@@ -782,6 +822,8 @@
 				<ref bean="updateHasSeaTransported_cron" />
 				<ref bean="statisticThreeMonth_cron" />
 				<ref bean="updateClearInventoryTrackingIsThisWeekConcerned_cron" />
+				<ref bean="autoAddReportTaskRecord_cron" />
+				<ref bean="autoProcessReportTaskRecord_cron" />
 			</list>
 		</property>
 		<property name="autoStartup">

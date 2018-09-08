@@ -327,5 +327,8 @@
 
     <bean id="superLongPrepareProductDao" class="com.itecheasy.core.prepare.dao.SuperLongPrepareProductDaoImpl"/>
 
+	<bean id="reportAutotaskRecordDao" class="com.itecheasy.core.report.dao.ReportAutotaskRecordDaoImpl" />
+	<bean id="reportAutotaskShopConfigDao" class="com.itecheasy.core.report.dao.ReportAutotaskShopConfigDaoImpl" />
+	<bean id="amazonReportTaskService" class="com.itecheasy.core.report.AmazonReportTaskServiceImpl" />
 
 </beans>

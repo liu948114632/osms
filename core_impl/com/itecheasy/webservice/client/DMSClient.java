@@ -1,5 +1,6 @@
 package com.itecheasy.webservice.client;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,6 +42,7 @@ import com.itecheasy.webservice.dms.OrderWebService;
 import com.itecheasy.webservice.dms.OrderWebServiceImplService;
 import com.itecheasy.webservice.dms.ShippingAmount;
 import com.itecheasy.webservice.sw.PackageStatus;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * @author wanghw
@@ -52,6 +54,8 @@ public class DMSClient {
 	private static final String DMS_EXCEPTION = "DMS返回异常：";
 	private static OrderWebService dms = null;
 	private final static Logger logger = Logger.getLogger(DMSClient.class.getName());
+	private static final ObjectMapper MAPPER = new ObjectMapper();
+
 
 	private static void init() {
 		URL url = null;
@@ -83,6 +87,26 @@ public class DMSClient {
 		}
 	}
 
+
+	/**
+	 * 更新订单信息
+	 *
+	 * @param orderInfoJson
+	 * @param accountSetting
+	 */
+	public static void updateOrderInfo(String orderInfoJson,AccountSetting accountSetting) {
+		try {
+			String s = MAPPER.writeValueAsString(orderInfoJson);
+			dms.updateOrderInfo(s,accountSetting);
+
+		} catch (IOException e) {
+
+		} catch (DMSBussinessException_Exception e) {
+
+
+		}
+
+	}
 
 	public static boolean addOrder(OrderDetail detail, ShopInfo shopInfo) throws BussinessException {
 		if (dms == null) {

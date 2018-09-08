@@ -15,7 +15,6 @@ import com.itecheasy.core.order.dao.*;
 import com.itecheasy.core.po.*;
 import com.itecheasy.core.product.CMSProduct;
 import com.itecheasy.core.system.*;
-import com.itecheasy.core.system.Currency;
 import com.itecheasy.core.user.ProfileService;
 import com.itecheasy.core.user.User;
 import com.itecheasy.core.util.SystemEnumDicts.ShopType;
@@ -179,23 +178,26 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
 
     /**
      * 有问题订单
-     *
+     * 新增部门下的订单，可能有PH商品，这类商品，就可以匹配到；
+     * 也有非PH商品，这类订单下载到OSMS后无法匹配。是由武汉把商品包装好，每天一次把这类打包好的订单寄给货运部进行发货。
      *
      * @param order
      * @param operator
      * @throws BussinessException
      */
-    @Override
+
     public void addOrderToDms(OrderDetail order, String operator) throws BussinessException {
         ShopInfo info = systemService.getCacheShopInfo(order.getShopId());
-
-
-        order.setStatus(OrderStatus.打包中.getVal());
-
-        DMSClient.addOrder(order, info);
+        OrderPO orderPO = orderDao.getObject(order.getId());
+        boolean isSuccessToDMS = DMSClient.addOrder(order, info);
+        //成功的对接到了dms改订单状态为打包中
+        if (isSuccessToDMS) {
+            orderPO.setStatus(OrderStatus.打包中.getVal());
+        } else {
+            throw new BussinessException("订单对接到DMS失败");
+        }
 
         //是否需要记录日志
-
     }
 
     /**
@@ -860,9 +862,18 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
         }
     }
 
+    /**
+     * 更新订单
+     *
+     * @param orderId
+     * @param remark
+     * @param sendTag
+     * @param isQualityInspection
+     * @param operator
+     * @throws BussinessException
+     */
     @Override
-    public void updateOrder(int orderId, String remark, boolean sendTag, int isQualityInspection, String operator)
-            throws BussinessException {
+    public void updateOrder(int orderId, String remark, boolean sendTag, int isQualityInspection, String operator, UpdateOrderForm updateOrderForm) throws BussinessException {
         OrderPO po = orderDao.getObject(orderId);
         if (po != null) {
             StringBuilder sb = new StringBuilder();
@@ -871,8 +882,25 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
                 sb.append("订单备注“").append(po.getRemark()).append("”更新为“").append(remark).append("”；");
                 po.setRemark(remark);
             }
-            if (po.getIsQualityInspection() != isQualityInspection && isQualityInspection > -1
-                    && po.getStatus() < OrderStatus.已配货.getVal()) {
+
+            //----------------------------------------------------------------------
+            //新加参数的更新           用于有问题的订单
+            if (updateOrderForm != null) {
+                if (StringUtils.isNotEmpty(updateOrderForm.getLabelRemark()) && !updateOrderForm.getLabelRemark().equalsIgnoreCase(po.getLabelRemark())) {
+                    po.setLabelRemark(updateOrderForm.getLabelRemark());
+                }
+
+                po.setWebWeight(updateOrderForm.getWebWeight());
+
+                po.setReimburseFreightPercent(updateOrderForm.getReimburseFreightPercent());
+
+                po.setSubTotalPercent(updateOrderForm.getSubTotalPercent());
+            }
+
+            //----------------------------------------------------------------------
+
+            //是否质检商品
+            if (po.getIsQualityInspection() != isQualityInspection && isQualityInspection > -1 && po.getStatus() < OrderStatus.已配货.getVal()) {
                 po.setIsQualityInspection(isQualityInspection);
                 sb.append("是否质检修改为“").append(isQualityInspection).append("”");
                 if (isCommuication2Other(po)) {
@@ -880,6 +908,7 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
                 }
             }
 
+            //是否可发货
             if (po.getIsSend() != sendTag) {
                 if (po.getStatus() >= OrderStatus.已出库.getVal()) {
                     throw new BussinessException("已出库状态之前的订单（不包含已出库）才可编辑发货标记！");
@@ -904,6 +933,7 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
                 }
             }
 
+            //是否需要通讯
             if (isCommuication2Other(po)) {
                 String hql = "from OrderAddressPO where orderId=?";
                 OrderAddressPO oa = orderAddressDao.findByHql(hql, orderId);
@@ -1640,8 +1670,52 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
         return _order_has_limit_product;
     }
 
-    public void updateOrderProducts(int orderId, String operator, List<UpdateOrderProductForm> forms)
-            throws BussinessException {
+
+    /**
+     * 如果全部商品的   备量=订购量。就修改订单状态为“已配货”
+     *
+     * @param old_ppos 数据库中原有的
+     * @param forms    用户传来的更新
+     */
+    public void orderProductIsAllPrepare(List<OrderPrepareProductPO> old_ppos, List<UpdateOrderProductForm> forms) {
+
+        if (CollectionUtils.isEmpty(old_ppos) || CollectionUtils.isEmpty(forms)) {
+            return;
+        }
+
+        Map<Integer, UpdateOrderProductForm> orderProductIdFormMap = new HashMap<Integer, UpdateOrderProductForm>();
+        for (UpdateOrderProductForm updateOrderProductForm : forms) {
+            orderProductIdFormMap.put(updateOrderProductForm.getOrderProductId(), updateOrderProductForm);
+        }
+
+        int count = 0;
+        for (OrderPrepareProductPO old_ppo : old_ppos) {
+            UpdateOrderProductForm updateOrderProductForm = orderProductIdFormMap.get(old_ppo.getOrderProductId());
+            if (old_ppo.getStatus() != PrepareProduct.取消.code) {
+                if (old_ppo.getPrepareQty() == updateOrderProductForm.getPrepareQty()) {
+                    count++;
+                }
+            }
+        }
+
+        if (old_ppos.size() != 0 && old_ppos.size() == count) {
+            OrderPO orderPO = orderDao.getObject(old_ppos.get(0).getOrderId());
+            orderPO.setStatus(OrderStatus.已配货.getVal());
+            orderDao.updateObject(orderPO);
+        }
+
+
+    }
+
+    /**
+     * 更新订单商品项
+     *
+     * @param orderId
+     * @param operator
+     * @param forms
+     * @throws BussinessException
+     */
+    public void updateOrderProducts(int orderId, String operator, List<UpdateOrderProductForm> forms) throws BussinessException {
         if (CollectionUtils.isEmpty(forms)) {
             return;
         }
@@ -1671,6 +1745,10 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
         boolean _order_has_limit_product = false;
         List<OrderPrepareProductPO> items = new ArrayList<OrderPrepareProductPO>();
         List<OrderProductPO> orderProducts = new ArrayList<OrderProductPO>();
+
+        List<OrderPrepareProductPO> allOrderPrepareProducts = new ArrayList<OrderPrepareProductPO>();
+
+
         for (UpdateOrderProductForm form : forms) {
 
             int orderProductId = form.getOrderProductId();
@@ -1678,15 +1756,30 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
             double qty = form.getQty();
             OrderProductPO oppo = orderProductDao.getObject(orderProductId);
             OrderPrepareProductPO old_ppo = getOrderPrepareProductByOrderProduct(oppo.getId());
-
+            allOrderPrepareProducts.add(old_ppo);
             CMSProduct product = CMSClient.getCMSProductByCode(updateProductCode);
             if (product == null) {
                 throw new BussinessException("商品编码" + updateProductCode + "不存在");
             }
 
+
             if (form.getUpdateProductCode().equalsIgnoreCase(old_ppo.getCmsProductCode())) {
+
+
+                //----------------------------------------------------------------------------------
+                //更新品名中文和品名英文
+                oppo.setProductChineseName(form.getProductChineseName());
+                oppo.setProductEnglishName(form.getProductEnglishName());
+                //更新已备量
+                if (form.getPrepareQty() > old_ppo.getOrderQty()) {
+                    throw new BussinessException("已备量不能大于订购量");
+                }
+                old_ppo.setPrepareQty(form.getPrepareQty());
+                //----------------------------------------------------------------------------------
+
                 updateOrderProducts4Unit(operator, po, form, old_ppo, remark, product, oppo);
             } else {
+
                 double _result = form.getUnitQty() * form.getQty();
                 if (Double.valueOf((int) _result) != _result) {
                     throw new BussinessException("任务数必须为整数！");
@@ -1701,16 +1794,13 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
                 cancelReason.append(",").append(1);
 
                 // 再添加
-                OrderPrepareProductPO ppo = updateOrderProduct4Update(orderId, po, orderProductId, updateProductCode,
-                        qty, oppo, product);
+                OrderPrepareProductPO ppo = updateOrderProduct4Update(orderId, po, orderProductId, updateProductCode, qty, oppo, product);
                 // 订单限制条件判断
-                _order_has_limit_product = processOrderProductLimit4UpdateOrder(po, address, _order_has_limit_product,
-                        product, ppo);
+                _order_has_limit_product = processOrderProductLimit4UpdateOrder(po, address, _order_has_limit_product, product, ppo);
 
                 // 更新订单成本价
                 po.setCostPrice((po.getCostPrice() == null ? 0 : po.getCostPrice()) + ppo.getCostPrice());
-                addOrderOperateLog("修改备货商品：" + old_ppo.getCmsProductCode() + "为" + ppo.getCmsProductCode(), operator,
-                        po.getId());
+                addOrderOperateLog("修改备货商品：" + old_ppo.getCmsProductCode() + "为" + ppo.getCmsProductCode(), operator, po.getId());
 
                 // ts商品判断
                 //-->>2016-10-07去掉ts商品非cms备货设置
@@ -1726,7 +1816,9 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
             }
 
         }
-        updateOrderStatusByOrderProduct(po);
+        updateOrderStatusByOrderProduct(po);            //更新订单的状态
+
+        orderProductIsAllPrepare(allOrderPrepareProducts, forms);   //更新订单状态
 
         int count = this.getOrderPrepareProduct4LIMIT(po.getId());
         if (cancleOrderItemIds.length() > 0) {
@@ -2393,7 +2485,7 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
 //			detail.setShippingMethod(shoppingMethod);
 
             //set订单币种信息
-            Currency currency = systemService.getCurrency(detail.getOrderCurrency());
+//            Currency currency = systemService.getCurrency(detail.getOrderCurrency());
 //			detail.setCurrency(currency);
             return detail;   //返回订单信息
         }
@@ -3057,4 +3149,54 @@ public class OrderServiceImpl extends BaseOrder implements OrderService {
             return BeanUtils.copyProperties(pos.get(0), BaseOrderItem.class);
         return null;
     }
+
+
+    /**
+     * @param shopId
+     * @param operator
+     * @param cmsProductCode
+     * @return
+     */
+    @Override
+    public List<NameOfProduct> getAllProductNameByShop(int shopId, int operator, String cmsProductCode) {
+
+        List<ProductNamePO> orderProductPOS = orderProductDao.getAllProductNameByShop(shopId, cmsProductCode);
+
+        //获取该店铺下所有的品名中文和品名英文
+
+        List<ProductNamePO> resultPOS = new ArrayList<ProductNamePO>();
+        for (ProductNamePO orderProductPO : orderProductPOS) {
+            if (StringUtils.isNotEmpty(orderProductPO.getProductNameChinese()) || StringUtils.isNotEmpty(orderProductPO.getProductNameEnglish())) {
+                resultPOS.add(orderProductPO);
+            }
+        }
+        return BeanUtils.copyList(resultPOS, NameOfProduct.class);
+    }
+
+
+    //	对于“已发货”的有问题的订单，右键提供操作“完成订单”。点击后，修改订单状态为完成
+    @Override
+    public void updateOrderStatusToComplete(int orderId, int operator) {
+        OrderPO orderPO = orderDao.getObject(orderId);
+        orderPO.setStatus(OrderStatus.完成.getVal());
+        orderDao.updateObject(orderPO);
+    }
+
+    @Override
+    public void addProductName(int shopId, int operator, NameOfProduct nameOfProduct, Integer orderId) {
+        if (StringUtils.isEmpty(nameOfProduct.getProductNameChinese()) && StringUtils.isEmpty(nameOfProduct.getProductNameEnglish())) {
+            return;
+        }
+
+        List<OrderProductPO> orderProductPOS = orderProductDao.findByCmsCode(shopId, nameOfProduct.getCmsProductCode(), orderId);
+        if (CollectionUtils.isNotEmpty(orderProductPOS)) {
+            for (OrderProductPO orderProductPO : orderProductPOS) {
+                if (orderProductPO.getOrderId() == orderId) {
+                    orderProductPO.setProductEnglishName(nameOfProduct.getProductNameEnglish());
+                    orderProductPO.setProductChineseName(nameOfProduct.getProductNameChinese());
+                }
+            }
+        }
+    }
+
 }

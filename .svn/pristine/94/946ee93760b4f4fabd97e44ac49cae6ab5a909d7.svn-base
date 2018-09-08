@@ -1,0 +1,329 @@
+package com.itecheasy.osms.order;
+import java.util.Date;
+import java.util.List;
+
+import javax.jws.WebParam;
+import javax.jws.WebService;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.core.BussinessException;
+import com.itecheasy.core.fba.UpdateOrdertProductInfo;
+import com.itecheasy.core.order.*;
+import com.itecheasy.core.task.BaseOrderView;
+import com.itecheasy.core.util.SystemEnumDicts.ShopType;
+
+/** 
+ * @author wanghw
+ * @date 2015-5-9 
+ * @description TODO
+ * @version
+ */
+@WebService
+public interface OrderWebService {
+	
+	public void addOrder(@WebParam(name="order")OrderDetail order, 
+			@WebParam(name="type")ShopType type,
+			@WebParam(name="operator")String operator);
+
+	public void updateOrder(
+			@WebParam(name="orderId")int orderId,
+			@WebParam(name="remark")String remark,
+			@WebParam(name="sendTag")boolean sendTag,
+			@WebParam(name="isQualityInspection")int isQualityInspection,
+			@WebParam(name="operator")int operator,
+			@WebParam(name="updateOrderForm")UpdateOrderForm updateOrderForm) throws BussinessException;
+
+
+	public void addTicketGroup(
+			@WebParam(name="orderIds")int[] orderIds, 
+			@WebParam(name="operator")int operator) throws BussinessException;
+
+
+	public void cancelTicketGroup(
+			@WebParam(name="orderId")int orderId,
+			@WebParam(name="operator")int operator)throws BussinessException;
+
+
+	public int prepareAgain(
+			@WebParam(name="orderId")int orderId, 
+			@WebParam(name="operator")int operator) throws BussinessException;
+
+
+	public void cancelOrderProducts(
+			@WebParam(name="orderId")int orderId, 
+			@WebParam(name="orderProductIds")int[] orderProductIds,
+			@WebParam(name="operator")int operator) throws BussinessException;
+
+	public void updateOrderProducts(
+			@WebParam(name="orderId")int orderId,
+			@WebParam(name="operator")int operator,
+			@WebParam(name="forms")List<UpdateOrderProductForm> forms)throws BussinessException;
+
+	public void updateOrderProduct(
+			@WebParam(name="orderId")int orderId, 
+			@WebParam(name="orderProductId")int orderProductId, 
+			@WebParam(name="updateProductCode")String updateProductCode,
+			@WebParam(name="qty")double qty, 
+			@WebParam(name="operator")int operator)
+			throws BussinessException;
+	
+	void updateOrderProductInfos(@WebParam(name="updateOrdertProductInfos")List<UpdateOrdertProductInfo> updateOrdertProductInfos,
+			@WebParam(name="operator")int operator);
+	
+	public void updateOrderAddress(
+			@WebParam(name="address")OrderAddress address,
+			@WebParam(name="operator")int operator,
+			@WebParam(name="tag")boolean tag)throws BussinessException;
+	
+
+	public void updateShippingMethod(
+			@WebParam(name="orderId")int orderId,
+			@WebParam(name="shippingMethod")int shippingMethod,
+			@WebParam(name="operator")int operator,
+			@WebParam(name="tag")boolean tag);
+	
+	
+	public void saveSendRemark(
+			@WebParam(name="orderId")int orderId,
+			@WebParam(name="remark")String remark, 
+			@WebParam(name="cpfCode")String cpfCode,
+			@WebParam(name="cpfType")int cpfType,
+			@WebParam(name="operator")int operator);
+	
+
+	public OrderDetail getOrderDeatil(@WebParam(name="orderId")int orderId);
+
+
+
+
+	public List<Order> getTicketGroup(@WebParam(name="orderId")int orderId);
+	
+
+	public PageList<Order> findOrders(
+			@WebParam(name="form")SearchOrderForm form, 
+			@WebParam(name="currentPage")int currentPage, 
+			@WebParam(name="pageSize")int pageSize);
+
+	
+	public List<OrderOperateLog> getOrderOperateLogs(@WebParam(name="orderId")int orderId);
+	
+	public int getCustomerTotalOrderNum(
+			@WebParam(name="customerAccount")String customerAccount,
+			@WebParam(name="shopId")int shopId,String fulfillmentChannel);
+	
+	public void quickShip(
+			@WebParam(name="orderId")int orderId,
+			@WebParam(name="traceCode")String traceCode,
+			@WebParam(name="deliveryCost")double deliveryCost,
+			@WebParam(name="deliveryDate")Date deliveryDate, 
+			Double costPrice,
+			@WebParam(name="operator")int operator);
+	
+	public void beforeShip(int orderId, String traceCode, Date deliveryDate, int operator);
+			
+	public void setOrderItem2NotCMSPrepare(
+			@WebParam(name="orderPrepareProductId")int orderPrepareProductId ,
+			@WebParam(name="operator")int operator)throws BussinessException;	
+	
+	void orderOut(int orderId, int operator) throws BussinessException;
+	
+	public void orderCheck(int orderId, int operator);
+	
+	void addOrderProducts(int orderId,List<UpdateOrderProductForm> orderProducts, 
+			int operator)throws BussinessException;
+	
+	/**
+	 * 导入订单实收款数据
+	 * @param report
+	 * @throws BussinessException
+	 */
+ 	String addOrderPayments(List<OrderPaymentReport> report,int shopId)throws BussinessException;
+	
+ 	/**
+ 	 * 查询订单实收款数据
+ 	 * @param form
+ 	 * @return
+ 	 */
+ 	List<OrderPaymentReport> findOrderPayments(OrderReportSearchForm form);
+	
+	/**
+	 * 按类型统计收款数据
+	 * @param form
+	 * @return
+	 */
+	List<OrderPaymentDataTypeAmountCount> countOrderPaymentAmountByDataType(OrderReportSearchForm form);
+	
+	/**
+	 * 订单统计报表查询
+	 * @param form
+	 * @return
+	 */
+	List<OrderCountReport> findOrderCountReport(OrderReportSearchForm form);
+	
+	/**
+	 * 综合统计报表详情
+	 * @param form
+	 * @return
+	 */
+	List<OrderCountReport> countOrderReport(OrderReportSearchForm form);
+	
+	/**
+	 * 非FBA商品毛利月度统计
+	 * @param from
+	 * @return
+	 */
+	CountOrderProfitVO countOrderProfit(OrderReportSearchForm from)throws BussinessException;
+	
+	public List<OrderPaymentDataType> getOrderPaymentDataTypes();
+	
+	/**
+	 * 答复
+	 * @param history
+	 * @param packageProblemId
+	 * @param operator
+	 */
+	void applyPackageProblem(
+			@WebParam(name="history")PackageProblemHistory history,
+			@WebParam(name="packageProblemId")int packageProblemId, 
+			@WebParam(name="processResultType")int processResultType,
+			@WebParam(name="operator")String operator)
+		throws BussinessException;
+
+	/**
+	 * 关闭
+	 * @param operator
+	 * @param packageProblemId
+	 */
+	void closePackageProblem(int packageProblemId,int operator)throws BussinessException;
+
+	/**
+	 * 重新打开问题件
+	 * @param packageProblemId
+	 * @param operator
+	 */
+	void reopenPackageProblem(int packageProblemId,int operator)throws BussinessException;
+
+	/**
+	 * 查询问题件
+	 * @param form
+	 * @return
+	 */
+	PageList<PackageProblemVO> findPackageProblems(PackageProblemSerchForm form);
+
+	/**
+	 * 问题件回复历史
+	 * @param packageProblemId
+	 * @return
+	 */
+	List<PackageProblemHistory> getPackageProblemHistories(int packageProblemId);
+	
+	/**
+	 * 阅读问题件
+	 * @param packageProblemId
+	 */
+	List<PackageProblemHistory> readPackageProblem(int packageProblemId);
+	
+	/**
+	 * 获取问题件创建人
+	 * @return
+	 */
+	List<String> getPackageProblemCreateUser();
+	
+	/**
+	 * 获取货运客服
+	 * @return
+	 */
+	List<String> getDeliveryCustomerService();
+	
+	/**
+	 * 非FBA订单金额统计
+	 * @param form
+	 * @return
+	 * @throws BussinessException
+	 */
+	public List<OrderCountReport> countOrderAmount(OrderReportSearchForm form) throws BussinessException;
+	
+	/**
+	 * FBA订单金额统计
+	 * @param form
+	 * @return
+	 */
+	CountOrderProfitVO countFBAOrderAmount(OrderReportSearchForm form) throws BussinessException ;	
+	
+	/**
+	 * 所有订单金额毛利统计(包含非FBA和FBA订单)
+	 * @param form
+	 * @return
+	 */
+	CountOrderProfitVO countAllOrderProfitByDay(OrderReportSearchForm form)throws BussinessException;
+	
+	
+	void resendOrder(int orderId,int operator)throws BussinessException;
+	
+	public void confirmPackage(int orderId,int operator) throws BussinessException;
+	
+	void importFBAStoreProducts(List<FBAStoreProduct> fbaStoreProducts,int operator);
+	
+	
+	PageList<FBAStoreProductVO> countFBAStoreProducts(
+			@WebParam(name="form")SearchFBAStorageCountForm form, 
+			@WebParam(name="currentPage")int currentPage, 
+			@WebParam(name="pageSize")int pageSize);
+	
+	FBAStoreProductVO getFBAStoreProductCountDetail(int fbaStoreProductId);
+	
+	List<OrderCountReport> FBAStoreProductSales(OrderReportSearchForm form);
+	
+	List<FBAStoreProductLog> getFBAStoreProductLogs(int fbaStoreProductId);
+	
+	void updateFBAStoreProductStatus(List<Integer> fbaStoreProductId,List<Integer> status);
+	
+	
+	public void confirmOrderQuestion(@WebParam(name="packageProblemId")int packageProblemId, 
+			@WebParam(name="operator")String operator)
+			throws BussinessException;
+	
+	/**
+	 * 获取用户问题件跟踪的未读消息数
+	 * @return
+	 */
+	int getPackageProblemHasNotReadMessageQty(int userId);
+	
+	public String importEbayOrder(
+			@WebParam(name="datas")List<EbayOrderData> datas,
+			@WebParam(name="shopId")int shopId,
+			@WebParam(name="operator")int operator)throws BussinessException;
+	
+	public void set2NotCMSPrepare(@WebParam(name="orderId")int orderId, @WebParam(name="operator")int operator)throws BussinessException;
+	
+	public BaseOrderView getBaseOrderView(@WebParam(name="orderCode")String orderCode);
+	
+	public OrderDetail getOrder(@WebParam(name="orderCode")String orderCode);
+
+
+	/**
+	 * 把订单直接对接到dms
+	 * @param order
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void addOrderToDms(@WebParam(name="order")OrderDetail order,@WebParam(name="operator") Integer operator) throws BussinessException ;
+
+
+	/**
+	 * 通过店铺的id获取该店铺下所有的商品的所有的品名中文和品名英文
+	 * @param shopId
+	 * @param operator
+	 * @return
+	 */
+	public NameOfProduct getAllProductNameByShop(int shopId, int operator) ;
+
+
+	/**
+	 *
+	 * @param orderId
+	 * @param operator
+	 */
+	public void updateOrderStatusToComplete(int orderId, int operator);
+
+}

@@ -9,7 +9,11 @@
 package com.itecheasy.core.fba;
 
 import com.itecheasy.core.fba.dao.AmazonStockReportDao;
+import com.itecheasy.core.order.NameOfProduct;
+import com.itecheasy.core.order.OrderService;
 import com.itecheasy.core.order.UpdateOrderProductForm;
+import org.apache.bcel.generic.ACONST_NULL;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -25,6 +29,13 @@ import static org.junit.Assert.*;
  * @Description:
  */
 public class ReplenishmentOrderServiceImplTest {
+    ApplicationContext context;
+    OrderService orderService;
+    @Before
+    public  void Before() {
+         context = new ClassPathXmlApplicationContext("applicationContext.xml");
+         orderService = (OrderService)context.getBean("orderService");
+    }
 
     @Test
     public void addAndUpdateOrderProductList() {
@@ -41,6 +52,29 @@ public class ReplenishmentOrderServiceImplTest {
 
 
         replenishmentOrderService.addAndUpdateOrderProductList(2837,forms,"cocoa");
+
+    }
+
+
+    @Test
+    public void getAllProductNameByShop() {
+
+        OrderService orderService = (OrderService)context.getBean("orderService");
+        List<NameOfProduct> allProductNameByShop = orderService.getAllProductNameByShop(1, 1, null);
+
+    }
+
+    @Test
+    public void addProductName(){
+
+
+        NameOfProduct nameOfProduct = new NameOfProduct();
+        nameOfProduct.setCmsProductCode("DIY-X0160-S-RS");
+        nameOfProduct.setProductNameChinese("spring");
+        nameOfProduct.setProductNameEnglish("wing");
+
+        orderService.addProductName(1,1,nameOfProduct,003);
+
 
     }
 }

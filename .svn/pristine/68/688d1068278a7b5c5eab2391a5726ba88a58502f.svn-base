@@ -1,0 +1,490 @@
+package com.itecheasy.core.order;
+
+import java.util.Date;
+import java.util.List;
+
+import com.itecheasy.common.PageList;
+import com.itecheasy.core.BussinessException;
+import com.itecheasy.core.fba.UpdateOrdertProductInfo;
+import com.itecheasy.core.po.OrderPO;
+import com.itecheasy.printMethod.TestEnum;
+
+/**
+ * @author wanghw
+ * @date 2015-5-6
+ * @description 订单核心业务
+ * @version 1.1
+ */
+public interface OrderService extends IBaseOrder{
+	static final String SYSTEM_OPERATOR = "系统";
+	
+	static final String ORDERSTATUS_DOWNLOAD = "Unshipped";
+	static final String ORDERSTATUS_SHIPPED = "shipped";
+	static final String ORDERSTATUS_CANCELED = "Canceled";
+	
+	/**
+	 * 手动录单
+	 * @param order
+	 * @param type
+	 * @param operator
+	 * @throws BussinessException
+	 * @version 1.2.8
+	 */
+	public void addOrderByManual(OrderDetail order, int type, String operator) throws BussinessException;
+	
+
+
+	/**
+	 * 确认
+	 * @param orderId
+	 * @throws BussinessException {@link #EX_CONFIRM_ORDER} 
+	 */
+	void confirmOrder(int orderId,String operator)throws BussinessException;
+
+	/**
+	 * 通过网店订单code、网店平台获取订单
+	 * 
+	 * @param ShopOrderCode
+	 * @param shopType
+	 * @return
+	 */
+	public Order getOrderByShopOrderCode(String ShopOrderCode, int shopType);
+	public Order getOrderByShopOrderCode(String ShopOrderCode, int shopType,int shopId);
+	
+	public Order getOrderByCode(String code);
+	
+	/**
+	 * cms通知，订单 出库,通讯dms增加订单
+	 */
+	public void orderOut(OrderDetail detail)throws BussinessException;
+	
+	/**
+	 * 请求出库，通讯dms增加订单
+	 * @param orderId
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void orderOut(int orderId, String operator) throws BussinessException;
+	
+	/**
+	 * 请求校对，通讯cms，判断发货标识，订单状态
+	 */
+	public boolean orderCheck(int orderId,String operator);
+
+	/**
+	 * 取消订单，通讯cms
+	 * 
+	 * @param orderId
+	 */
+	public void cancelOrder(int orderId, String operator);
+	
+	/**
+	 * 本地取消订单
+	 * @param orderId
+	 * @param operator
+	 */
+	void cancelOrderNotCommunication(int orderId, String operator);
+
+	/**
+	 * 通过接口获取订单 <br>
+	 * 通信cms <br>
+	 * 传给C3时付款状态全部传全部付款、需质检 无 ，加工状态 无加工，.
+	 */
+	public void addOrder(OrderDetail order, int type,String operator) throws BussinessException;
+
+
+	public void addOrderToDms(OrderDetail order,String operator) throws BussinessException;
+
+
+	/**
+	 * 更新订单：备注、可发货标识 <br>
+	 * 可发货标示为“否”时 ，同原C3逻辑， <br>
+	 * 订单截止在已备货状态，可发货标示改成是后，自动变成待校对。 <br>
+	 * OSMS没有请求校对按钮 ，C3订单已备货，状态后，直接变成待校对。
+	 * 
+	 * @param orderId
+	 * @param remark
+	 * @param sendTag
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void updateOrder(int orderId, String remark, boolean sendTag,int isQualityInspection, String operator,UpdateOrderForm updateOrderForm) throws BussinessException;
+
+	/**
+	 * 增加同票订单<br>
+	 * 通信cms
+	 * 
+	 * @param orderIds
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void addTicketGroup(int[] orderIds, String operator) throws BussinessException;
+
+	/**
+	 * 取消该订单同票
+	 * 
+	 * @param orderId
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void cancelTicketGroup(int orderId, String operator);
+
+	/**
+	 * <pre>
+	 * 重新备货
+	 * 复制订单
+	 * 不更新am原订单的跟踪号
+	 * </pre>
+	 * 
+	 * @param orderId
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public int copyOrder(int orderId, String operator) throws BussinessException;
+
+	/**
+	 * 取消订单商品项<br>
+	 * 更新备货信息中的商品状态为取消 ，同时通信给C3<br>
+	 * 如果取消订单中所有商品项，则更新订单状态为取消，通信给C3<br>
+	 * 小批量订单，生成下架单后，不能取消商品 <br>
+	 * 取消商品项后,要更新订单金额
+	 * 
+	 * @param orderId
+	 * @param orderProductIds
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void cancelOrderProducts(int orderId, int[] orderProductIds, String operator) throws BussinessException;
+
+	/**
+	 * 批量修改备货商品 
+	 * @see #updateOrderProduct
+	 * @param orderId
+	 * @param operator
+	 * @param forms
+	 * @throws BussinessException
+	 */
+	public void updateOrderProducts(int orderId,String operator,List<UpdateOrderProductForm> forms)throws BussinessException;
+
+
+
+
+	void updateOrderProductInfos(List<UpdateOrdertProductInfo> updateOrdertProductInfos,String operator);
+	
+	/**
+	 * 修改货运地址，通讯cms
+	 * 
+	 * @param address
+	 * @param operator
+	 */
+	public void updateOrderAddress(OrderAddress address, String operator,boolean tag) throws BussinessException;
+
+	/**
+	 * 修改货运方式 带电！ <br>
+	 * 通信给C3, ,已出库时要通信给dms（带电标识）
+	 * 
+	 * @param orderId
+	 * @param shippingMethod
+	 * @param isFree
+	 * @param free
+	 * @param shippingMethodRange
+	 * @param operator
+	 */
+	public void updateShippingMethod(int orderId, int shippingMethod, String operator,boolean tag);
+
+	/**
+	 * 保存发货说明，通讯cms
+	 * 
+	 * @param orderId
+	 * @param remark
+	 * @param operator
+	 */
+	public void saveSendRemark(int orderId, String remark,String cpfCode,int cpfType, String operator);
+
+	/**
+	 * 查看订单详细
+	 * 
+	 * @param orderId
+	 * @return
+	 */
+	public OrderDetail getOrderDeatil$remote(int orderId);
+
+
+	//update
+	void updateOrderShippingMethod(OrderDetail orderDetail);
+
+	/**
+	 * 查看同票订单
+	 * 
+	 * @param orderId
+	 * @return
+	 */
+	public List<Order> getTicketGroup(int orderId);
+
+	
+	/**
+	 * 根据同票id获取同票订单
+	 * @param groupId
+	 * @return
+	 */
+	public List<Order> getTicketGrouypByGroupId(int groupId);
+	
+	/**
+	 * 分页搜索订单列表
+	 * 
+	 * @param form
+	 * @param currentPage
+	 * @param pageSize
+	 * @return
+	 */
+	public PageList<Order> findOrders(SearchOrderForm form, int currentPage, int pageSize);
+
+	/**
+	 * 获取订单操作日志
+	 * 
+	 * @param orderId
+	 * @return
+	 */
+	public List<OrderOperateLog> getOrderOperateLogs(int orderId);
+
+	public int getCustomerTotalOrderNum(String customerAccount, int shopId,String fulfillmentChannel);
+
+	public void addOrderOperateLog(String comment, String operator, int objectId);
+	
+	public void addOrderOperateLog(String comment, String operator, int objectId,Date operatorTime);
+	
+	/**
+	 * 设置非cms备货
+	 * @param orderId
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void set2NotCMSPrepare(int orderId, String operator)throws BussinessException;
+	
+	/**
+	 * 设置商品为非CMS备货商品
+	 * @param orderPrepareProductId
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void setOrderItem2NotCMSPrepare(int orderPrepareProductId ,String operator)throws BussinessException;
+	
+	/**
+	 * 快速发货、更新货运信息
+	 * --非C3备货的订单
+	 * @param orderId
+	 * @param traceCode
+	 * @param deliveryCost
+	 * @param operator
+	 */
+	public void quickShip(int orderId, String traceCode, double deliveryCost,Date deliveryDate,Double costPrice, String operator);
+	
+	/**
+	 * cms备货订单假发货
+	 * @param orderId
+	 * @param traceCode
+	 * @param deliveryDate
+	 * @param operator
+	 */
+	public void beforeShip(int orderId, String traceCode, Date deliveryDate, String operator);
+
+	
+	/**
+	 * 获取备货商品项
+	 * @param id
+	 * @return
+	 */
+	public OrderPrepareProduct getOrderPrepareProduct(int id);
+	/**
+	 * @author wanghw
+	 * @Date 2015-5-6
+	 * @Description 订单状态<br>
+	 * 2017-05-09  配货中(36),已配货(38)
+	 */
+	public enum OrderStatus {
+		PENDING(0), 准备货物(1), 已备货(31),配货中(36),已配货(38), 待校对(40), 校对中(45),
+		已校对(48), 打包中(50), 已打包(55), 已出库(60),
+		发货中(62),已发货(64), 完成(128),已入仓(130), 取消(132);
+		private int val;
+
+		public int getVal() {
+			return val;
+		}
+
+		private OrderStatus(int val) {
+			this.val = val;
+		}
+		
+		public static String getName(int val) {
+			for (OrderStatus s : OrderStatus.values()) {
+				if (s.val==val) {
+					return s.toString();
+				}
+			}
+			return null;
+		}
+	}
+
+	/**
+	 * @author wanghw
+	 * @Date 2015-5-6
+	 * @Description am订单状态
+	 */
+	public enum AMOrderStatus {
+		PENDING(1), UNSHIPPED(2), SHIPPED(4), CANCELED(6);
+		private int val;
+
+		public int getVal() {
+			return val;
+		}
+
+		private AMOrderStatus(int val) {
+			this.val = val;
+		}
+	}
+
+	/**
+	 * 默认为备货中<br>
+	 * C3完成备货，状态变为已备货；<br>
+	 * C3对应任务无法处理，状态变成断货；<br>
+	 * DMS确认包裹状态变成完成
+	 * 
+	 * @author wanghw
+	 * @Date 2015-5-6
+	 * @Description 订单商品项状态
+	 */
+	public enum OrderProductStatus {
+		备货中(1), 订货中(2),断货(4), 已备货(6),已发货(8), 完成(10), 取消(12);
+		private int val;
+
+		public int getVal() {
+			return val;
+		}
+
+		private OrderProductStatus(int val) {
+			this.val = val;
+		}
+	}
+
+	public enum OrderLogType {
+		ORDER_ADD(0), ORDER_UPDATE(1), ORDER_AGAIN(2), ORDER_CANCEL(3), TICKET_ADD(4), INVOICE_EXPORT(5), SHIPPING_METHOD_UPDATE(
+				6), ORDER_PRODUCT_CANCEL(7), ORDER_PRODUCT_UPDATE(8), ORDER_ADDRESS_UPDATE(9);
+		private int val;
+
+		public int getVal() {
+			return val;
+		}
+
+		private OrderLogType(int val) {
+			this.val = val;
+		}
+	}
+
+
+	/**
+	 * 同步亚马逊订单交付给亚马逊的状态
+	 */
+	public enum OrderAmazonStatus{
+		WORKING(3,"卖家已创建货件，但尚未发货","WORKING"),
+		SHIPPED(5,"承运人已取件","SHIPPED"),
+		IN_TRANSIT(7,"承运人已通知 亚马逊配送中心 知晓货件的存在","IN_TRANSIT"),
+		DELIVERED(8,"承运人已将货件配送至 亚马逊配送中心","DELIVERED"),
+		CHECKED_IN(9,"货件已在 亚马逊配送中心 的收货区登记","CHECKED_IN"),
+
+		RECEIVING(63,"货件已到达亚马逊配送中心，但有部分商品尚未标记为已收到","RECEIVING"),
+		CLOSED(73,"货件已到达亚马逊配送中心，但有部分商品尚未标记为已收到","CLOSED"),
+
+		CANCELLED(93,"卖家在将货件发送至 亚马逊配送中心 后取消了货件","CANCELLED"),
+		DELETED(103,"卖家在将货件发送至 亚马逊配送中心 前取消了货件","DELETED"),
+		ERROR(113,"货件出错，但其并非亚马逊处理","ERROR");
+
+		private int statusCode;
+		private String message;
+		private String status;
+
+		OrderAmazonStatus(int statusCode, String message, String status) {
+			this.statusCode = statusCode;
+			this.message = message;
+			this.status = status;
+		}
+
+
+		public int getStatusCode() {
+			return statusCode;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public String getStatus() {
+			return status;
+		}
+
+
+		//根据状态代码获取这整个注解
+		public static OrderAmazonStatus get(String  status){
+			for(OrderAmazonStatus orderAmazonStatus : OrderAmazonStatus.values()){
+				if(orderAmazonStatus.status.equals(status)){
+					return orderAmazonStatus;
+				}
+			}
+			return null;
+		}
+	}
+	
+	public enum OrderProblemType{
+		无法匹配商品(1),无法识别货运方式(2),断货(4),货运信息有问题(8);
+		private int val;
+
+		public int getVal() {
+			return val;
+		}
+
+		private OrderProblemType(int val) {
+			this.val = val;
+		}
+		
+		/**
+		 * 订单问题类型优先级排序
+		 * @param num
+		 * @return
+		 */
+		public static int sort(int num){
+			for (OrderProblemType type : OrderProblemType.values()) {
+				if((type.getVal()&num)==type.getVal()){
+					return type.getVal();
+				}
+			}
+			return num;
+		}
+	}
+
+
+
+	void addOrderProducts(int orderId, List<UpdateOrderProductForm> orderProducts, String operator)
+			throws BussinessException;
+
+	OrderProduct getOrderProductByOrderId(String cmsProductCode, int orderId);
+
+	OrderDetail getOrderDeatil(int orderId);
+
+
+
+	/**
+	 * 确认包裹
+	 * @param orderId
+	 * @param operator
+	 * @throws BussinessException
+	 */
+	public void confirmPackage(int orderId,String operator) throws BussinessException;
+
+	
+
+	Order getOrderByShopOrderUnique(String Unique, int shopType);
+
+	boolean delivering2WS3rdProxy(List<Integer> orderIds);
+
+	boolean delivering2WS3rdProxy(int orderId);
+
+}

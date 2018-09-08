@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2018. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+ * Morbi non lorem porttitor neque feugiat blandit. Ut vitae ipsum eget quam lacinia accumsan.
+ * Etiam sed turpis ac ipsum condimentum fringilla. Maecenas magna.
+ * Proin dapibus sapien vel ante. Aliquam erat volutpat. Pellentesque sagittis ligula eget metus.
+ * Vestibulum commodo. Ut rhoncus gravida arcu.
+ */
+
+package com.itecheasy.core.order;
+
+import java.util.List;
+
+/**
+ * @Auther: liteng
+ * @Date: 2018/9/7 19:45
+ * @Description:
+ */
+
+
+public class ProductNamePO {
+    private String productNameChinese;
+    private String productNameEnglish ;
+
+
+    public String getProductNameChinese() {
+        return productNameChinese;
+    }
+
+    public void setProductNameChinese(String productNameChinese) {
+        this.productNameChinese = productNameChinese;
+    }
+
+    public String getProductNameEnglish() {
+        return productNameEnglish;
+    }
+
+    public void setProductNameEnglish(String productNameEnglish) {
+        this.productNameEnglish = productNameEnglish;
+    }
+}
